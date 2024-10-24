@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Infrastructure;
+namespace Infrastructure.DbContexts;
 
 public class GroupDbContext(IConfiguration configuration) : DbContext
 {
