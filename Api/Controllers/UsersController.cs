@@ -44,17 +44,25 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
 
     [HttpPatch]
     [Route("{guid:guid}")]
-    public async Task<IActionResult> Update(Guid guid, string? email, string? passwordHash, bool? isActive, CancellationToken ct)
-    { 
+    public async Task<IActionResult> Update(Guid guid, string? email, string? passwordHash, bool? isActive,
+        CancellationToken ct)
+    {
         var user = await dbContext.Users
-            .AsNoTracking()
             .FirstOrDefaultAsync(user => user.Id == guid, cancellationToken: ct);
 
         if (user is null)
             return NotFound();
-        
+
         user.Update(email, passwordHash, isActive);
+        await dbContext.SaveChangesAsync(ct);
+
         return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
     }
-    
+
+    [HttpDelete]
+    [Route("{guid:guid}")]
+    public async Task Delete(Guid guid, CancellationToken ct) =>
+        await dbContext.Users
+            .Where(u => u.Id == guid)
+            .ExecuteDeleteAsync(ct);
 }
