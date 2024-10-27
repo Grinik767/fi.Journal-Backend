@@ -19,8 +19,15 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email));
+        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
     }
+
+    [HttpGet]
+    public async Task<List<UserDto>> GetAll(CancellationToken ct) =>
+        await dbContext.Users
+            .AsNoTracking()
+            .Select(user => new UserDto(user.Id, user.Name, user.Email, user.IsActive))
+            .ToListAsync(ct);
 
     [HttpGet]
     [Route("{guid:guid}")]
@@ -32,6 +39,22 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
 
         return user is null
             ? NotFound()
-            : Ok(new UserDto(user.Id, user.Name, user.Email));
+            : Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
     }
+
+    [HttpPatch]
+    [Route("{guid:guid}")]
+    public async Task<IActionResult> Update(Guid guid, string? email, string? passwordHash, bool? isActive, CancellationToken ct)
+    { 
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(user => user.Id == guid, cancellationToken: ct);
+
+        if (user is null)
+            return NotFound();
+        
+        user.Update(email, passwordHash, isActive);
+        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
+    }
+    
 }
