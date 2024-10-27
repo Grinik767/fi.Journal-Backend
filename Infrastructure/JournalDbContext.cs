@@ -4,13 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class JournalDbContext: DbContext
+public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbContext(options)
 {
-    public DbSet<Group> Groups { get; set; }
-
-    public JournalDbContext(DbContextOptions<JournalDbContext> options) : base(options)
-    {
-    }
+    public DbSet<Group> Groups { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
