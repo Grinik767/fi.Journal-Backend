@@ -10,6 +10,7 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class GroupsController(JournalDbContext dbContext) : ControllerBase
 {
+    /*
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
@@ -20,6 +21,7 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
 
         return Ok(group);
     }
+    */
 
     [HttpGet]
     public async Task<List<Group>> GetAll(CancellationToken ct) =>
