@@ -1,0 +1,23 @@
+﻿using Api.Contracts;
+using Api.Dtos;
+using Domain.Entities;
+using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController(JournalDbContext dbContext) : ControllerBase
+{
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct)
+    {
+        var user = new User(request.Name, request.Email, request.PasswordHash);
+
+        await dbContext.Users.AddAsync(user, ct);
+        await dbContext.SaveChangesAsync(ct);
+
+        return Ok(new UserDto(user.Id, user.Name, user.Email));
+    }
+}

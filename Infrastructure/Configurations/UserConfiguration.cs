@@ -8,8 +8,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable("Users");
         builder.HasKey(g => g.Id);
-
+        
+        builder
+            .HasIndex(u => u.Email)
+            .IsUnique();
+        
         builder
             .HasMany(u => u.Groups)
             .WithMany(g => g.Users);

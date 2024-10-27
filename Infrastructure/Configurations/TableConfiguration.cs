@@ -8,6 +8,7 @@ public class TableConfiguration : IEntityTypeConfiguration<Table>
 {
     public void Configure(EntityTypeBuilder<Table> builder)
     {
+        builder.ToTable("Tables");
         builder.HasKey(g => g.Id);
 
         builder

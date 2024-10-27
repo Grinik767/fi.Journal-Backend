@@ -7,6 +7,8 @@ namespace Infrastructure;
 public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbContext(options)
 {
     public DbSet<Group> Groups { get; init; }
+    public DbSet<User> Users { get; init; }
+    public DbSet<Table> Tables { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
