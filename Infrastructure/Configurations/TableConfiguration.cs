@@ -9,15 +9,20 @@ public class TableConfiguration : IEntityTypeConfiguration<Table>
     public void Configure(EntityTypeBuilder<Table> builder)
     {
         builder.ToTable("Tables");
-        builder.HasKey(g => g.Id);
+        builder.HasKey(t => t.Id);
 
-        builder
-            .HasOne(t => t.Admin)
-            .WithMany(a => a.TablesAsAdmin)
-            .HasForeignKey(t => t.AdminId);
+        builder.Property(t => t.Name)
+            .IsRequired();
 
-        builder
-            .HasMany(t => t.Groups)
+        builder.Property(t => t.Url)
+            .IsRequired();
+
+        builder.HasOne(t => t.Admin)
+            .WithMany(u => u.TablesAsAdmin)
+            .HasForeignKey(t => t.AdminId)
+            .IsRequired();
+        
+        builder.HasMany(t => t.Groups)
             .WithMany(g => g.Tables);
     }
 }

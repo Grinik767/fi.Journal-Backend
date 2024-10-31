@@ -19,36 +19,38 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
+        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive, []));
     }
 
     [HttpGet]
     public async Task<List<UserDto>> GetAll(CancellationToken ct) =>
         await dbContext.Users
             .AsNoTracking()
-            .Select(user => new UserDto(user.Id, user.Name, user.Email, user.IsActive))
+            .Include(u => u.GroupsAsAdmin)
+            .Select(user => ToDto(user))
             .ToListAsync(ct);
 
     [HttpGet]
-    [Route("{guid:guid}")]
-    public async Task<IActionResult> Get(Guid guid, CancellationToken ct)
+    [Route("{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, CancellationToken ct)
     {
         var user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(user => user.Id == guid, cancellationToken: ct);
+            .Include(u => u.GroupsAsAdmin)
+            .FirstOrDefaultAsync(user => user.Id == id, cancellationToken: ct);
 
         return user is null
             ? NotFound()
-            : Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
+            : Ok(ToDto(user));
     }
 
     [HttpPatch]
-    [Route("{guid:guid}")]
-    public async Task<IActionResult> Update(Guid guid, string? email, string? passwordHash, bool? isActive,
+    [Route("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, string? email, string? passwordHash, bool? isActive,
         CancellationToken ct)
     {
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(user => user.Id == guid, cancellationToken: ct);
+            .FirstOrDefaultAsync(user => user.Id == id, cancellationToken: ct);
 
         if (user is null)
             return NotFound();
@@ -56,7 +58,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         user.Update(email, passwordHash, isActive);
         await dbContext.SaveChangesAsync(ct);
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive));
+        return Ok(ToDto(user));
     }
 
     [HttpDelete]
@@ -65,4 +67,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         await dbContext.Users
             .Where(u => u.Id == guid)
             .ExecuteDeleteAsync(ct);
+
+    public static UserDto ToDto(User user) => new(user.Id, user.Name, user.Email, user.IsActive,
+        user.GroupsAsAdmin.Select(g => g.Id).ToArray());
 }

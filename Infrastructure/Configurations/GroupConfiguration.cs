@@ -10,18 +10,17 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
     {
         builder.ToTable("Groups");
         builder.HasKey(g => g.Id);
+        
+        builder.HasIndex(g => g.Name).IsUnique();
+        builder.Property(g => g.Name)
+            .IsRequired();
+        
+        builder.HasOne(g => g.Admin)
+            .WithMany(u => u.GroupsAsAdmin)
+            .HasForeignKey(g => g.AdminId)
+            .IsRequired();
 
-        builder
-            .HasOne(g => g.Admin)
-            .WithMany(a => a.GroupsAsAdmin)
-            .HasForeignKey(g => g.AdminId);
-
-        builder
-            .HasMany(g => g.Users)
+        builder.HasMany(g => g.Users)
             .WithMany(u => u.Groups);
-
-        builder
-            .HasMany(g => g.Tables)
-            .WithMany(t => t.Groups);
     }
 }

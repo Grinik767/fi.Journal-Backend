@@ -9,24 +9,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users");
-        builder.HasKey(g => g.Id);
-        
-        builder
-            .HasIndex(u => u.Email)
-            .IsUnique();
-        
-        builder
-            .HasMany(u => u.Groups)
-            .WithMany(g => g.Users);
+        builder.HasKey(u => u.Id);
 
-        builder
-            .HasMany(u => u.GroupsAsAdmin)
-            .WithOne(g => g.Admin)
-            .HasForeignKey(g => g.AdminId);
+        builder.Property(u => u.Name)
+            .IsRequired();
+        
+        builder.HasIndex(u => u.Email).IsUnique();
+        builder.Property(u => u.Email)
+            .IsRequired();
 
-        builder
-            .HasMany(u => u.TablesAsAdmin)
-            .WithOne(t => t.Admin)
-            .HasForeignKey(t => t.AdminId);
+        builder.Property(u => u.PasswordHash)
+            .IsRequired();
     }
 }
