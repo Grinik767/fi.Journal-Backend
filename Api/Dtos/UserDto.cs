@@ -1,3 +1,3 @@
 ﻿namespace Api.Dtos;
 
-public record UserDto(Guid Id, string Name, string Email, bool IsActive, Guid[] Groups, Guid[] GroupAsAdminIds);
+public record UserDto(Guid Id, string Name, string Email, Guid[] Groups, Guid[] GroupAsAdminIds);

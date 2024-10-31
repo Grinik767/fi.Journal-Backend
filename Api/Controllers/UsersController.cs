@@ -19,7 +19,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive, [], []));
+        return Ok(new UserDto(user.Id, user.Name, user.Email, [], []));
     }
 
     [HttpGet]
@@ -48,7 +48,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
 
     [HttpPatch]
     [Route("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, string? email, string? passwordHash, bool? isActive,
+    public async Task<IActionResult> Update(Guid id, string? email, string? passwordHash,
         CancellationToken ct)
     {
         var user = await dbContext.Users
@@ -59,7 +59,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         if (user is null)
             return NotFound();
 
-        user.Update(email, passwordHash, isActive);
+        user.Update(email, passwordHash);
         await dbContext.SaveChangesAsync(ct);
 
         return Ok(ToDto(user));
@@ -72,7 +72,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
             .Where(u => u.Id == guid)
             .ExecuteDeleteAsync(ct);
 
-    public static UserDto ToDto(User user) => new(user.Id, user.Name, user.Email, user.IsActive,
+    public static UserDto ToDto(User user) => new(user.Id, user.Name, user.Email,
         user.Groups.Select(g => g.Id).ToArray(),
         user.GroupsAsAdmin.Select(g => g.Id).ToArray());
 }

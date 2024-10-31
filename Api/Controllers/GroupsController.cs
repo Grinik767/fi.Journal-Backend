@@ -18,7 +18,7 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
             .AsNoTracking()
             .Include(u => u.GroupsAsAdmin)
             .FirstOrDefaultAsync(u => u.Id == request.AdminId, ct);
-        if (admin is null || !admin.IsActive)
+        if (admin is null)
             return BadRequest();
 
         var group = new Group(request.Name, request.AdminId);
@@ -72,7 +72,7 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         var user = await dbContext.Users
             .Include(u => u.Groups)
             .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
-        if (user is null || !user.IsActive || user.Groups.Contains(group))
+        if (user is null || user.Groups.Contains(group))
             return BadRequest();
         
         group.Users.Add(user);

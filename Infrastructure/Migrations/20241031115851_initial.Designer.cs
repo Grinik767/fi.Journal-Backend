@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20241031092327_initial")]
+    [Migration("20241031115851_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -54,9 +54,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AdminId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -70,8 +67,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
-
                     b.ToTable("Tables", (string)null);
                 });
 
@@ -84,9 +79,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -145,17 +137,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Table", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Admin")
-                        .WithMany("TablesAsAdmin")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Admin");
-                });
-
             modelBuilder.Entity("GroupTable", b =>
                 {
                     b.HasOne("Domain.Entities.Group", null)
@@ -189,8 +170,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("GroupsAsAdmin");
-
-                    b.Navigation("TablesAsAdmin");
                 });
 #pragma warning restore 612, 618
         }

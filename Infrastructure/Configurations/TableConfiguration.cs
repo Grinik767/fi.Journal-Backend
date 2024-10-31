@@ -16,11 +16,6 @@ public class TableConfiguration : IEntityTypeConfiguration<Table>
 
         builder.Property(t => t.Url)
             .IsRequired();
-
-        builder.HasOne(t => t.Admin)
-            .WithMany(u => u.TablesAsAdmin)
-            .HasForeignKey(t => t.AdminId)
-            .IsRequired();
         
         builder.HasMany(t => t.Groups)
             .WithMany(g => g.Tables);

@@ -18,7 +18,7 @@ public class TablesController(JournalDbContext dbContext) : ControllerBase
         if (admin is null)
             return BadRequest();
 
-        var table = new Table(request.Name, request.Url, request.AdminId);
+        var table = new Table(request.Name, request.Url);
         await dbContext.Tables.AddAsync(table, ct);
         
         await dbContext.SaveChangesAsync(ct);

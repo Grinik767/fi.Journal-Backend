@@ -8,7 +8,6 @@ public class Group(string name, Guid adminId) : Entity
     public readonly List<Table> Tables = [];
     private User? _admin;
     [Required] public string Name { get; set; } = name;
-
     [Required] public Guid AdminId { get; init; } = adminId;
 
     public User? Admin

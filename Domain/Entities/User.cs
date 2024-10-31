@@ -11,12 +11,10 @@ public class User(string name, string email, string passwordHash) : Entity
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;
-    public bool IsActive { get; set; }
 
-    public void Update(string? email, string? passwordHash, bool? isActive)
+    public void Update(string? email, string? passwordHash)
     {
         Email = email ?? Email;
         PasswordHash = passwordHash ?? PasswordHash;
-        IsActive = isActive ?? IsActive;
     }
 }
