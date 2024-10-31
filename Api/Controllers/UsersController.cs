@@ -19,13 +19,14 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive, []));
+        return Ok(new UserDto(user.Id, user.Name, user.Email, user.IsActive, [], []));
     }
 
     [HttpGet]
     public async Task<List<UserDto>> GetAll(CancellationToken ct) =>
         await dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Groups)
             .Include(u => u.GroupsAsAdmin)
             .Select(user => ToDto(user))
             .ToListAsync(ct);
@@ -36,6 +37,7 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
     {
         var user = await dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Groups)
             .Include(u => u.GroupsAsAdmin)
             .FirstOrDefaultAsync(user => user.Id == id, cancellationToken: ct);
 
@@ -50,6 +52,8 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
         CancellationToken ct)
     {
         var user = await dbContext.Users
+            .Include(u => u.Groups)
+            .Include(u => u.GroupsAsAdmin)
             .FirstOrDefaultAsync(user => user.Id == id, cancellationToken: ct);
 
         if (user is null)
@@ -69,5 +73,6 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
             .ExecuteDeleteAsync(ct);
 
     public static UserDto ToDto(User user) => new(user.Id, user.Name, user.Email, user.IsActive,
+        user.Groups.Select(g => g.Id).ToArray(),
         user.GroupsAsAdmin.Select(g => g.Id).ToArray());
 }
