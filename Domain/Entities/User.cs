@@ -2,13 +2,12 @@
 
 namespace Domain.Entities;
 
-public class User(string name, string email, string passwordHash)
+public class User(string name, string email, string passwordHash) : Entity
 {
     public readonly List<Group> Groups = [];
     public readonly List<Group> GroupsAsAdmin = [];
     public readonly List<Table> TablesAsAdmin = [];
 
-    public Guid Id { get; init; }
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;

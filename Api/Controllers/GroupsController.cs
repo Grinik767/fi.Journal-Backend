@@ -37,9 +37,48 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         var groups = await dbContext.Groups
             .AsNoTracking()
             .Include(g => g.Admin)
+            .Include(g => g.Users)
             .ToListAsync(ct);
 
         return groups.Select(ToDto).ToList();
+    }
+
+    [HttpGet]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, CancellationToken ct)
+    {
+        var group = await dbContext.Groups
+            .AsNoTracking()
+            .Include(g => g.Admin)
+            .Include(g => g.Users)
+            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken: ct);
+
+        return group is null
+            ? NotFound()
+            : Ok(ToDto(group));
+    }
+
+    [HttpPost]
+    [Route("{id:guid}/users")]
+    public async Task<IActionResult> Post(Guid id, [FromBody] AddUserToGroupRequest request, CancellationToken ct)
+    {
+        var group = await dbContext.Groups
+            .Include(g => g.Admin)
+            .Include(g => g.Users)
+            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken: ct);
+        if (group is null || request.UserId == group.AdminId)
+            return BadRequest();
+
+        var user = await dbContext.Users
+            .Include(u => u.Groups)
+            .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
+        if (user is null || !user.IsActive || user.Groups.Contains(group))
+            return BadRequest();
+        
+        group.Users.Add(user);
+        await dbContext.SaveChangesAsync(ct);
+        
+        return Ok(ToDto(group));
     }
 
     private static GroupDto ToDto(Group group) => new(

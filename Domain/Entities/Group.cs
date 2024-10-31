@@ -2,13 +2,11 @@
 
 namespace Domain.Entities;
 
-public class Group(string name, Guid adminId)
+public class Group(string name, Guid adminId) : Entity
 {
     public readonly List<User> Users = [];
     public readonly List<Table> Tables = [];
     private User? _admin;
-
-    public Guid Id { get; init; }
     [Required] public string Name { get; set; } = name;
 
     [Required] public Guid AdminId { get; init; } = adminId;
