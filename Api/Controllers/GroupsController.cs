@@ -53,6 +53,28 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
             : Ok(ToDto(group));
     }
 
+    [HttpPatch]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGroupRequest request, CancellationToken ct)
+    {
+        var group = await GetGroupById(id, ct);
+        if (group is null)
+            return BadRequest();
+
+        group.Name = request.Name ?? group.Name;
+        
+        await dbContext.SaveChangesAsync(ct);
+        return Ok(ToDto(group));
+    }
+
+
+    [HttpDelete]
+    [Route("{id:guid}")]
+    public async Task Delete(Guid id, CancellationToken ct) =>
+        await dbContext.Groups
+            .Where(u => u.Id == id)
+            .ExecuteDeleteAsync(ct);
+
 
     [HttpPost]
     [Route("{id:guid}/users")]
@@ -83,16 +105,16 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         var group = await GetGroupById(id, ct);
         if (group is null)
             return BadRequest();
-        
+
         var user = await dbContext.Users
             .Include(u => u.Groups)
             .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
         if (user is null || !user.Groups.Contains(group))
             return BadRequest();
-        
+
         group.Users.Remove(user);
         await dbContext.SaveChangesAsync(ct);
-        
+
         return Ok(ToDto(group));
     }
 

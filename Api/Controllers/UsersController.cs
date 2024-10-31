@@ -66,10 +66,10 @@ public class UsersController(JournalDbContext dbContext) : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{guid:guid}")]
-    public async Task Delete(Guid guid, CancellationToken ct) =>
+    [Route("{id:guid}")]
+    public async Task Delete(Guid id, CancellationToken ct) =>
         await dbContext.Users
-            .Where(u => u.Id == guid)
+            .Where(u => u.Id == id)
             .ExecuteDeleteAsync(ct);
 
     public static UserDto ToDto(User user) => new(user.Id, user.Name, user.Email,
