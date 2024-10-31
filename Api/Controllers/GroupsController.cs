@@ -47,25 +47,19 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
     [Route("{id:guid}")]
     public async Task<IActionResult> Get(Guid id, CancellationToken ct)
     {
-        var group = await dbContext.Groups
-            .AsNoTracking()
-            .Include(g => g.Admin)
-            .Include(g => g.Users)
-            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken: ct);
-
+        var group = await GetGroupById(id, ct);
         return group is null
             ? NotFound()
             : Ok(ToDto(group));
     }
 
+
     [HttpPost]
     [Route("{id:guid}/users")]
-    public async Task<IActionResult> Post(Guid id, [FromBody] AddUserToGroupRequest request, CancellationToken ct)
+    public async Task<IActionResult> AddUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
+        CancellationToken ct)
     {
-        var group = await dbContext.Groups
-            .Include(g => g.Admin)
-            .Include(g => g.Users)
-            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken: ct);
+        var group = await GetGroupById(id, ct);
         if (group is null || request.UserId == group.AdminId)
             return BadRequest();
 
@@ -74,8 +68,29 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
             .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
         if (user is null || user.Groups.Contains(group))
             return BadRequest();
-        
+
         group.Users.Add(user);
+        await dbContext.SaveChangesAsync(ct);
+
+        return Ok(ToDto(group));
+    }
+
+    [HttpDelete]
+    [Route("{id:guid}/users")]
+    public async Task<IActionResult> DeleteUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
+        CancellationToken ct)
+    {
+        var group = await GetGroupById(id, ct);
+        if (group is null)
+            return BadRequest();
+        
+        var user = await dbContext.Users
+            .Include(u => u.Groups)
+            .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
+        if (user is null || !user.Groups.Contains(group))
+            return BadRequest();
+        
+        group.Users.Remove(user);
         await dbContext.SaveChangesAsync(ct);
         
         return Ok(ToDto(group));
@@ -87,4 +102,9 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         UsersController.ToDto(group.Admin!),
         group.Users.Select(u => u.Id).ToArray()
     );
+
+    private async Task<Group?> GetGroupById(Guid id, CancellationToken ct) => await dbContext.Groups
+        .Include(g => g.Admin)
+        .Include(g => g.Users)
+        .FirstOrDefaultAsync(g => g.Id == id, ct);
 }
