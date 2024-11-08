@@ -1,4 +1,5 @@
 using Api;
+using Api.Middlewares;
 using Application.Services;
 using Infrastructure;
 using Infrastructure.Repositories;
@@ -15,6 +16,8 @@ services.AddDbContext<JournalDbContext>(
     options => options.UseNpgsql(configuration.GetConnectionString(nameof(JournalDbContext)))
 );
 
+services.AddTransient<ExceptionMiddleware>();
+
 services.AddScoped<UsersRepository>();
 
 services.AddScoped<UserService>();
@@ -27,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 app.Run();
