@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-public class TableConfiguration : IEntityTypeConfiguration<Table>
+public class TablesConfiguration : IEntityTypeConfiguration<Table>
 {
     public void Configure(EntityTypeBuilder<Table> builder)
     {

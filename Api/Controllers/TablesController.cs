@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers;
-
+/*
 [ApiController]
 [Route("api/[controller]")]
 public class TablesController(JournalDbContext dbContext) : ControllerBase
@@ -87,3 +87,4 @@ public class TablesController(JournalDbContext dbContext) : ControllerBase
         .Include(t => t.Groups)
         .FirstOrDefaultAsync(t => t.Id == id, ct);
 }
+*/

@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class Group(string name, Guid adminId) : Entity
+public class Group(Guid id, string name, Guid adminId) : Entity<Guid>(id)
 {
     public readonly List<User> Users = [];
     public readonly List<Table> Tables = [];

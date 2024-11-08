@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class Table(string name, string url) : Entity
+public class Table(Guid id, string name, string url) : Entity<Guid>(id)
 {
     public readonly List<Group> Groups = [];
     [Required] public string Name { get; set; } = name;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-public class GroupConfiguration : IEntityTypeConfiguration<Group>
+public class GroupsConfiguration : IEntityTypeConfiguration<Group>
 {
     public void Configure(EntityTypeBuilder<Group> builder)
     {

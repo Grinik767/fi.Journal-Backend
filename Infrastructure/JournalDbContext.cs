@@ -12,9 +12,9 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new GroupConfiguration());
-        modelBuilder.ApplyConfiguration(new TableConfiguration());
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new GroupsConfiguration());
+        modelBuilder.ApplyConfiguration(new TablesConfiguration());
+        modelBuilder.ApplyConfiguration(new UsersConfiguration());
         
         base.OnModelCreating(modelBuilder);
     }

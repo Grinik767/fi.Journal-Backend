@@ -4,7 +4,7 @@ using Domain.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+/*
 namespace Api.Controllers;
 
 [ApiController]
@@ -128,3 +128,4 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         .Include(g => g.Users)
         .FirstOrDefaultAsync(g => g.Id == id, ct);
 }
+*/
