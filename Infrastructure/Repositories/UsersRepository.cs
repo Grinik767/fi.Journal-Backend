@@ -20,7 +20,7 @@ public class UsersRepository(JournalDbContext dbContext) : IRepository<User>
     {
         var user = await GetById(id, ct);
 
-        if (user == null)
+        if (user is null)
             return user;
 
         user.Email = email ?? user.Email;
