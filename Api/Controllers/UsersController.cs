@@ -9,7 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(UserService service, IMapper mapper) : ControllerBase
+public class UsersController(UsersService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken ct)

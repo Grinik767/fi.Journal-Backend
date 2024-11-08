@@ -3,7 +3,7 @@ using Domain.Entities;
 
 namespace Application.Services;
 
-public class UserService(UsersRepository repository)
+public class UsersService(UsersRepository repository)
 {
     public async Task<User> Add(string name, string email, string password, CancellationToken ct)
     {

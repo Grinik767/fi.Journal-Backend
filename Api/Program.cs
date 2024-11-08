@@ -20,7 +20,7 @@ services.AddTransient<ExceptionMiddleware>();
 
 services.AddScoped<UsersRepository>();
 
-services.AddScoped<UserService>();
+services.AddScoped<UsersService>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 
