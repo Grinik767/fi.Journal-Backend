@@ -36,10 +36,10 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
             return null;
 
         var user = await usersRepository.GetById(userId, ct);
-        if (user is null)
+        if (user is null || user.Groups.Contains(group))
             return null;
 
-        await groupsRepository.AddOrDeleteUser(group, user, true, ct);
+        group = await groupsRepository.AddOrDeleteUser(group, user, true, ct);
         return group;
     }
 

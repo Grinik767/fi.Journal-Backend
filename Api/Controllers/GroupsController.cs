@@ -1,5 +1,6 @@
-﻿using Api.Contracts;
+﻿using Api.Contracts.Group;
 using Api.Dtos;
+using Api.Extensions;
 using Application.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
         var group = await service.Add(request.Name, request.AdminId, ct);
-        if (group is null)
-            return BadRequest();
-        return Ok(mapper.Map<GroupDto>(group));
+        return await group.ToResult<GroupDto>(mapper, BadRequest);
     }
 
     [HttpDelete]
@@ -27,7 +26,8 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     [Route("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
-        return Ok();
+        var group = await service.Update(id, name, ct);
+        return await group.ToResult<GroupDto>(mapper, BadRequest);
     }
 
     [HttpGet]
@@ -37,70 +37,21 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         return mapper.Map<List<GroupDto>>(groups);
     }
 
-
-    /*
-    [HttpGet]
-    public async Task<List<GroupDto>> GetAll(CancellationToken ct)
-    {
-        var groups = await dbContext.Groups
-            .AsNoTracking()
-            .Include(g => g.Admin)
-            .Include(g => g.Users)
-            .ToListAsync(ct);
-
-        return groups.Select(ToDto).ToList();
-    }
-
     [HttpGet]
     [Route("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id, CancellationToken ct)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
-        var group = await GetGroupById(id, ct);
-        return group is null
-            ? NotFound()
-            : Ok(ToDto(group));
+        var group = await service.GetById(id, ct);
+        return await group.ToResult<GroupDto>(mapper, NotFound);
     }
-
-    [HttpPatch]
-    [Route("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGroupOrTableRequest request, CancellationToken ct)
-    {
-        var group = await GetGroupById(id, ct);
-        if (group is null)
-            return BadRequest();
-
-        group.Name = request.Name ?? group.Name;
-
-        await dbContext.SaveChangesAsync(ct);
-        return Ok(ToDto(group));
-    }
-
-    [HttpDelete]
-    [Route("{id:guid}")]
-    public async Task Delete(Guid id, CancellationToken ct) =>
-        await dbContext.Groups
-            .Where(u => u.Id == id)
-            .ExecuteDeleteAsync(ct);
 
     [HttpPost]
     [Route("{id:guid}/users")]
     public async Task<IActionResult> AddUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {
-        var group = await GetGroupById(id, ct);
-        if (group is null || request.UserId == group.AdminId)
-            return BadRequest();
-
-        var user = await dbContext.Users
-            .Include(u => u.Groups)
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
-        if (user is null || user.Groups.Contains(group))
-            return BadRequest();
-
-        group.Users.Add(user);
-        await dbContext.SaveChangesAsync(ct);
-
-        return Ok(ToDto(group));
+        var group = await service.AddUser(id, request.UserId, ct);
+        return await group.ToResult<GroupDto>(mapper, BadRequest);
     }
 
     [HttpDelete]
@@ -108,32 +59,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     public async Task<IActionResult> DeleteUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {
-        var group = await GetGroupById(id, ct);
-        if (group is null)
-            return BadRequest();
-
-        var user = await dbContext.Users
-            .Include(u => u.Groups)
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
-        if (user is null || !user.Groups.Contains(group))
-            return BadRequest();
-
-        group.Users.Remove(user);
-        await dbContext.SaveChangesAsync(ct);
-
-        return Ok(ToDto(group));
+        var group = await service.DeleteUser(id, request.UserId, ct);
+        return await group.ToResult<GroupDto>(mapper, BadRequest);
     }
-
-    private static GroupDto ToDto(Group group) => new(
-        group.Id,
-        group.Name,
-        UsersController.ToDto(group.Admin!),
-        group.Users.Select(u => u.Id).ToArray()
-    );
-
-    private async Task<Group?> GetGroupById(Guid id, CancellationToken ct) => await dbContext.Groups
-        .Include(g => g.Admin)
-        .Include(g => g.Users)
-        .FirstOrDefaultAsync(g => g.Id == id, ct);
-        */
 }
