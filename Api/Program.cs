@@ -20,9 +20,11 @@ services.AddTransient<ExceptionMiddleware>();
 
 services.AddScoped<UsersRepository>();
 services.AddScoped<GroupsRepository>();
+services.AddScoped<TablesRepository>();
 
 services.AddScoped<UsersService>();
 services.AddScoped<GroupsService>();
+services.AddScoped<TablesService>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 

@@ -20,6 +20,7 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
         await dbContext.Groups
             .Include(g => g.Admin)
             .Include(g => g.Users)
+            .Include(g => g.Tables)
             .FirstOrDefaultAsync(group => group.Id == id, ct);
 
     public async Task<List<Group>> GetAll(CancellationToken ct) =>
@@ -27,6 +28,7 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
             .AsNoTracking()
             .Include(g => g.Admin)
             .Include(g => g.Users)
+            .Include(g => g.Tables)
             .ToListAsync(ct);
 
     public async Task<Group?> Update(Guid id, string? name, CancellationToken ct)
