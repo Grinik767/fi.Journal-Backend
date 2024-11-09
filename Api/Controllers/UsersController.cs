@@ -1,8 +1,8 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
+using Api.Extensions;
 using AutoMapper;
 using Application.Services;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -15,7 +15,7 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken ct)
     {
         var user = await service.Add(request.Name, request.Email, request.Password, ct);
-        return await SendResult(user);
+        return await user.ToResult<UserDto>(mapper, BadRequest);
     }
 
     [HttpDelete]
@@ -27,7 +27,7 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
     {
         var user = await service.Update(id, email, password, ct);
-        return await SendResult(user);
+        return await user.ToResult<UserDto>(mapper, BadRequest);
     }
 
     [HttpGet]
@@ -42,9 +42,6 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var user = await service.GetById(id, ct);
-        return await SendResult(user);
+        return await user.ToResult<UserDto>(mapper, NotFound);
     }
-
-    private Task<IActionResult> SendResult(User? user) =>
-        Task.FromResult<IActionResult>(user is null ? NotFound() : Ok(mapper.Map<UserDto>(user)));
 }

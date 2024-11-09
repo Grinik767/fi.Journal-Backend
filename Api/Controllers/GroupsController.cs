@@ -19,6 +19,24 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         return Ok(mapper.Map<GroupDto>(group));
     }
 
+    [HttpDelete]
+    [Route("{id:guid}")]
+    public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
+
+    [HttpPatch]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
+    {
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<List<GroupDto>> GetAll(CancellationToken ct)
+    {
+        var groups = await service.GetAll(ct);
+        return mapper.Map<List<GroupDto>>(groups);
+    }
+
 
     /*
     [HttpGet]

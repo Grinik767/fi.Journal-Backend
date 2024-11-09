@@ -11,14 +11,9 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
         if (admin is null)
             return null;
 
-        var group = new Group(Guid.NewGuid(), name, adminId)
-        {
-            Admin = admin
-        };
-        
-        admin.GroupsAsAdmin.Add(group);
-        
+        var group = new Group(Guid.NewGuid(), name, adminId);
         await groupsRepository.Add(group, ct);
+        
         return group;
     }
 
@@ -31,7 +26,7 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
     public async Task<List<Group>> GetAll(CancellationToken ct) =>
         await groupsRepository.GetAll(ct);
 
-    public async Task<Group?> Update(Guid id, string name, CancellationToken ct) =>
+    public async Task<Group?> Update(Guid id, string? name, CancellationToken ct) =>
         await groupsRepository.Update(id, name, ct);
 
     public async Task<Group?> AddUser(Guid id, Guid userId, CancellationToken ct)
