@@ -13,7 +13,7 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
 
     public async Task Delete(Guid id, CancellationToken ct) =>
         await dbContext.Groups
-            .Where(u => u.Id == id)
+            .Where(g => g.Id == id)
             .ExecuteDeleteAsync(ct);
 
     public async Task<Group?> GetById(Guid id, CancellationToken ct) =>

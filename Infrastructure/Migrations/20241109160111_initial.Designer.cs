@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20241109154226_initial")]
+    [Migration("20241109160111_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -54,6 +54,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -66,6 +69,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Tables", (string)null);
                 });
@@ -96,21 +101,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("GroupTable", b =>
-                {
-                    b.Property<Guid>("GroupsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TablesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("GroupsId", "TablesId");
-
-                    b.HasIndex("TablesId");
-
-                    b.ToTable("GroupTable");
-                });
-
             modelBuilder.Entity("GroupUser", b =>
                 {
                     b.Property<Guid>("GroupsId")
@@ -137,19 +127,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("GroupTable", b =>
+            modelBuilder.Entity("Domain.Entities.Table", b =>
                 {
-                    b.HasOne("Domain.Entities.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsId")
+                    b.HasOne("Domain.Entities.Group", "Group")
+                        .WithMany("Tables")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Table", null)
-                        .WithMany()
-                        .HasForeignKey("TablesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("GroupUser", b =>
@@ -165,6 +151,11 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Group", b =>
+                {
+                    b.Navigation("Tables");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

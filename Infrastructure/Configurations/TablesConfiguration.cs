@@ -16,8 +16,10 @@ public class TablesConfiguration : IEntityTypeConfiguration<Table>
 
         builder.Property(t => t.Url)
             .IsRequired();
-        
-        builder.HasMany(t => t.Groups)
-            .WithMany(g => g.Tables);
+
+        builder.HasOne(t => t.Group)
+            .WithMany(g => g.Tables)
+            .HasForeignKey(t => t.GroupId)
+            .IsRequired();
     }
 }
