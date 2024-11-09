@@ -29,6 +29,9 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
     public async Task<Group?> Update(Guid id, string? name, CancellationToken ct) =>
         await groupsRepository.Update(id, name, ct);
 
+    public async Task<List<User>?> GetUsers(Guid id, CancellationToken ct) =>
+        await groupsRepository.GetUsers(id, ct);
+
     public async Task<Group?> AddUser(Guid id, Guid userId, CancellationToken ct)
     {
         var group = await groupsRepository.GetById(id, ct);

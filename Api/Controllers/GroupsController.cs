@@ -3,6 +3,7 @@ using Api.Dtos;
 using Api.Extensions;
 using Application.Services;
 using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -43,6 +44,14 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     {
         var group = await service.GetById(id, ct);
         return await group.ToResult<GroupDto>(mapper, NotFound);
+    }
+
+    [HttpGet]
+    [Route("{id:guid}/users")]
+    public async Task<IActionResult> GetUsers(Guid id, CancellationToken ct)
+    {
+        var users = await service.GetUsers(id, ct);
+        return await users.ToResult<User, List<UserDto>>(mapper, NotFound);
     }
 
     [HttpPost]
