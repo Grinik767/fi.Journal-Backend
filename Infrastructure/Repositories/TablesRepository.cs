@@ -16,13 +16,14 @@ public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
             .Where(u => u.Id == id)
             .ExecuteDeleteAsync(ct);
 
-    public async Task<Table?> GetById(Guid id, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Table?> GetById(Guid id, CancellationToken ct) =>
+        await dbContext.Tables
+            .Include(t => t.Group)
+            .FirstOrDefaultAsync(table => table.Id == id, ct);
 
-    public async Task<List<Table>> GetAll(CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Table>> GetAll(CancellationToken ct) =>
+        await dbContext.Tables
+            .AsNoTracking()
+            .Include(t => t.Group)
+            .ToListAsync(ct);
 }
