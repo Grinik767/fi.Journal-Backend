@@ -11,9 +11,14 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
         if (admin is null)
             return null;
 
-        var group = new Group(Guid.NewGuid(), name, adminId);
+        var group = new Group(Guid.NewGuid(), name, adminId)
+        {
+            Admin = admin
+        };
+        
+        admin.GroupsAsAdmin.Add(group);
+        
         await groupsRepository.Add(group, ct);
-
         return group;
     }
 
@@ -48,12 +53,12 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
         var group = await groupsRepository.GetById(id, ct);
         if (group is null)
             return null;
-        
+
         var user = await usersRepository.GetById(userId, ct);
         if (user is null || !user.Groups.Contains(group))
             return null;
 
-        await groupsRepository.AddOrDeleteUser(group, user, false, ct);
+        group = await groupsRepository.AddOrDeleteUser(group, user, false, ct);
         return group;
     }
 }

@@ -41,5 +41,5 @@ public class UsersRepository(JournalDbContext dbContext) : IRepository<User>
         await dbContext.Users
             .Include(u => u.Groups)
             .Include(u => u.GroupsAsAdmin)
-            .FirstOrDefaultAsync(user => user.Id == id, cancellationToken: ct);
+            .FirstOrDefaultAsync(user => user.Id == id, ct);
 }

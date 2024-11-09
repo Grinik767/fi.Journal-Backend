@@ -1,3 +1,9 @@
 ﻿namespace Api.Dtos;
 
-public record GroupDto(Guid Id, string Name, UserDto Admin, Guid[] UserIds);
+public class GroupDto
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; }
+    public UserDto Admin { get; init; }
+    public Guid[] UserIds { get; init; }
+}

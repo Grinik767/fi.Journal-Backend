@@ -1,36 +1,26 @@
 ﻿using Api.Contracts;
 using Api.Dtos;
-using Domain.Entities;
-using Infrastructure;
+using Application.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-/*
+
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GroupsController(JournalDbContext dbContext) : ControllerBase
+public class GroupsController(GroupsService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateGroupRequest request, CancellationToken ct)
+    public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
-        var admin = await dbContext.Users
-            .AsNoTracking()
-            .Include(u => u.GroupsAsAdmin)
-            .FirstOrDefaultAsync(u => u.Id == request.AdminId, ct);
-        if (admin is null)
+        var group = await service.Add(request.Name, request.AdminId, ct);
+        if (group is null)
             return BadRequest();
-
-        var group = new Group(request.Name, request.AdminId);
-        await dbContext.Groups.AddAsync(group, ct);
-        admin.GroupsAsAdmin.Add(group);
-
-        group.Admin = admin;
-        await dbContext.SaveChangesAsync(ct);
-        return Ok(ToDto(group));
+        return Ok(mapper.Map<GroupDto>(group));
     }
 
 
+    /*
     [HttpGet]
     public async Task<List<GroupDto>> GetAll(CancellationToken ct)
     {
@@ -127,5 +117,5 @@ public class GroupsController(JournalDbContext dbContext) : ControllerBase
         .Include(g => g.Admin)
         .Include(g => g.Users)
         .FirstOrDefaultAsync(g => g.Id == id, ct);
+        */
 }
-*/

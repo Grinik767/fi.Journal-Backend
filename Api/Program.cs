@@ -19,8 +19,10 @@ services.AddDbContext<JournalDbContext>(
 services.AddTransient<ExceptionMiddleware>();
 
 services.AddScoped<UsersRepository>();
+services.AddScoped<GroupsRepository>();
 
 services.AddScoped<UsersService>();
+services.AddScoped<GroupsService>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 
