@@ -8,7 +8,6 @@ public class Group(Guid id, string name, Guid adminId) : Entity<Guid>(id)
     public readonly List<Table> Tables = [];
 
     private string _name = name;
-    private User? _admin;
 
     [Required]
     public string Name
@@ -23,14 +22,5 @@ public class Group(Guid id, string name, Guid adminId) : Entity<Guid>(id)
 
     [Required] public Guid AdminId { get; init; } = adminId;
 
-    public User? Admin
-    {
-        get => _admin;
-        set
-        {
-            if (value is null || value.Id != AdminId)
-                throw new ValidationException();
-            _admin = value;
-        }
-    }
+    public User? Admin { get; init; }
 }
