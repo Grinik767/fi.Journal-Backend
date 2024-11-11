@@ -18,8 +18,16 @@ public class UsersService(UsersRepository repository, IValidator<User> validator
 
     public async Task Delete(Guid id, CancellationToken ct) => await repository.Delete(id, ct);
 
-    public async Task<User?> Update(Guid id, string? email, string? password, CancellationToken ct) =>
-        await repository.Update(id, email, password, ct);
+    public async Task<User?> Update(Guid id, string? email, string? password, CancellationToken ct)
+    {
+        var user = await GetById(id, ct);
+        if (user is null)
+            return user;
+
+        user = await repository.Update(user, email, password, ct);
+        return await user.Validate(validator, ct);
+    }
+
 
     public async Task<List<User>> GetAll(CancellationToken ct) => await repository.GetAll(ct);
 

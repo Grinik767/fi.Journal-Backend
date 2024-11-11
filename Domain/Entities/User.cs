@@ -8,8 +8,6 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     public readonly List<Group> GroupsAsAdmin = [];
 
     [Required] public string Name { get; init; } = name;
-
     [Required] public string Email { get; set; } = email;
-
     [Required] public string PasswordHash { get; set; } = passwordHash;
 }

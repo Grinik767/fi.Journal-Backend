@@ -16,17 +16,12 @@ public class UsersRepository(JournalDbContext dbContext) : IRepository<User>
             .Where(u => u.Id == id)
             .ExecuteDeleteAsync(ct);
 
-    public async Task<User?> Update(Guid id, string? email, string? passwordHash, CancellationToken ct)
+    public async Task<User?> Update(User user, string? email, string? passwordHash, CancellationToken ct)
     {
-        var user = await GetById(id, ct);
-
-        if (user is null)
-            return user;
-
         user.Email = email ?? user.Email;
         user.PasswordHash = passwordHash ?? user.PasswordHash;
+        
         await dbContext.SaveChangesAsync(ct);
-
         return user;
     }
 
