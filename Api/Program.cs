@@ -1,6 +1,9 @@
 using Api;
 using Api.Middlewares;
 using Application.Services;
+using Domain.Entities;
+using Domain.Validators;
+using FluentValidation;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +20,8 @@ services.AddDbContext<JournalDbContext>(
 );
 
 services.AddTransient<ExceptionMiddleware>();
+
+services.AddTransient<IValidator<User>, UserValidator>();
 
 services.AddScoped<UsersRepository>();
 services.AddScoped<GroupsRepository>();

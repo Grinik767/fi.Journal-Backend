@@ -1,15 +1,18 @@
 ﻿using Infrastructure.Repositories;
 using Domain.Entities;
+using Application.Extensions;
+using FluentValidation;
 
 namespace Application.Services;
 
-public class UsersService(UsersRepository repository)
+public class UsersService(UsersRepository repository, IValidator<User> validator)
 {
-    public async Task<User> Add(string name, string email, string password, CancellationToken ct)
+    public async Task<User?> Add(string name, string email, string password, CancellationToken ct)
     {
-        var user = new User(Guid.NewGuid(), name, email, password);
-        await repository.Add(user, ct);
-        
+        var user = await new User(Guid.NewGuid(), name, email, password).Validate(validator, ct);
+        if (user is not null)
+            await repository.Add(user, ct);
+
         return user;
     }
 
