@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Users\Михаил\RiderProjects\Google Sheets\GoogleSheetParser\GoogleSheetParser.csproj" />
       <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
@@ -26,6 +27,14 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="googleCredentials.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ExcelTables\" />
     </ItemGroup>
 
 </Project>

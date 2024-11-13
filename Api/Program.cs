@@ -4,6 +4,9 @@ using Application.Services;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using GoogleSheetParser.GoogleSheet;
+using GoogleSheetParser.Parser;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -25,6 +28,15 @@ services.AddScoped<TablesRepository>();
 services.AddScoped<UsersService>();
 services.AddScoped<GroupsService>();
 services.AddScoped<TablesService>();
+
+Console.WriteLine();
+
+services.AddSingleton<GoogleSheetManager>(serviceProvide =>
+{
+    return new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!);
+});
+
+services.AddSingleton<ExcelParser>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 

@@ -4,6 +4,7 @@ using Api.Extensions;
 using AutoMapper;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Api.Controllers;
 
@@ -43,5 +44,18 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     {
         var user = await service.GetById(id, ct);
         return await user.ToResult<UserDto>(mapper, NotFound);
+    }
+
+    [HttpGet("{id:guid}/points")]
+    public async Task<string> GetStudentPoints(
+        Guid id, 
+        [FromQuery] Guid tableId, 
+        [FromQuery] string nameColumn, 
+        [FromQuery] int headerRow, 
+        [FromQuery] int additionalData, 
+        CancellationToken ct)
+    {
+        var points = await service.GetStudentPoint(id, tableId, nameColumn, headerRow, ct, additionalData);
+        return JsonConvert.SerializeObject(points);
     }
 }
