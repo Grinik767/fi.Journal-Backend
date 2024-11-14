@@ -22,6 +22,7 @@ services.AddDbContext<JournalDbContext>(
 services.AddTransient<ExceptionMiddleware>();
 
 services.AddTransient<IValidator<User>, UserValidator>();
+services.AddTransient<IValidator<Group>, GroupValidator>();
 
 services.AddScoped<UsersRepository>();
 services.AddScoped<GroupsRepository>();

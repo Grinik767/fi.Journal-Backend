@@ -1,9 +1,14 @@
-﻿using Domain.Entities;
+﻿using Application.Extensions;
+using Domain.Entities;
+using FluentValidation;
 using Infrastructure.Repositories;
 
 namespace Application.Services;
 
-public class GroupsService(GroupsRepository groupsRepository, UsersRepository usersRepository)
+public class GroupsService(
+    GroupsRepository groupsRepository,
+    UsersRepository usersRepository,
+    IValidator<Group> validator)
 {
     public async Task<Group?> Add(string name, Guid adminId, CancellationToken ct)
     {
@@ -11,9 +16,10 @@ public class GroupsService(GroupsRepository groupsRepository, UsersRepository us
         if (admin is null)
             return null;
 
-        var group = new Group(Guid.NewGuid(), name, adminId);
-        await groupsRepository.Add(group, ct);
-        
+        var group = await new Group(Guid.NewGuid(), name, adminId).Validate(validator, ct);
+        if (group is not null)
+            await groupsRepository.Add(group, ct);
+
         return group;
     }
 
