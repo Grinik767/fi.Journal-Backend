@@ -24,14 +24,18 @@ public class UsersService(UsersRepository userRepository, TablesRepository table
 
     public async Task<User?> GetById(Guid id, CancellationToken ct) => await userRepository.GetById(id, ct);
 
-    public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, string studentColumn, int headersRow, CancellationToken ct, int additionalData=-1)
+    public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct)
     {
         var user = await GetById(studentId, ct);
         var table = await tablesRepository.GetById(tableId, ct);
         var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
-        var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", table.Name);
+        var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
+        Console.WriteLine(user.Name);
+        Console.WriteLine(table.StudentColumn);
+        Console.WriteLine(table.HeaderRow);
+        Console.WriteLine(table.AdditionalData);
         await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
-        var points = await excelParser.GetStudentsPoints(user.Name, studentColumn, headersRow, path, additionalData);
+        var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path, table.AdditionalData);
         return points;
     }
 }

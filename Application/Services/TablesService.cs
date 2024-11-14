@@ -5,13 +5,13 @@ namespace Application.Services;
 
 public class TablesService(TablesRepository tablesRepository, GroupsRepository groupsRepository)
 {
-    public async Task<Table?> Add(string name, string url, Guid groupId, CancellationToken ct)
+    public async Task<Table?> Add(string name, string url, Guid groupId,  int headerRow, string studentColumn, CancellationToken ct, int additionalData=-1)
     {
         var group = await groupsRepository.GetById(groupId, ct);
         if (group is null)
             return null;
 
-        var table = new Table(Guid.NewGuid(), name, url, groupId);
+        var table = new Table(Guid.NewGuid(), name, url, groupId, headerRow, studentColumn, additionalData);
         await tablesRepository.Add(table, ct);
 
         return table;

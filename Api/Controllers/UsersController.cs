@@ -50,12 +50,9 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<string> GetStudentPoints(
         Guid id, 
         [FromQuery] Guid tableId, 
-        [FromQuery] string nameColumn, 
-        [FromQuery] int headerRow, 
-        [FromQuery] int additionalData, 
         CancellationToken ct)
     {
-        var points = await service.GetStudentPoint(id, tableId, nameColumn, headerRow, ct, additionalData);
+        var points = await service.GetStudentPoint(id, tableId, ct);
         return JsonConvert.SerializeObject(points);
     }
 }
