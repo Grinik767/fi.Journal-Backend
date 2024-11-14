@@ -52,6 +52,16 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
 
         return group?.Users;
     }
+
+    public async Task<List<Table>?> GetTables(Guid id, CancellationToken ct)
+    {
+        var group = await dbContext.Groups
+            .AsNoTracking()
+            .Include(g => g.Tables)
+            .FirstOrDefaultAsync(group => group.Id == id, ct);
+
+        return group?.Tables;
+    }
         
 
     public async Task<Group?> AddOrDeleteUser(Group group, User user, bool isAdd, CancellationToken ct)

@@ -45,4 +45,12 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
         var user = await service.GetById(id, ct);
         return await user.ToResult<UserDto>(mapper, NotFound);
     }
+
+    [HttpGet]
+    [Route("{id:guid}/recent")]
+    public async Task<Dictionary<Guid, Dictionary<string, double>>> GetRecentPoint(Guid id, CancellationToken ct)
+    {
+        var studentPoints = await service.GetUserRecentPoints(id, ct);
+        return studentPoints;
+    }
 }
