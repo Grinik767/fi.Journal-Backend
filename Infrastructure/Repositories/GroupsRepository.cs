@@ -54,7 +54,7 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
     }
         
 
-    public async Task<Group?> AddOrDeleteUser(Group group, User user, bool isAdd, CancellationToken ct)
+    public async Task<Group> AddOrDeleteUser(Group group, User user, bool isAdd, CancellationToken ct)
     {
         if (isAdd)
             group.Users.Add(user);

@@ -32,9 +32,9 @@ public class UsersRepository(JournalDbContext dbContext) : IRepository<User>
             .Include(u => u.GroupsAsAdmin)
             .ToListAsync(ct);
 
-    public async Task<User?> GetById(Guid id, CancellationToken ct) =>
+    public async Task<User> GetById(Guid id, CancellationToken ct) =>
         await dbContext.Users
             .Include(u => u.Groups)
             .Include(u => u.GroupsAsAdmin)
-            .FirstOrDefaultAsync(user => user.Id == id, ct);
+            .FirstAsync(user => user.Id == id, ct);
 }

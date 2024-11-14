@@ -27,9 +27,5 @@ public class UsersService(UsersRepository repository, IValidator<User> validator
     
     public async Task<List<User>> GetAll(CancellationToken ct) => await repository.GetAll(ct);
 
-    public async Task<User> GetById(Guid id, CancellationToken ct)
-    {
-        var user = await repository.GetById(id, ct);
-        return user ?? throw new KeyNotFoundException("User not found");
-    }
+    public async Task<User> GetById(Guid id, CancellationToken ct) => await repository.GetById(id, ct);
 }

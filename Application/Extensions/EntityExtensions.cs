@@ -19,6 +19,6 @@ internal static class EntityExtensions
         where TRepository : IRepository<TEntity>
     {
         var result = await repository.GetById(entity.Id, ct);
-        return result ?? throw new KeyNotFoundException("Entity not found");
+        return result ?? throw new KeyNotFoundException();
     }
 }

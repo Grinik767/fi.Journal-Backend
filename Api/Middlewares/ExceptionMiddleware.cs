@@ -11,13 +11,13 @@ public class ExceptionMiddleware : IMiddleware
         {
             await next(context);
         }
+        catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException)
+        {
+            await HandleExceptionAsync(context, HttpStatusCode.NotFound, "Object not found");
+        }
         catch (ArgumentException ex)
         {
             await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
         }
         catch (Exception ex)
         {
