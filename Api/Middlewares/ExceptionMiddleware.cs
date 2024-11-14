@@ -11,12 +11,25 @@ public class ExceptionMiddleware : IMiddleware
         {
             await next(context);
         }
+        catch (ArgumentException ex)
+        {
+            await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
+        }
         catch (Exception ex)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            var errorResponse = new ErrorResponse((int)HttpStatusCode.InternalServerError, ex.Message);
-
-            await context.Response.WriteAsJsonAsync(errorResponse);
+            await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ex.Message);
         }
+    }
+
+    private static async Task HandleExceptionAsync(HttpContext context, HttpStatusCode statusCode, string message)
+    {
+        context.Response.StatusCode = (int)statusCode;
+        var errorResponse = new ErrorResponse(context.Response.StatusCode, message);
+
+        await context.Response.WriteAsJsonAsync(errorResponse);
     }
 }
