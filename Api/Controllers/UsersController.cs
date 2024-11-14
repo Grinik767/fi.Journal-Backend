@@ -45,14 +45,4 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
         var user = await service.GetById(id, ct);
         return await user.ToResult<UserDto>(mapper, NotFound);
     }
-
-    [HttpGet("{id:guid}/points")]
-    public async Task<string> GetStudentPoints(
-        Guid id, 
-        [FromQuery] Guid tableId, 
-        CancellationToken ct)
-    {
-        var points = await service.GetStudentPoint(id, tableId, ct);
-        return JsonConvert.SerializeObject(points);
-    }
 }
