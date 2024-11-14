@@ -37,7 +37,7 @@ public class GroupsService(
     public async Task<List<User>> GetUsers(Guid id, CancellationToken ct)
     {
         var group = await groupsRepository.GetById(id, ct);
-        return group.Users;
+        return group.Users.ToList();
     }
 
     public async Task<Group> AddUser(Guid id, Guid userId, CancellationToken ct)
@@ -49,9 +49,9 @@ public class GroupsService(
         var user = await usersRepository.GetById(userId, ct);
         if (user.Groups.Contains(group))
             throw new ArgumentException("User is already in group");
-
-        group = await groupsRepository.AddOrDeleteUser(group, user, true, ct);
-        return group;
+        
+        group.AddUser(user);
+        return await groupsRepository.Update(group, ct);;
     }
 
     public async Task<Group> DeleteUser(Guid id, Guid userId, CancellationToken ct)
@@ -62,7 +62,7 @@ public class GroupsService(
         if (!user.Groups.Contains(group))
             throw new ArgumentException("User isn't in group");
 
-        group = await groupsRepository.AddOrDeleteUser(group, user, false, ct);
-        return group;
+        group.RemoveUser(user);
+        return await groupsRepository.Update(group, ct);;
     }
 }

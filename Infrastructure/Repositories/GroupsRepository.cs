@@ -36,15 +36,4 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
         await dbContext.SaveChangesAsync(ct);
         return group;
     }
-
-    public async Task<Group> AddOrDeleteUser(Group group, User user, bool isAdd, CancellationToken ct)
-    {
-        if (isAdd)
-            group.Users.Add(user);
-        else
-            group.Users.Remove(user);
-        await dbContext.SaveChangesAsync(ct);
-
-        return group;
-    }
 }
