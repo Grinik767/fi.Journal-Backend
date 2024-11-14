@@ -6,14 +6,11 @@ namespace Application.Extensions;
 
 internal static class EntityExtensions
 {
-    public static async Task<T?> Validate<T>(this T? entity, IValidator<T> validator, CancellationToken ct)
+    public static async Task<T> Validate<T>(this T entity, IValidator<T> validator, CancellationToken ct)
         where T : Entity<Guid>
     {
-        if (entity is null)
-            return null;
-
         var validationResult = await validator.ValidateAsync(entity, ct);
-        return validationResult.IsValid ? entity : null;
+        return validationResult.IsValid ? entity : throw new ArgumentException("Arguments aren't valid");
     }
 
     public static async Task<TEntity?> EnsureExist<TEntity, TRepository>(this TEntity entity, TRepository repository,
@@ -22,9 +19,6 @@ internal static class EntityExtensions
         where TRepository : IRepository<TEntity>
     {
         var result = await repository.GetById(entity.Id, ct);
-        if (result is null)
-            throw new ArgumentException("Entity not found");
-
-        return result;
+        return result ?? throw new KeyNotFoundException("Entity not found");
     }
 }

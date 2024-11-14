@@ -1,6 +1,5 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
-using Api.Extensions;
 using AutoMapper;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +14,17 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken ct)
     {
         var user = await service.Add(request.Name, request.Email, request.Password, ct);
-        return await user.ToResult<UserDto>(mapper, BadRequest);
+        return Ok(mapper.Map<UserDto>(user));
     }
 
-    [HttpDelete]
-    [Route("{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
-    [HttpPatch]
-    [Route("{id:guid}")]
+    [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
     {
         var user = await service.Update(id, email, password, ct);
-        return await user.ToResult<UserDto>(mapper, BadRequest);
+        return Ok(mapper.Map<UserDto>(user));
     }
 
     [HttpGet]
@@ -37,11 +34,10 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
         return mapper.Map<List<UserDto>>(users);
     }
 
-    [HttpGet]
-    [Route("{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var user = await service.GetById(id, ct);
-        return await user.ToResult<UserDto>(mapper, NotFound);
+        return Ok(mapper.Map<UserDto>(user));
     }
 }
