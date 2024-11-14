@@ -6,10 +6,7 @@ public class Table(Guid id, string name, string url, Guid groupId) : Entity<Guid
 {
     [Required] public string Name { get; set; } = name;
     [Required] public string Url { get; init; } = url;
-
     [Required] public Guid GroupId { get; init; } = groupId;
-    
     public Group? Group { get; init; }
-
     public DateTime UpdateTime { get; private set; } = DateTime.UtcNow;
 }
