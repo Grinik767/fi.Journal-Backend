@@ -16,7 +16,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
         var group = await service.Add(request.Name, request.AdminId, ct);
-        return await group.ToResult<GroupDto>(mapper, BadRequest);
+        return Ok(mapper.Map<GroupDto>(group));
     }
 
     [HttpDelete]
@@ -28,7 +28,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
         var group = await service.Update(id, name, ct);
-        return await group.ToResult<GroupDto>(mapper, BadRequest);
+        return Ok(mapper.Map<GroupDto>(group));
     }
 
     [HttpGet]
@@ -43,15 +43,15 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
-        return await group.ToResult<GroupDto>(mapper, NotFound);
+        return Ok(mapper.Map<GroupDto>(group));
     }
 
     [HttpGet]
     [Route("{id:guid}/users")]
-    public async Task<IActionResult> GetUsers(Guid id, CancellationToken ct)
+    public async Task<List<UserDto>> GetUsers(Guid id, CancellationToken ct)
     {
         var users = await service.GetUsers(id, ct);
-        return await users.ToResult<User, List<UserDto>>(mapper, NotFound);
+        return mapper.Map<List<UserDto>>(users);
     }
 
     [HttpPost]
@@ -60,7 +60,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         CancellationToken ct)
     {
         var group = await service.AddUser(id, request.UserId, ct);
-        return await group.ToResult<GroupDto>(mapper, BadRequest);
+        return Ok(mapper.Map<GroupDto>(group));
     }
 
     [HttpDelete]
@@ -69,6 +69,6 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         CancellationToken ct)
     {
         var group = await service.DeleteUser(id, request.UserId, ct);
-        return await group.ToResult<GroupDto>(mapper, BadRequest);
+        return Ok(mapper.Map<GroupDto>(group));
     }
 }
