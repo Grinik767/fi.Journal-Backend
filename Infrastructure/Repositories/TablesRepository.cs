@@ -16,11 +16,11 @@ public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
             .Where(t => t.Id == id)
             .ExecuteDeleteAsync(ct);
 
-    public async Task<Table?> GetById(Guid id, CancellationToken ct) =>
+    public async Task<Table> GetById(Guid id, CancellationToken ct) =>
         await dbContext.Tables
             .Include(t => t.Group)
             .ThenInclude(g => g!.Admin)
-            .FirstOrDefaultAsync(table => table.Id == id, ct);
+            .FirstAsync(table => table.Id == id, ct);
 
     public async Task<List<Table>> GetAll(CancellationToken ct) =>
         await dbContext.Tables
@@ -29,14 +29,8 @@ public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
             .ThenInclude(g => g!.Admin)
             .ToListAsync(ct);
 
-    public async Task<Table?> Update(Guid id, string? name, CancellationToken ct)
+    public async Task<Table> Update(Table table, CancellationToken ct)
     {
-        var table = await GetById(id, ct);
-        if (table is null)
-            return table;
-
-        table.Name = name ?? table.Name;
-        
         await dbContext.SaveChangesAsync(ct);
         return table;
     }
