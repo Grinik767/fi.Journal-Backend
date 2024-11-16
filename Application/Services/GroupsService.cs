@@ -51,7 +51,7 @@ public class GroupsService(
             throw new ArgumentException("User is already in group");
         
         group.AddUser(user);
-        return await groupsRepository.Update(group, ct);;
+        return await groupsRepository.Update(group, ct);
     }
 
     public async Task<Group> DeleteUser(Guid id, Guid userId, CancellationToken ct)
@@ -63,6 +63,6 @@ public class GroupsService(
             throw new ArgumentException("User isn't in group");
 
         group.RemoveUser(user);
-        return await groupsRepository.Update(group, ct);;
+        return await groupsRepository.Update(group, ct);
     }
 }
