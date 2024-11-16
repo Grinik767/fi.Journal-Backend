@@ -14,8 +14,7 @@ public class TablesController(TablesService service, IMapper mapper) : Controlle
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
         var table = await service.Add(request.Name, request.Url, request.GroupId, ct);
-        return Ok(mapper.Map<TableDto>(table));
-        ;
+        return Ok(mapper.Map<TableDto>(table)); ;
     }
 
     [HttpDelete("{id:guid}")]

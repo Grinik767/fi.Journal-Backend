@@ -6,8 +6,8 @@ using Infrastructure.Repositories;
 namespace Application.Services;
 
 public class GroupsService(
-    GroupsRepository groupsRepository,
-    UsersRepository usersRepository,
+    IRepository<Group> groupsRepository,
+    IRepository<User> usersRepository,
     IValidator<Group> validator)
 {
     public async Task<Group> Add(string name, Guid adminId, CancellationToken ct)

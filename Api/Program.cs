@@ -25,9 +25,9 @@ services.AddTransient<IValidator<User>, UserValidator>();
 services.AddTransient<IValidator<Group>, GroupValidator>();
 services.AddTransient<IValidator<Table>, TableValidator>();
 
-services.AddScoped<UsersRepository>();
-services.AddScoped<GroupsRepository>();
-services.AddScoped<TablesRepository>();
+services.AddScoped<IRepository<User>, UsersRepository>();
+services.AddScoped<IRepository<Group>, GroupsRepository>();
+services.AddScoped<IRepository<Table>, TablesRepository>();
 
 services.AddScoped<UsersService>();
 services.AddScoped<GroupsService>();

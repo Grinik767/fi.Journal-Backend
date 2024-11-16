@@ -6,8 +6,8 @@ using Infrastructure.Repositories;
 namespace Application.Services;
 
 public class TablesService(
-    TablesRepository tablesRepository,
-    GroupsRepository groupsRepository,
+    IRepository<Table> tablesRepository,
+    IRepository<Group> groupsRepository,
     IValidator<Table> validator)
 {
     public async Task<Table> Add(string name, string url, Guid groupId, CancellationToken ct)

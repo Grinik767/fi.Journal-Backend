@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Application.Services;
 
-public class UsersService(UsersRepository repository, IValidator<User> validator)
+public class UsersService(IRepository<User> repository, IValidator<User> validator)
 {
     public async Task<User> Add(string name, string email, string password, CancellationToken ct)
     {
