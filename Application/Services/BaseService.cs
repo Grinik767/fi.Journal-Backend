@@ -1,12 +1,21 @@
-﻿using Domain.Entities;
+﻿using Application.Extensions;
+using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
 
 namespace Application.Services;
 
-public abstract class BaseService<T>(IRepository<T> repository, IValidator<T> validator)
+public class BaseService<T>(IRepository<T> repository, IValidator<T> validator)
     where T : Entity<Guid>
 {
+    protected async Task<T> Add(T entity, CancellationToken ct)
+    {
+        await entity.ValidateAsync(validator, ct);
+        await repository.Add(entity, ct);
+
+        return entity;
+    }
+
     public async Task Delete(Guid id, CancellationToken ct) => await repository.Delete(id, ct);
 
     public async Task<List<T>> GetAll(CancellationToken ct) => await repository.GetAll(ct);
