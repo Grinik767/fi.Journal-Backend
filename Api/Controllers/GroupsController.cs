@@ -1,9 +1,7 @@
 ﻿using Api.Contracts.Group;
 using Api.Dtos;
-using Api.Extensions;
 using Application.Services;
 using AutoMapper;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -19,12 +17,10 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         return Ok(mapper.Map<GroupDto>(group));
     }
 
-    [HttpDelete]
-    [Route("{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
-    [HttpPatch]
-    [Route("{id:guid}")]
+    [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
         var group = await service.Update(id, name, ct);
@@ -38,24 +34,21 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         return mapper.Map<List<GroupDto>>(groups);
     }
 
-    [HttpGet]
-    [Route("{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
         return Ok(mapper.Map<GroupDto>(group));
     }
 
-    [HttpGet]
-    [Route("{id:guid}/users")]
+    [HttpGet("{id:guid}/users")]
     public async Task<List<UserDto>> GetUsers(Guid id, CancellationToken ct)
     {
         var users = await service.GetUsers(id, ct);
         return mapper.Map<List<UserDto>>(users);
     }
 
-    [HttpPost]
-    [Route("{id:guid}/users")]
+    [HttpPost("{id:guid}/users")]
     public async Task<IActionResult> AddUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {
@@ -63,8 +56,7 @@ public class GroupsController(GroupsService service, IMapper mapper) : Controlle
         return Ok(mapper.Map<GroupDto>(group));
     }
 
-    [HttpDelete]
-    [Route("{id:guid}/users")]
+    [HttpDelete("{id:guid}/users")]
     public async Task<IActionResult> DeleteUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {

@@ -23,6 +23,7 @@ services.AddTransient<ExceptionMiddleware>();
 
 services.AddTransient<IValidator<User>, UserValidator>();
 services.AddTransient<IValidator<Group>, GroupValidator>();
+services.AddTransient<IValidator<Table>, TableValidator>();
 
 services.AddScoped<UsersRepository>();
 services.AddScoped<GroupsRepository>();

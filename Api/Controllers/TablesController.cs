@@ -1,6 +1,5 @@
 ﻿using Api.Contracts.Table;
 using Api.Dtos;
-using Api.Extensions;
 using Application.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +14,18 @@ public class TablesController(TablesService service, IMapper mapper) : Controlle
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
         var table = await service.Add(request.Name, request.Url, request.GroupId, ct);
-        return await table.ToResult<TableDto>(mapper, BadRequest);
+        return Ok(mapper.Map<TableDto>(table));
+        ;
     }
-    
-    [HttpDelete]
-    [Route("{id:guid}")]
+
+    [HttpDelete("{id:guid}")]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
-    
-    [HttpPatch]
-    [Route("{id:guid}")]
+
+    [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
         var table = await service.Update(id, name, ct);
-        return await table.ToResult<TableDto>(mapper, BadRequest);
+        return Ok(mapper.Map<TableDto>(table));
     }
 
     [HttpGet]
@@ -37,11 +35,10 @@ public class TablesController(TablesService service, IMapper mapper) : Controlle
         return mapper.Map<List<TableDto>>(tables);
     }
 
-    [HttpGet]
-    [Route("{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var table = await service.GetById(id, ct);
-        return await table.ToResult<TableDto>(mapper, NotFound);
+        return Ok(mapper.Map<TableDto>(table));
     }
 }
