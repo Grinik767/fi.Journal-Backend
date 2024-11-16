@@ -1,5 +1,4 @@
-﻿using Application.Extensions;
-using Domain.Entities;
+﻿using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
 
@@ -8,29 +7,21 @@ namespace Application.Services;
 public class TablesService(
     IRepository<Table> tablesRepository,
     IRepository<Group> groupsRepository,
-    IValidator<Table> validator)
+    IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator)
 {
+    private readonly IRepository<Table> _tablesRepository = tablesRepository;
+
     public async Task<Table> Add(string name, string url, Guid groupId, CancellationToken ct)
     {
         var group = await groupsRepository.GetById(groupId, ct);
-        var table = await new Table(Guid.NewGuid(), name, url, group.Id).ValidateAsync(validator, ct);
-
-        await tablesRepository.Add(table, ct);
-        return table;
+        return await base.Add(new Table(Guid.NewGuid(), name, url, group.Id), ct);
     }
-
-    public async Task Delete(Guid id, CancellationToken ct) => await tablesRepository.Delete(id, ct);
-
-    public async Task<Table> GetById(Guid id, CancellationToken ct) => await tablesRepository.GetById(id, ct);
-
-    public async Task<List<Table>> GetAll(CancellationToken ct) => await tablesRepository.GetAll(ct);
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
     {
-        var table = await tablesRepository.GetById(id, ct);
+        var table = await _tablesRepository.GetById(id, ct);
         table.Name = name ?? table.Name;
 
-        await table.ValidateAsync(validator, ct);
-        return await tablesRepository.Update(table, ct);
+        return await base.Update(table, ct);
     }
 }

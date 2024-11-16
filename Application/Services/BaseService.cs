@@ -16,6 +16,12 @@ public class BaseService<T>(IRepository<T> repository, IValidator<T> validator)
         return entity;
     }
 
+    protected async Task<T> Update(T entity, CancellationToken ct)
+    {
+        await entity.ValidateAsync(validator, ct);
+        return await repository.Update(entity, ct);
+    }
+
     public async Task Delete(Guid id, CancellationToken ct) => await repository.Delete(id, ct);
 
     public async Task<List<T>> GetAll(CancellationToken ct) => await repository.GetAll(ct);
