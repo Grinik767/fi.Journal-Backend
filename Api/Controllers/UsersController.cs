@@ -40,4 +40,18 @@ public class UsersController(IUsersService service, IMapper mapper) : Controller
         var user = await service.GetById(id, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
+    
+    [HttpGet("{id:guid}/groups")]
+    public async Task<List<GroupDto>> GetGroups(Guid id, CancellationToken ct)
+    {
+        var groups = await service.GetGroups(id, ct);
+        return mapper.Map<List<GroupDto>>(groups);
+    }
+    
+    [HttpGet("{id:guid}/groupsAsAdmin")]
+    public async Task<List<GroupDto>> GetGroupsAsAdmin(Guid id, CancellationToken ct)
+    {
+        var groupsAsAdmin = await service.GetGroupsAsAdmin(id, ct);
+        return mapper.Map<List<GroupDto>>(groupsAsAdmin);
+    }
 }

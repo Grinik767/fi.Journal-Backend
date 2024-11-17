@@ -20,6 +20,8 @@ public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
         await dbContext.Tables
             .Include(t => t.Group)
             .ThenInclude(g => g!.Admin)
+            .Include(t => t.Group)
+            .ThenInclude(g => g!.Users)
             .FirstAsync(table => table.Id == id, ct);
 
     public async Task<List<Table>> GetAll(CancellationToken ct) =>
@@ -27,6 +29,8 @@ public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
             .AsNoTracking()
             .Include(t => t.Group)
             .ThenInclude(g => g!.Admin)
+            .Include(t => t.Group)
+            .ThenInclude(g => g!.Users)
             .ToListAsync(ct);
 
     public async Task<Table> Update(Table table, CancellationToken ct)
