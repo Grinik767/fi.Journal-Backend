@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.ValueTypes;
 
 namespace Domain.Entities;
 
@@ -6,6 +7,7 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
 {
     public readonly List<Group> Groups = [];
     public readonly List<Group> GroupsAsAdmin = [];
+    public readonly List<UserDiff> UserDiffs = [];
     
     private string _email = email;
     private string _passwordHash = passwordHash;

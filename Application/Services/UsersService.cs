@@ -37,10 +37,11 @@ public class UsersService(UsersRepository userRepository, GroupsRepository group
             var spreadSheetId = googleSheetManager.GetSpreadSheedId(subjectTable.Url);
             var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{subjectTable.Name}.xlsx");
             await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
-            var points = await excelParser.GetStudentsPoints(user.Name, subjectTable.StudentColumn, subjectTable.HeaderRow, path, subjectTable.AdditionalData);
+            var points = await excelParser.GetStudentsPoints(user.Name, subjectTable.StudentColumn,
+                subjectTable.HeaderRow, path, subjectTable.AdditionalData);
             pointsTable.Add(subjectTable.Id, points);
         }
-
+        
         return pointsTable;
     } 
 }
