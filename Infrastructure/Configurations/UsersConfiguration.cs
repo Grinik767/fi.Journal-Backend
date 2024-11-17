@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Text.Json;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,5 +21,16 @@ public class UsersConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.PasswordHash)
             .IsRequired();
+
+        builder.OwnsMany(u => u.UserDiffs, b =>
+        {
+            b.Property(x => x.TableId).IsRequired();
+            b.Property(x => x.UserId).IsRequired();
+            b.Property(x => x.UpdateTime).HasColumnType("timestamp").IsRequired();
+            b.Property(x => x.Diff)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<Dictionary<string, double>>(v, new JsonSerializerOptions())!);
+        });
     }
 }

@@ -145,6 +145,40 @@ namespace Infrastructure.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.OwnsMany("Domain.ValueTypes.UserDiff", "UserDiffs", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Diff")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<Guid>("TableId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("UpdateTime")
+                                .HasColumnType("timestamp");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("UserDiff");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("UserDiffs");
+                });
+
             modelBuilder.Entity("GroupUser", b =>
                 {
                     b.HasOne("Domain.Entities.Group", null)
