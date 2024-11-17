@@ -2,12 +2,12 @@
 using FluentValidation;
 using Infrastructure.Repositories;
 
-namespace Application.Services;
+namespace Application.Services.Tables;
 
 public class TablesService(
     IRepository<Table> tablesRepository,
     IRepository<Group> groupsRepository,
-    IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator)
+    IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
     private readonly IRepository<Table> _tablesRepository = tablesRepository;
 

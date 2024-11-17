@@ -1,6 +1,7 @@
 using Api;
 using Api.Middlewares;
-using Application.Services;
+using Application.Services.Groups;
+using Application.Services.Tables;
 using Application.Services.Users;
 using Domain.Entities;
 using Domain.Validators;
@@ -31,8 +32,8 @@ services.AddScoped<IRepository<Group>, GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
 
 services.AddScoped<IUsersService, UsersService>();
-services.AddScoped<GroupsService>();
-services.AddScoped<TablesService>();
+services.AddScoped<IGroupsService, GroupsService>();
+services.AddScoped<ITablesService, TablesService>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 

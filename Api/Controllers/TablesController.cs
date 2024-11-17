@@ -1,6 +1,6 @@
 ﻿using Api.Contracts.Table;
 using Api.Dtos;
-using Application.Services;
+using Application.Services.Tables;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TablesController(TablesService service, IMapper mapper) : ControllerBase
+public class TablesController(ITablesService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)

@@ -1,6 +1,6 @@
 ﻿using Api.Contracts.Group;
 using Api.Dtos;
-using Application.Services;
+using Application.Services.Groups;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GroupsController(GroupsService service, IMapper mapper) : ControllerBase
+public class GroupsController(IGroupsService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
