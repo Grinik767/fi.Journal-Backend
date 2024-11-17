@@ -47,6 +47,13 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
         var users = await service.GetUsers(id, ct);
         return mapper.Map<List<UserDto>>(users);
     }
+    
+    [HttpGet("{id:guid}/tables")]
+    public async Task<List<TableDto>> GetTables(Guid id, CancellationToken ct)
+    {
+        var tables = await service.GetTables(id, ct);
+        return mapper.Map<List<TableDto>>(tables);
+    }
 
     [HttpPost("{id:guid}/users")]
     public async Task<IActionResult> AddUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
