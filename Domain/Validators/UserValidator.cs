@@ -9,9 +9,10 @@ public class UserValidator : AbstractValidator<User>
     {
         RuleFor(u => u.Name)
             .Length(3, 50);
-        
+
         RuleFor(u => u.Email)
-            .EmailAddress();
+            .EmailAddress()
+            .Must(email => email.EndsWith("@gmail.com"));
 
         RuleFor(u => u.PasswordHash)
             .NotEmpty();

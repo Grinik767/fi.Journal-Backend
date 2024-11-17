@@ -11,6 +11,7 @@ public class TableValidator: AbstractValidator<Table>
         RuleFor(t => t.Name)
             .Length(3, 30);
         RuleFor(t => t.Url)
-            .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute));
+            .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            .Must(url => url.StartsWith("https://docs.google.com/spreadsheets/"));
     }
 }
