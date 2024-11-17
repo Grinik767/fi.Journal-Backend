@@ -1,6 +1,7 @@
 using Api;
 using Api.Middlewares;
 using Application.Services;
+using Application.Services.Users;
 using Domain.Entities;
 using Domain.Validators;
 using FluentValidation;
@@ -29,7 +30,7 @@ services.AddScoped<IRepository<User>, UsersRepository>();
 services.AddScoped<IRepository<Group>, GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
 
-services.AddScoped<UsersService>();
+services.AddScoped<IUsersService, UsersService>();
 services.AddScoped<GroupsService>();
 services.AddScoped<TablesService>();
 

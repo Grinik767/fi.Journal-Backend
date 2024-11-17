@@ -1,14 +1,14 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
 using AutoMapper;
-using Application.Services;
+using Application.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(UsersService service, IMapper mapper) : ControllerBase
+public class UsersController(IUsersService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken ct)
