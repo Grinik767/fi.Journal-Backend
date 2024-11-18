@@ -2,6 +2,7 @@
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
 using Domain.Entities;
+using Domain.ValueTypes;
 
 namespace Application.Services;
 
@@ -43,5 +44,11 @@ public class UsersService(UsersRepository userRepository, GroupsRepository group
         }
         
         return pointsTable;
-    } 
+    }
+
+    public async Task<List<UserDiff>> GetStudentDiff(Guid id, CancellationToken ct)
+    {
+        var diff = await userRepository.GetUserUpdaes(id, ct);
+        return diff;
+    }
 }

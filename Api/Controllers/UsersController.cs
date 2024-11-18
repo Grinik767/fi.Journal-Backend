@@ -3,6 +3,7 @@ using Api.Dtos;
 using Api.Extensions;
 using AutoMapper;
 using Application.Services;
+using Domain.ValueTypes;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -51,6 +52,14 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     public async Task<Dictionary<Guid, Dictionary<string, double>>> GetRecentPoint(Guid id, CancellationToken ct)
     {
         var studentPoints = await service.GetUserRecentPoints(id, ct);
+        return studentPoints;
+    }
+    
+    [HttpGet]
+    [Route("{id:guid}/diff")]
+    public async Task<List<UserDiff>> GetUserDiff(Guid id, CancellationToken ct)
+    {
+        var studentPoints = await service.GetStudentDiff(id, ct);
         return studentPoints;
     }
 }
