@@ -44,10 +44,10 @@ public class UsersRepository(JournalDbContext dbContext) : IRepository<User>
             .Include(u => u.GroupsAsAdmin)
             .FirstOrDefaultAsync(user => user.Id == id, ct);
 
-    public async Task<List<UserDiff>> GetUserUpdaes(Guid id, CancellationToken ct)
+    public async Task<List<(Guid TableId, Dictionary<string, double> Diff, DateTime UpdateTime)>> GetUserUpdates(Guid id, CancellationToken ct)
     {
         var listOfUserDiff = await dbContext.Users.Where(user => user.Id == id).Select(x => x.UserDiffs).FirstAsync(ct);
-        return listOfUserDiff.OrderBy(x => x.UpdateTime).ToList();
+        return listOfUserDiff.OrderBy(x => x.UpdateTime).Select(x => (x.TableId, x.Diff, x.UpdateTime)).ToList();
     }
        
 }

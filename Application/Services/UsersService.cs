@@ -46,9 +46,9 @@ public class UsersService(UsersRepository userRepository, GroupsRepository group
         return pointsTable;
     }
 
-    public async Task<List<UserDiff>> GetStudentDiff(Guid id, CancellationToken ct)
+    public async Task<List<(Guid TableId, Dictionary<string, double> Diff, DateTime UpdateTime)>> GetStudentDiff(Guid id, CancellationToken ct)
     {
-        var diff = await userRepository.GetUserUpdaes(id, ct);
+        var diff = await userRepository.GetUserUpdates(id, ct);
         return diff;
     }
 }

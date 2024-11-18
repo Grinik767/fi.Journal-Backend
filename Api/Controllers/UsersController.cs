@@ -57,7 +57,7 @@ public class UsersController(UsersService service, IMapper mapper) : ControllerB
     
     [HttpGet]
     [Route("{id:guid}/diff")]
-    public async Task<List<UserDiff>> GetUserDiff(Guid id, CancellationToken ct)
+    public async Task<List<(Guid TableId, Dictionary<string, double> Diff, DateTime UpdateTime)>> GetUserDiff(Guid id, CancellationToken ct)
     {
         var studentPoints = await service.GetStudentDiff(id, ct);
         return studentPoints;
