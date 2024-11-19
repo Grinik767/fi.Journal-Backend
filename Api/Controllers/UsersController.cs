@@ -3,6 +3,7 @@ using Api.Dtos;
 using Application;
 using AutoMapper;
 using Application.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -22,6 +23,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpPost("login")]
+    [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
     {
         var token = await service.Login(request.Email, request.Password, ct);
