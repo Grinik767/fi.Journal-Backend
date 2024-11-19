@@ -16,6 +16,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     private readonly AuthOptions _authOptions = authOptions.Value;
     
     [HttpPost("register")]
+    [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
         var user = await service.Register(request.Name, request.Email, request.Password, ct);
@@ -37,9 +38,11 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
     [HttpPatch("{id:guid}")]
+    [Authorize]
     public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
     {
         var user = await service.Update(id, email, password, ct);
@@ -47,6 +50,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<List<UserDto>> GetAll(CancellationToken ct)
     {
         var users = await service.GetAll(ct);
@@ -54,6 +58,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var user = await service.GetById(id, ct);
@@ -61,6 +66,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpGet("{id:guid}/groups")]
+    [Authorize]
     public async Task<List<GroupDto>> GetGroups(Guid id, CancellationToken ct)
     {
         var groups = await service.GetGroups(id, ct);
@@ -68,6 +74,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     }
 
     [HttpGet("{id:guid}/groupsAsAdmin")]
+    [Authorize]
     public async Task<List<GroupDto>> GetGroupsAsAdmin(Guid id, CancellationToken ct)
     {
         var groupsAsAdmin = await service.GetGroupsAsAdmin(id, ct);
