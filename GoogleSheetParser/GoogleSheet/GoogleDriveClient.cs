@@ -24,7 +24,7 @@ public class GDriveClient
         {
             var request = DriveService.Files.Export(googleSheetId,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
+            await using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
             await request.DownloadAsync(fileStream);
         }
         catch (Exception exception)

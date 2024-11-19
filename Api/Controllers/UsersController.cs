@@ -54,4 +54,11 @@ public class UsersController(IUsersService service, IMapper mapper) : Controller
         var groupsAsAdmin = await service.GetGroupsAsAdmin(id, ct);
         return mapper.Map<List<GroupDto>>(groupsAsAdmin);
     }
+
+    [HttpGet("{id:guid}/recentPoints")]
+    public async Task<Dictionary<Guid, Dictionary<string, double>>> GetRecentUserPoints(Guid id, CancellationToken ct)
+    {
+        var points = await service.GetUserRecentPoints(id, ct);
+        return points;
+    }
 }
