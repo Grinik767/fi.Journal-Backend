@@ -8,7 +8,6 @@ using Domain.Entities;
 using Domain.Validators;
 using FluentValidation;
 using Infrastructure;
-using Infrastructure.Jwt;
 using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
@@ -27,11 +26,9 @@ services.AddDbContext<JournalDbContext>(
 );
 
 services.AddApiAuthentication(configuration);
+services.AddSingleton<IPasswordHasher, PasswordHasherBCrypt>();
 
 services.AddTransient<ExceptionMiddleware>();
-
-services.AddSingleton<IPasswordHasher, PasswordHasherBCrypt>();
-services.AddSingleton<JwtProvider>();
 
 services.AddTransient<IValidator<User>, UserValidator>();
 services.AddTransient<IValidator<Group>, GroupValidator>();

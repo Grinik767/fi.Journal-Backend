@@ -2,9 +2,10 @@
 using Application.Extensions;
 using Domain.Entities;
 using FluentValidation;
-using Infrastructure.Jwt;
+using Infrastructure;
 using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories.Users;
+using Microsoft.Extensions.Options;
 
 namespace Application.Services.Users;
 
@@ -12,8 +13,10 @@ public class UsersService(
     IUsersRepository repository,
     IValidator<User> validator,
     IPasswordHasher passwordHasher,
-    JwtProvider jwtProvider) : BaseService<User>(repository, validator), IUsersService
+    IOptions<AuthOptions> authOptions) : BaseService<User>(repository, validator), IUsersService
 {
+    private readonly AuthOptions _authOptions = authOptions.Value;
+
     public async Task<User> Register(string name, string email, string password, CancellationToken ct) =>
         await Add(new User(Guid.NewGuid(), name, email, passwordHasher.Generate(password)), ct);
 
@@ -27,7 +30,7 @@ public class UsersService(
         if (!result)
             throw new InvalidCredentialException("Failed to login. Check credentials.");
 
-        return jwtProvider.GenerateToken(user.GenerateClaims());
+        return JwtProvider.GenerateToken(user.GenerateClaims(), _authOptions.JwtSecretKey, _authOptions.ExpireHours);
     }
 
     public async Task<User> Update(Guid id, string? email, string? password, CancellationToken ct)

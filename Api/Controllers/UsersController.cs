@@ -1,5 +1,6 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
+using Application;
 using AutoMapper;
 using Application.Services.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
         
         HttpContext.Response.Cookies.Append(_authOptions.CookieName, token, new CookieOptions
         {
-            Expires = DateTime.UtcNow.AddHours(_authOptions.CookieExpireHours)
+            Expires = DateTime.UtcNow.AddHours(_authOptions.ExpireHours)
         });
         
         return Ok(token);
