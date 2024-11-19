@@ -1,4 +1,5 @@
 using Api;
+using Api.Extensions;
 using Api.Middlewares;
 using Application.Services.Groups;
 using Application.Services.Tables;
@@ -23,7 +24,8 @@ services.AddControllers();
 services.AddDbContext<JournalDbContext>(
     options => options.UseNpgsql(configuration.GetConnectionString(nameof(JournalDbContext)))
 );
-services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+
+services.AddApiAuthentication(configuration);
 
 services.AddTransient<ExceptionMiddleware>();
 
@@ -52,6 +54,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();

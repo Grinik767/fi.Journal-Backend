@@ -2,6 +2,7 @@
 using Api.Dtos;
 using Application.Services.Groups;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -28,6 +29,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<List<GroupDto>> GetAll(CancellationToken ct)
     {
         var groups = await service.GetAll(ct);

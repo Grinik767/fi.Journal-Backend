@@ -10,7 +10,7 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class UsersController(IUsersService service, IMapper mapper) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
         var user = await service.Register(request.Name, request.Email, request.Password, ct);
