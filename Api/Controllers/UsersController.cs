@@ -3,13 +3,16 @@ using Api.Dtos;
 using AutoMapper;
 using Application.Services.Users;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IUsersService service, IMapper mapper) : ControllerBase
+public class UsersController(IUsersService service, IMapper mapper, IOptions<AuthOptions> authOptions) : ControllerBase
 {
+    private readonly AuthOptions _authOptions = authOptions.Value;
+    
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
@@ -21,6 +24,9 @@ public class UsersController(IUsersService service, IMapper mapper) : Controller
     public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
     {
         var token = await service.Login(request.Email, request.Password, ct);
+        
+        HttpContext.Response.Cookies.Append(_authOptions.CookieName, token);
+        
         return Ok(token);
     }
 
