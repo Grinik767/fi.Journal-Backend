@@ -1,5 +1,6 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
+using Api.Extensions;
 using Application;
 using AutoMapper;
 using Application.Services.Users;
@@ -14,7 +15,7 @@ namespace Api.Controllers;
 public class UsersController(IUsersService service, IMapper mapper, IOptions<AuthOptions> authOptions) : ControllerBase
 {
     private readonly AuthOptions _authOptions = authOptions.Value;
-    
+
     [HttpPost("register")]
     [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
@@ -28,18 +29,26 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
     {
         var token = await service.Login(request.Email, request.Password, ct);
-        
+
         HttpContext.Response.Cookies.Append(_authOptions.CookieName, token, new CookieOptions
         {
             Expires = DateTime.UtcNow.AddHours(_authOptions.ExpireHours)
         });
-        
+
         return Ok(token);
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
+
+    [HttpDelete("profile")]
+    [Authorize]
+    public async Task Delete(CancellationToken ct)
+    {
+        await Delete(HttpContext.GetUserIdFromHttpContext(), ct);
+        HttpContext.Response.Cookies.Delete(_authOptions.CookieName);
+    }
 
     [HttpPatch("{id:guid}")]
     [Authorize]
@@ -48,6 +57,11 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
         var user = await service.Update(id, email, password, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
+
+    [HttpPatch("profile")]
+    [Authorize]
+    public async Task<IActionResult> Update(string? email, string? password, CancellationToken ct) =>
+        await Update(HttpContext.GetUserIdFromHttpContext(), email, password, ct);
 
     [HttpGet]
     [Authorize]
@@ -64,6 +78,11 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
         var user = await service.GetById(id, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<IActionResult> GetById(CancellationToken ct) =>
+        await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
     [HttpGet("{id:guid}/groups")]
     [Authorize]
