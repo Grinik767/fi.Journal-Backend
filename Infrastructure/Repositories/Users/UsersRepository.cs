@@ -41,8 +41,8 @@ public class UsersRepository(JournalDbContext dbContext) : IUsersRepository
             .ThenInclude(g => g.Users)
             .FirstAsync(user => user.Id == id, ct);
 
-    public async Task<User> GetByEmail(string email, CancellationToken ct) =>
+    public async Task<User?> GetByEmail(string email, CancellationToken ct) =>
         await dbContext.Users
             .AsNoTracking()
-            .FirstAsync(u => u.Email == email, ct);
+            .FirstOrDefaultAsync(u => u.Email == email, ct);
 }

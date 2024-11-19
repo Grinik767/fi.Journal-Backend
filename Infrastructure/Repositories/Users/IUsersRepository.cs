@@ -4,5 +4,5 @@ namespace Infrastructure.Repositories.Users;
 
 public interface IUsersRepository : IRepository<User>
 {
-    Task<User> GetByEmail(string email, CancellationToken ct);
+    Task<User?> GetByEmail(string email, CancellationToken ct);
 }

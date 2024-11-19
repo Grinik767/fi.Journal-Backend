@@ -1,4 +1,5 @@
-﻿using Application.Extensions;
+﻿using System.Security.Authentication;
+using Application.Extensions;
 using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Jwt;
@@ -19,10 +20,12 @@ public class UsersService(
     public async Task<string> Login(string email, string password, CancellationToken ct)
     {
         var user = await repository.GetByEmail(email, ct);
+        if (user is null)
+            throw new InvalidCredentialException("Failed to login. Check credentials.");
 
         var result = passwordHasher.Verify(password, user.PasswordHash);
         if (!result)
-            throw new ArgumentException("Failed to login");
+            throw new InvalidCredentialException("Failed to login. Check credentials.");
 
         return jwtProvider.GenerateToken(user.GenerateClaims());
     }

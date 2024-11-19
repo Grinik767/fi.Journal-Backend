@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Authentication;
 using Api.Contracts;
 
 namespace Api.Middlewares;
@@ -18,6 +19,10 @@ public class ExceptionMiddleware : IMiddleware
         catch (ArgumentException ex)
         {
             await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
+        }
+        catch (InvalidCredentialException ex)
+        {
+            await HandleExceptionAsync(context, HttpStatusCode.Unauthorized, ex.Message);
         }
         catch (Exception ex)
         {
