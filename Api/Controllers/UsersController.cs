@@ -25,7 +25,10 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     {
         var token = await service.Login(request.Email, request.Password, ct);
         
-        HttpContext.Response.Cookies.Append(_authOptions.CookieName, token);
+        HttpContext.Response.Cookies.Append(_authOptions.CookieName, token, new CookieOptions
+        {
+            Expires = DateTime.UtcNow.AddHours(_authOptions.CookieExpireHours)
+        });
         
         return Ok(token);
     }
