@@ -7,7 +7,10 @@ using Domain.Entities;
 using Domain.Validators;
 using FluentValidation;
 using Infrastructure;
+using Infrastructure.Jwt;
+using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,14 +23,18 @@ services.AddControllers();
 services.AddDbContext<JournalDbContext>(
     options => options.UseNpgsql(configuration.GetConnectionString(nameof(JournalDbContext)))
 );
+services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
 services.AddTransient<ExceptionMiddleware>();
+
+services.AddSingleton<IPasswordHasher, PasswordHasherBCrypt>();
+services.AddSingleton<JwtProvider>();
 
 services.AddTransient<IValidator<User>, UserValidator>();
 services.AddTransient<IValidator<Group>, GroupValidator>();
 services.AddTransient<IValidator<Table>, TableValidator>();
 
-services.AddScoped<IRepository<User>, UsersRepository>();
+services.AddScoped<IUsersRepository, UsersRepository>();
 services.AddScoped<IRepository<Group>, GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
 

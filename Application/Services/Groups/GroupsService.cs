@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Users;
 
 namespace Application.Services.Groups;
 
 public class GroupsService(
     IRepository<Group> groupsRepository,
-    IRepository<User> usersRepository,
+    IUsersRepository usersRepository,
     IValidator<Group> validator) : BaseService<Group>(groupsRepository, validator), IGroupsService
 {
     private readonly IRepository<Group> _groupsRepository = groupsRepository;

@@ -11,10 +11,17 @@ namespace Api.Controllers;
 public class UsersController(IUsersService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken ct)
+    public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
-        var user = await service.Add(request.Name, request.Email, request.Password, ct);
+        var user = await service.Register(request.Name, request.Email, request.Password, ct);
         return Ok(mapper.Map<UserDto>(user));
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
+    {
+        var token = await service.Login(request.Email, request.Password, ct);
+        return Ok(token);
     }
 
     [HttpDelete("{id:guid}")]
@@ -40,14 +47,14 @@ public class UsersController(IUsersService service, IMapper mapper) : Controller
         var user = await service.GetById(id, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
-    
+
     [HttpGet("{id:guid}/groups")]
     public async Task<List<GroupDto>> GetGroups(Guid id, CancellationToken ct)
     {
         var groups = await service.GetGroups(id, ct);
         return mapper.Map<List<GroupDto>>(groups);
     }
-    
+
     [HttpGet("{id:guid}/groupsAsAdmin")]
     public async Task<List<GroupDto>> GetGroupsAsAdmin(Guid id, CancellationToken ct)
     {
