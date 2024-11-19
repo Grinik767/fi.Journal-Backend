@@ -13,7 +13,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
-        var table = await service.Add(request.Name, request.Url, request.GroupId, ct);
+        var table = await service.Add(request.Name, request.Url, request.GroupId, request.HeaderRow, request.StudentColumn, ct, request.AdditionalData);
         return Ok(mapper.Map<TableDto>(table)); ;
     }
 

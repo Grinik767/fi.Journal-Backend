@@ -51,10 +51,20 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("AdditionalData")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("HeaderRow")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StudentColumn")
                         .IsRequired()
                         .HasColumnType("text");
 

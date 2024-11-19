@@ -11,10 +11,10 @@ public class TablesService(
 {
     private readonly IRepository<Table> _tablesRepository = tablesRepository;
 
-    public async Task<Table> Add(string name, string url, Guid groupId, CancellationToken ct)
+    public async Task<Table> Add(string name, string url, Guid groupId,  int headerRow, string studentColumn, CancellationToken ct, int additionalData=-1)
     {
         var group = await groupsRepository.GetById(groupId, ct);
-        return await base.Add(new Table(Guid.NewGuid(), name, url, group.Id), ct);
+        return await base.Add(new Table(Guid.NewGuid(), name, url, groupId, headerRow, studentColumn, additionalData), ct);
     }
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
