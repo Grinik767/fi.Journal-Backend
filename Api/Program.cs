@@ -6,6 +6,8 @@ using Application.Services.Users;
 using Domain.Entities;
 using Domain.Validators;
 using FluentValidation;
+using GoogleSheetParser.GoogleSheet;
+using GoogleSheetParser.Parser;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,13 @@ services.AddScoped<IRepository<Table>, TablesRepository>();
 services.AddScoped<IUsersService, UsersService>();
 services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
+
+services.AddSingleton<GoogleSheetManager>(serviceProvide =>
+{
+    return new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!);
+});
+
+services.AddSingleton<ExcelParser>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 

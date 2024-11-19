@@ -3,6 +3,7 @@ using Api.Dtos;
 using Application.Services.Tables;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Api.Controllers;
 
@@ -39,5 +40,15 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     {
         var table = await service.GetById(id, ct);
         return Ok(mapper.Map<TableDto>(table));
+    }
+    
+    [HttpGet("{id:guid}/userPoints/{userId:guid}")]
+    public async Task<string> GetStudentPoints(
+        Guid id, 
+        Guid userId, 
+        CancellationToken ct)
+    {
+        var points = await service.GetStudentPoint(userId, id, ct);
+        return JsonConvert.SerializeObject(points);
     }
 }
