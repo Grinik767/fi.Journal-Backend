@@ -1,4 +1,5 @@
-﻿using Api.Dtos;
+﻿using System.Globalization;
+using Api.Dtos;
 using AutoMapper;
 using Domain.Entities;
 
@@ -34,9 +35,8 @@ public class MappingProfile : Profile
 
         CreateMap<UserDiff, UserDiffDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ForMember(dest => dest.Table, opt => opt.MapFrom(src => src.Table))
             .ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.UpdateTime))
-            .ForMember(dest => dest.Diff, opt => opt.MapFrom(src => src.Diff));
+            .ForMember(dest => dest.Diff, opt => opt.MapFrom(src => src.Diff.ToDictionary(key => key.Key, val => double.Parse(val.Value, CultureInfo.InvariantCulture))));
     }
 }
