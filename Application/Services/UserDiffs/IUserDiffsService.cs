@@ -8,5 +8,7 @@ public interface IUserDiffsService
     Task Delete(Guid id, CancellationToken ct);
     Task<UserDiff> GetById(Guid id, CancellationToken ct);
     Task<List<UserDiff>> GetAll(CancellationToken ct);
-    
+
+    Task<List<(DateTime UpdateTime, Guid TableId, Dictionary<string, double> UserDiff)>> GetDiffForUser(Guid userId,
+        CancellationToken ct);
 }

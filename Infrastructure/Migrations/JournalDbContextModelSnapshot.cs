@@ -114,7 +114,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.UserDiff", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Dictionary<string, string>>("Diff")

@@ -27,13 +27,11 @@ public class UserDiffRepository(JournalDbContext dbContext) : IRepository<UserDi
     public async Task<UserDiff> GetById(Guid id, CancellationToken ct) => 
         await dbContext.UserDiffs.Include(u => u.User)
         .Include(t => t.Table)
-        .Include(u => u.Diff)
         .FirstAsync(u => u.Id == id, ct);
 
 
     public async Task<List<UserDiff>> GetAll(CancellationToken ct) =>
         await dbContext.UserDiffs.AsNoTracking().Include(u => u.User)
             .Include(t => t.Table)
-            .Include(u => u.Diff)
             .ToListAsync(ct);
 }

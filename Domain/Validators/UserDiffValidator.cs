@@ -7,6 +7,6 @@ public class UserDiffValidator : AbstractValidator<UserDiff>
 {
     public UserDiffValidator()
     {
-        
+        RuleFor(x => x.UpdateTime).NotEmpty();
     }
 }

@@ -10,9 +10,11 @@ public class UserDiffConfiguration : IEntityTypeConfiguration<UserDiff>
     {
         builder.ToTable("UserDiff");
         builder.HasKey(d => d.Id);
+        
+        builder.Property(d => d.Id)
+            .ValueGeneratedNever();
 
-        builder.Property(d => d.Diff)
-            .HasColumnType("hstore");
+        builder.Property(d => d.Diff);
 
         builder.HasOne(d => d.Table)
             .WithMany(t => t.UserDiffs)
