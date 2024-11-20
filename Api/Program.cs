@@ -2,6 +2,7 @@ using Api;
 using Api.Middlewares;
 using Application.Services.Groups;
 using Application.Services.Tables;
+using Application.Services.UserDiffs;
 using Application.Services.Users;
 using Domain.Entities;
 using Domain.Validators;
@@ -28,14 +29,17 @@ services.AddTransient<ExceptionMiddleware>();
 services.AddTransient<IValidator<User>, UserValidator>();
 services.AddTransient<IValidator<Group>, GroupValidator>();
 services.AddTransient<IValidator<Table>, TableValidator>();
+services.AddTransient<IValidator<UserDiff>, UserDiffValidator>();
 
 services.AddScoped<IRepository<User>, UsersRepository>();
 services.AddScoped<IRepository<Group>, GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
+services.AddScoped<IRepository<UserDiff>, UserDiffRepository>();
 
 services.AddScoped<IUsersService, UsersService>();
 services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
+services.AddScoped<IUserDiffsService, UserDiffService>();
 
 services.AddSingleton<GoogleSheetManager>(serviceProvide =>
 {
