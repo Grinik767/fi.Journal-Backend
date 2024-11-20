@@ -29,6 +29,14 @@ public class TablesService(
 
         return await base.Update(table, ct);
     }
+
+    public async Task<Table> UpdateTime(Guid tableId, CancellationToken ct)
+    {
+        var currentTime = DateTime.UtcNow;
+        var table = await _tablesRepository.GetById(tableId, ct);
+        table.UpdateTime = currentTime;
+        return await _tablesRepository.Update(table, ct);
+    }
     
     public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct)
     {

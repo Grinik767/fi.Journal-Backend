@@ -15,8 +15,10 @@ public class ExcelParser
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         var studentColIndex = ColumnLetterToColumnIndex(studentsColumn);
 
+        await using var fileStream = fileInfo.OpenRead();
         using var package = new ExcelPackage();
-        await package.LoadAsync(fileInfo.OpenRead());
+
+        await package.LoadAsync(fileStream);
 
         foreach (var worksheet in package.Workbook.Worksheets)
         {

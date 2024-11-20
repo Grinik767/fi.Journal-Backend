@@ -36,9 +36,9 @@ public class UserDiffController(IUserDiffsService service, IMapper mapper) : Con
     }
 
     [HttpGet("/user/{userId:guid}")]
-    public async Task<List<Tuple<DateTime, Guid, Dictionary<string, double>>>> GetUsersDiff(Guid userId, CancellationToken ct)
+    public async Task<List<(DateTime UpdateTime, Guid TableId, Dictionary<string, double> UserDiff)>> GetUsersDiff(Guid userId, CancellationToken ct)
     {
         var result = await service.GetDiffForUser(userId, ct);
-        return result.Select(x => x.ToTuple()).ToList();
+        return result;
     }
 }

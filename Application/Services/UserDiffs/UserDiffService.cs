@@ -21,14 +21,14 @@ public class UserDiffService(
         return await base.Add(new UserDiff(Guid.NewGuid(), tableId, userId, convertedDiff), ct);
     }
 
-    public async Task<List<(DateTime UpdateTime, Guid TableId, Dictionary<string, double>)>> GetDiffForUser(Guid userId, CancellationToken ct)
+    public async Task<List<(DateTime UpdateTime, Guid TableId, Dictionary<string, double> UserDiff)>> GetDiffForUser(Guid userId, CancellationToken ct)
     {
         var user = await userRepository.GetById(userId, ct);
         var x = await _userDiffRepository.GetAll(ct);
         return x.Where(d => d.User.Id == userId)
             .OrderByDescending(d => d.UpdateTime)
             .Select(d => (d.UpdateTime, d.TableId,
-                d.Diff.ToDictionary(key => key.Key, val => double.Parse(val.Value))))
+                d.Diff.ToDictionary(key => key.Key, val => double.Parse(val.Value, CultureInfo.InvariantCulture))))
             .ToList();
     }
 }

@@ -26,7 +26,10 @@ public class GDriveClient
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             await using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
             await request.DownloadAsync(fileStream);
+            await fileStream.FlushAsync(); 
+            await Task.Delay(100);
         }
+        
         catch (Exception exception)
         {
             Console.WriteLine($"При скачивании файла произошла ошибка: {exception.Message}");

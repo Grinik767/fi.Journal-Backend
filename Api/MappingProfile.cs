@@ -36,6 +36,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ForMember(dest => dest.Table, opt => opt.MapFrom(src => src.Table))
-            .ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.UpdateTime));
+            .ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.UpdateTime))
+            .ForMember(dest => dest.Diff, opt => opt.MapFrom(src => src.Diff));
     }
 }
