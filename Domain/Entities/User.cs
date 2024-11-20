@@ -6,10 +6,12 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
 {
     private readonly List<Group> _groups = [];
     private readonly List<Group> _groupsAsAdmin = [];
-
+    private readonly List<UserDiff> _userDiffs = [];
+    
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;
     public IEnumerable<Group> Groups => _groups;
     public IEnumerable<Group> GroupsAsAdmin => _groupsAsAdmin;
+    public IEnumerable<UserDiff> UserDiffs => _userDiffs;
 }

@@ -7,9 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Users\Михаил\RiderProjects\Google Sheets\GoogleSheetParser\GoogleSheetParser.csproj" />
-      <ProjectReference Include="..\GoogleSheetParser\GoogleSheetParser.csproj" />
-      <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+        <ProjectReference Include="..\GoogleSheetParser\GoogleSheetParser.csproj"/>
+        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
