@@ -75,6 +75,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin());
 
 app.MapControllers();
 app.Run();
