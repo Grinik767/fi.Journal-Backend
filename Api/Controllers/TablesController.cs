@@ -49,6 +49,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     }
     
     [HttpGet("{id:guid}/userPoints/{userId:guid}")]
+    [Authorize]
     public async Task<string> GetStudentPoints(
         Guid id, 
         Guid userId, 

@@ -2,6 +2,7 @@
 using Api.Dtos;
 using Api.Extensions;
 using Application;
+using Application.Services.UserDiffs;
 using AutoMapper;
 using Application.Services.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IUsersService service, IMapper mapper, IOptions<AuthOptions> authOptions) : ControllerBase
+public class UsersController(
+    IUsersService service,
+    IUserDiffsService userDiffsService,
+    IMapper mapper,
+    IOptions<AuthOptions> authOptions) : ControllerBase
 {
     private readonly AuthOptions _authOptions = authOptions.Value;
 
@@ -42,14 +47,6 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     [Authorize]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
-    [HttpDelete("profile")]
-    [Authorize]
-    public async Task Delete(CancellationToken ct)
-    {
-        await Delete(HttpContext.GetUserIdFromHttpContext(), ct);
-        HttpContext.Response.Cookies.Delete(_authOptions.CookieName);
-    }
-
     [HttpPatch("{id:guid}")]
     [Authorize]
     public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
@@ -57,11 +54,6 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
         var user = await service.Update(id, email, password, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
-
-    [HttpPatch("profile")]
-    [Authorize]
-    public async Task<IActionResult> Update(string? email, string? password, CancellationToken ct) =>
-        await Update(HttpContext.GetUserIdFromHttpContext(), email, password, ct);
 
     [HttpGet]
     [Authorize]
@@ -84,26 +76,20 @@ public class UsersController(IUsersService service, IMapper mapper, IOptions<Aut
     public async Task<IActionResult> GetById(CancellationToken ct) =>
         await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
-    [HttpGet("{id:guid}/groups")]
-    [Authorize]
-    public async Task<List<GroupDto>> GetGroups(Guid id, CancellationToken ct)
-    {
-        var groups = await service.GetGroups(id, ct);
-        return mapper.Map<List<GroupDto>>(groups);
-    }
 
-    [HttpGet("{id:guid}/groupsAsAdmin")]
+    [HttpGet("{id:guid}/points")]
     [Authorize]
-    public async Task<List<GroupDto>> GetGroupsAsAdmin(Guid id, CancellationToken ct)
-    {
-        var groupsAsAdmin = await service.GetGroupsAsAdmin(id, ct);
-        return mapper.Map<List<GroupDto>>(groupsAsAdmin);
-    }
-
-    [HttpGet("{id:guid}/recentPoints")]
     public async Task<Dictionary<Guid, Dictionary<string, double>>> GetRecentUserPoints(Guid id, CancellationToken ct)
     {
-        var points = await service.GetUserRecentPoints(id, ct);
+        var points = await service.GetPoints(id, ct);
         return points;
+    }
+
+    [HttpGet("{id:guid}/recentDiffs")]
+    [Authorize]
+    public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)
+    {
+        var result = await userDiffsService.GetDiffForUser(id, ct);
+        return mapper.Map<List<UserDiffDto>>(result);
     }
 }

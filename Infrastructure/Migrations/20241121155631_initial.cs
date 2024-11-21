@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -11,6 +12,9 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:hstore", ",,");
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -76,6 +80,9 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false),
                     GroupId = table.Column<Guid>(type: "uuid", nullable: false),
+                    HeaderRow = table.Column<int>(type: "integer", nullable: false),
+                    StudentColumn = table.Column<string>(type: "text", nullable: false),
+                    AdditionalData = table.Column<int>(type: "integer", nullable: false),
                     UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -85,6 +92,32 @@ namespace Infrastructure.Migrations
                         name: "FK_Tables_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserDiff",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Diff = table.Column<Dictionary<string, string>>(type: "hstore", nullable: false),
+                    TableId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDiff", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserDiff_Tables_TableId",
+                        column: x => x.TableId,
+                        principalTable: "Tables",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserDiff_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -111,6 +144,16 @@ namespace Infrastructure.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserDiff_TableId",
+                table: "UserDiff",
+                column: "TableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDiff_UserId",
+                table: "UserDiff",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -122,6 +165,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GroupUser");
+
+            migrationBuilder.DropTable(
+                name: "UserDiff");
 
             migrationBuilder.DropTable(
                 name: "Tables");
