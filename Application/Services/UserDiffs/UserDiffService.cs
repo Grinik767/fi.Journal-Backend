@@ -3,13 +3,14 @@ using System.Security.Cryptography;
 using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.Users;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Application.Services.UserDiffs;
 
 public class UserDiffService(
     IRepository<UserDiff> userDiffRepository,
-    IRepository<User> userRepository,
+    IUsersRepository userRepository,
     IValidator<UserDiff> validator) : BaseService<UserDiff>(userDiffRepository, validator), IUserDiffsService
 {
     private readonly IRepository<UserDiff> _userDiffRepository = userDiffRepository;

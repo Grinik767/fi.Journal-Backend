@@ -3,13 +3,14 @@ using FluentValidation;
 using Infrastructure.Repositories;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
+using Infrastructure.Repositories.Users;
 
 namespace Application.Services.Tables;
 
 public class TablesService(
     IRepository<Table> tablesRepository,
     IRepository<Group> groupsRepository,
-    IRepository<User> usersRepository,
+    IUsersRepository usersRepository,
     GoogleSheetManager googleSheetManager,
     ExcelParser excelParser,
     IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
