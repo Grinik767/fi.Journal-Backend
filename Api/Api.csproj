@@ -24,13 +24,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
+        <Folder Include="ExcelTables\"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="ExcelTables\"/>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

@@ -54,6 +54,15 @@ services.AddSingleton<GoogleSheetManager>(serviceProvide =>
 });
 
 services.AddSingleton<ExcelParser>();
+services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        corsPolicyBuilder => corsPolicyBuilder
+            .WithOrigins("http://localhost:3003")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
 
 services.AddAutoMapper(typeof(MappingProfile));
 
@@ -72,14 +81,15 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
-    MinimumSameSitePolicy = SameSiteMode.Strict,
+    MinimumSameSitePolicy = SameSiteMode.None,
     HttpOnly = HttpOnlyPolicy.Always,
-    Secure = CookieSecurePolicy.Always
+    Secure = CookieSecurePolicy.SameAsRequest
 });
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin());
 
 app.MapControllers();
 app.Run();
