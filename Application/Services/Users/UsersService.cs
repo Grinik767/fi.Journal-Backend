@@ -1,4 +1,4 @@
-﻿using System.Security.Authentication;
+using System.Security.Authentication;
 using Application.Extensions;
 using Domain.Entities;
 using FluentValidation;

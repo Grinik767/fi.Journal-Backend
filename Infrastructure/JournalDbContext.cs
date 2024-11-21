@@ -9,12 +9,14 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
     public DbSet<Group> Groups { get; init; }
     public DbSet<User> Users { get; init; }
     public DbSet<Table> Tables { get; init; }
+    public DbSet<UserDiff> UserDiffs { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new GroupsConfiguration());
         modelBuilder.ApplyConfiguration(new TablesConfiguration());
         modelBuilder.ApplyConfiguration(new UsersConfiguration());
+        modelBuilder.ApplyConfiguration(new UserDiffConfiguration());
         
         base.OnModelCreating(modelBuilder);
     }

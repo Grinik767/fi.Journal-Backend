@@ -4,6 +4,7 @@ using Application.Services.Tables;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Api.Controllers;
 
@@ -15,7 +16,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     [Authorize]
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
-        var table = await service.Add(request.Name, request.Url, request.GroupId, ct);
+        var table = await service.Add(request.Name, request.Url, request.GroupId, request.HeaderRow, request.StudentColumn, ct, request.AdditionalData);
         return Ok(mapper.Map<TableDto>(table)); ;
     }
 
@@ -45,5 +46,15 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     {
         var table = await service.GetById(id, ct);
         return Ok(mapper.Map<TableDto>(table));
+    }
+    
+    [HttpGet("{id:guid}/userPoints/{userId:guid}")]
+    public async Task<string> GetStudentPoints(
+        Guid id, 
+        Guid userId, 
+        CancellationToken ct)
+    {
+        var points = await service.GetStudentPoint(userId, id, ct);
+        return JsonConvert.SerializeObject(points);
     }
 }

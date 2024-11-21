@@ -12,4 +12,5 @@ public interface IUsersService
     Task<User> GetById(Guid id, CancellationToken ct);
     Task<List<Group>> GetGroups(Guid id, CancellationToken ct);
     Task<List<Group>> GetGroupsAsAdmin(Guid id, CancellationToken ct);
+    Task<Dictionary<Guid, Dictionary<string, double>>> GetUserRecentPoints(Guid id, CancellationToken ct);
 }
