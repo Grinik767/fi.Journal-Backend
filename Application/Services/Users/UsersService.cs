@@ -51,7 +51,7 @@ public class UsersService(IRepository<User> repository, IValidator<User> validat
             var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
             var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}_temp.xlsx");
 
-            if ((DateTime.UtcNow - table.UpdateTime).TotalSeconds < 20 && File.Exists(path))
+            if ((DateTime.UtcNow - table.UpdateTime).TotalHours < 1 && File.Exists(path))
             {
                 var points = await GetStudentsPointFromExistingTable(user, table, path);
                 pointsTable.Add(table.Id, points);
@@ -64,10 +64,8 @@ public class UsersService(IRepository<User> repository, IValidator<User> validat
                 if (File.Exists(path)) 
                     await UpdateUsersDiffs(table, path, tempPath, ct);
 
-                if (File.Exists(path))
-                {
+                if (File.Exists(path)) 
                     File.Delete(path);
-                }
                     
                 File.Move(tempPath, path);
 
