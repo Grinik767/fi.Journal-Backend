@@ -58,11 +58,15 @@ services.AddSingleton<ExcelParser>();
 services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var dbContext = scope.ServiceProvider.GetRequiredService<JournalDbContext>();
+    dbContext.Database.Migrate();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
