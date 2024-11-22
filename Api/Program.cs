@@ -64,6 +64,7 @@ services.AddCors(options =>
             .WithOrigins("https://localhost:3003/*")
             .AllowAnyHeader()
             .AllowAnyMethod()
+            .AllowAnyOrigin()
             .AllowCredentials());
 });
 
@@ -81,13 +82,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.None,
-    HttpOnly = HttpOnlyPolicy.Always,
-    Secure = CookieSecurePolicy.SameAsRequest
-});
 
 app.UseCors("AllowFrontend");
 
