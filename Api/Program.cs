@@ -58,7 +58,10 @@ services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         corsPolicyBuilder => corsPolicyBuilder
-            .WithOrigins("http://localhost:3003")
+            .WithOrigins("http://localhost/*")
+            .WithOrigins("https://localhost/*")
+            .WithOrigins("http://localhost:3003/*")
+            .WithOrigins("https://localhost:3003/*")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
