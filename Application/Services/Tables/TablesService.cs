@@ -29,15 +29,7 @@ public class TablesService(
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
     {
         var table = await _tablesRepository.GetById(id, ct);
-        var currentPathToTable = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
-        if (File.Exists(currentPathToTable))
-        {
-            var newPathToTable = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{name}.xlsx");
-            File.Move(currentPathToTable, newPathToTable);
-        }
-        
         table.Name = name ?? table.Name;
-
         return await base.Update(table, ct);
     }
 
@@ -55,12 +47,12 @@ public class TablesService(
         var table = await GetById(tableId, ct);
         if (!table.Group.Users.Select(x => x.Id).ToList().Contains(user.Id))
             return new Dictionary<string, double>();
-        var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
+        var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
         var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
-        if (DateTime.Parse(lastUpdate) == table.UpdateTime && File.Exists(path))
+        if ((DateTime.Parse(lastUpdate) - table.UpdateTime).Minutes <= 2 && File.Exists(path))
             return await GetStudentsPointFromExistingTable(user, table, path);
-        var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}_temp.xlsx");
+        var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
         
         await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
 

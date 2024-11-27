@@ -72,12 +72,12 @@ public class UsersService(
         foreach (var group in user.Groups)
         foreach (var table in group.Tables)
         {
-            var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
+            var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
             var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
             var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
-            if (DateTime.Parse(lastUpdate) > table.UpdateTime || !File.Exists(path))
+            if ((DateTime.Parse(lastUpdate) - table.UpdateTime).Minutes >= 2 || !File.Exists(path))
             {
-                var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}_temp.xlsx");
+                var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
                 
                 await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
 
