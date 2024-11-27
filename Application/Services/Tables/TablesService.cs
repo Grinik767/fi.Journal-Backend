@@ -56,10 +56,12 @@ public class TablesService(
         if (!table.Group.Users.Select(x => x.Id).ToList().Contains(user.Id))
             return new Dictionary<string, double>();
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
-        if (!((DateTime.UtcNow - table.UpdateTime).TotalMinutes >= 20) && File.Exists(path))
+        var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
+        var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
+        if (DateTime.Parse(lastUpdate) == table.UpdateTime && File.Exists(path))
             return await GetStudentsPointFromExistingTable(user, table, path);
         var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}_temp.xlsx");
-        var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
+        
         await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
 
         if (File.Exists(path))

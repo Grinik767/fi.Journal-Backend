@@ -54,4 +54,7 @@ public class GoogleSheetManager
 
     public void AddEditorAccess(string spreadsheetId, string userEmail) => 
         _sheetCreation.AddEditor(spreadsheetId, userEmail);
+
+    public async Task<string> GetUpdatedTime(string spreadSheetId) => 
+        await _driveClient.GetUpdatedFile(spreadSheetId);
 }

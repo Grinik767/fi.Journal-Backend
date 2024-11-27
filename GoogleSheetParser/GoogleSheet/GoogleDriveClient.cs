@@ -1,3 +1,4 @@
+using System.CodeDom;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
@@ -34,5 +35,14 @@ public class GDriveClient
         {
             Console.WriteLine($"При скачивании файла произошла ошибка: {exception.Message}");
         }
+    }
+
+    public async Task<string> GetUpdatedFile(string googleSheetId)
+    {
+        var request = DriveService.Files.Get(googleSheetId);
+        request.Fields = "id, name, modifiedTime";
+
+        var result = await request.ExecuteAsync();
+        return result.ModifiedTimeRaw;
     }
 }
