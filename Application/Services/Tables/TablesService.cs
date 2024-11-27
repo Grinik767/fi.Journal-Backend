@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Globalization;
+using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
 using GoogleSheetParser.GoogleSheet;
@@ -12,8 +13,10 @@ public class TablesService(
     IRepository<Group> groupsRepository,
     IUsersRepository usersRepository,
     GoogleSheetManager googleSheetManager,
+    IRepository<UserDiff> userDiffRepository,
     ExcelParser excelParser,
-    IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
+    IValidator<Table> validator,
+    IRepository<Table> tableRepository) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
     private readonly IRepository<Table> _tablesRepository = tablesRepository;
 
@@ -26,6 +29,13 @@ public class TablesService(
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
     {
         var table = await _tablesRepository.GetById(id, ct);
+        var currentPathToTable = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
+        if (File.Exists(currentPathToTable))
+        {
+            var newPathToTable = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{name}.xlsx");
+            File.Move(currentPathToTable, newPathToTable);
+        }
+        
         table.Name = name ?? table.Name;
 
         return await base.Update(table, ct);
@@ -45,10 +55,43 @@ public class TablesService(
         var table = await GetById(tableId, ct);
         if (!table.Group.Users.Select(x => x.Id).ToList().Contains(user.Id))
             return new Dictionary<string, double>();
-        var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}.xlsx");
-        await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
-        var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path, table.AdditionalData);
+        if (!((DateTime.UtcNow - table.UpdateTime).TotalMinutes >= 20) && File.Exists(path))
+            return await GetStudentsPointFromExistingTable(user, table, path);
+        var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Name}_temp.xlsx");
+        var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
+        await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
+
+        if (File.Exists(path))
+        {
+            await UpdateUsersDiffs(table, path, tempPath, ct);
+            File.Delete(path);
+        }
+
+        File.Move(tempPath, path);
+        table.UpdateTime = DateTime.UtcNow;
+        await tableRepository.Update(table, ct);
+
+        return await GetStudentsPointFromExistingTable(user, table, path);
+    }
+    
+    private async Task<Dictionary<string, double>> GetStudentsPointFromExistingTable(User user, Table table,
+        string path)
+    {
+        var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
+            table.AdditionalData);
         return points;
+    }
+
+    private async Task UpdateUsersDiffs(Table table, string oldPath, string newPath, CancellationToken ct)
+    {
+        foreach (var user in table.Group.Users)
+        {
+            var points = await excelParser.FindDiff(oldPath, newPath, user.Name, table.StudentColumn, table.HeaderRow,
+                table.AdditionalData);
+            if (points.Count > 0)
+                await userDiffRepository.Add(new UserDiff(Guid.NewGuid(), table.Id, user.Id,
+                    points.ToDictionary(key => key.Key, val => val.Value.ToString(CultureInfo.InvariantCulture))), ct);
+        }
     }
 }
