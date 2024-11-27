@@ -62,7 +62,9 @@ services.AddCors(options =>
                 "http://localhost",
                 "https://localhost",
                 "http://localhost:3003",
-                "https://localhost:3003"
+                "https://localhost:3003",
+                "http://fi-journal.ru",
+                "https://fi-journal.ru"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
