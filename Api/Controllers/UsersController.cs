@@ -76,15 +76,6 @@ public class UsersController(
     public async Task<IActionResult> GetById(CancellationToken ct) =>
         await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
-
-    [HttpGet("{id:guid}/points")]
-    [Authorize]
-    public async Task<Dictionary<Guid, Dictionary<string, double>>> GetRecentUserPoints(Guid id, CancellationToken ct)
-    {
-        var points = await service.GetPoints(id, ct);
-        return points;
-    }
-
     [HttpGet("{id:guid}/recentDiffs")]
     [Authorize]
     public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)

@@ -50,7 +50,7 @@ public class TablesService(
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
         var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
-        if ((DateTime.Parse(lastUpdate) - table.UpdateTime).Minutes <= 2 && File.Exists(path))
+        if ((DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime && (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10)  && File.Exists(path))
             return await GetStudentsPointFromExistingTable(user, table, path);
         var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
         

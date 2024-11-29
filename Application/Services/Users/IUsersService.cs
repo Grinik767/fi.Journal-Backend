@@ -10,5 +10,4 @@ public interface IUsersService
     Task Delete(Guid id, CancellationToken ct);
     Task<List<User>> GetAll(CancellationToken ct);
     Task<User> GetById(Guid id, CancellationToken ct);
-    Task<Dictionary<Guid, Dictionary<string, double>>> GetPoints(Guid id, CancellationToken ct);
 }
