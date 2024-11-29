@@ -8,6 +8,7 @@ namespace Application.Services.Groups;
 public class GroupsService(
     IRepository<Group> groupsRepository,
     IUsersRepository usersRepository,
+    IRepository<UserDiff> userDiffRepository,
     IValidator<Group> validator) : BaseService<Group>(groupsRepository, validator), IGroupsService
 {
     private readonly IRepository<Group> _groupsRepository = groupsRepository;
@@ -60,6 +61,14 @@ public class GroupsService(
         if (!user.Groups.Contains(group))
             throw new ArgumentException("User isn't in group");
 
+        var diffs = await userDiffRepository.GetAll(ct);
+        var userDiffs = diffs
+            .Where(x => x.UserId == user.Id)
+            .Where(x => group.Tables.Select(u => u.Id).Contains(x.TableId));
+
+        foreach (var userDiff in userDiffs) 
+            await userDiffRepository.Delete(userDiff.Id, ct);
+        
         group.RemoveUser(user);
         return await _groupsRepository.Update(group, ct);
     }
