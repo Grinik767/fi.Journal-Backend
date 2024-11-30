@@ -16,11 +16,8 @@ namespace Api.Controllers;
 public class UsersController(
     IUsersService service,
     IUserDiffsService userDiffsService,
-    IMapper mapper,
-    IOptions<AuthOptions> authOptions) : ControllerBase
+    IMapper mapper) : ControllerBase
 {
-    private readonly AuthOptions _authOptions = authOptions.Value;
-
     [HttpPost("register")]
     [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
@@ -34,12 +31,6 @@ public class UsersController(
     public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
     {
         var token = await service.Login(request.Email, request.Password, ct);
-
-        HttpContext.Response.Cookies.Append(_authOptions.CookieName, token, new CookieOptions
-        {
-            Expires = DateTime.UtcNow.AddHours(_authOptions.ExpireHours)
-        });
-
         return Ok(token);
     }
 
