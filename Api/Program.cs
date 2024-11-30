@@ -14,7 +14,6 @@ using Infrastructure;
 using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Users;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,10 +47,8 @@ services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
 services.AddScoped<IUserDiffsService, UserDiffService>();
 
-services.AddSingleton<GoogleSheetManager>(serviceProvide =>
-{
-    return new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!);
-});
+services.AddSingleton<GoogleSheetManager>(_ =>
+    new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!));
 
 services.AddSingleton<ExcelParser>();
 services.AddCors(options =>
