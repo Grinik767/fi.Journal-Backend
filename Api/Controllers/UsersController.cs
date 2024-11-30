@@ -1,13 +1,11 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
 using Api.Extensions;
-using Application;
 using Application.Services.UserDiffs;
 using AutoMapper;
 using Application.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Api.Controllers;
 
@@ -71,7 +69,7 @@ public class UsersController(
     [Authorize]
     public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)
     {
-        var result = await userDiffsService.GetDiffForUser(id, ct);
+        var result = await userDiffsService.GetDiffsForUser(id, ct);
         return mapper.Map<List<UserDiffDto>>(result);
     }
 }

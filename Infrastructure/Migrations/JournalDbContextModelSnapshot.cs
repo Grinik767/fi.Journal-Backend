@@ -123,6 +123,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("TableId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 

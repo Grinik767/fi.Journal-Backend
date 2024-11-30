@@ -101,6 +101,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Diff = table.Column<Dictionary<string, string>>(type: "hstore", nullable: false),
                     TableId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)

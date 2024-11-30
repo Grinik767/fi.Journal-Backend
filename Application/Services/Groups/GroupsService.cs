@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
 
 namespace Application.Services.Groups;
@@ -8,7 +9,7 @@ namespace Application.Services.Groups;
 public class GroupsService(
     IRepository<Group> groupsRepository,
     IUsersRepository usersRepository,
-    IRepository<UserDiff> userDiffRepository,
+    IUsersDiffsRepository userDiffRepository,
     IValidator<Group> validator) : BaseService<Group>(groupsRepository, validator), IGroupsService
 {
     private readonly IRepository<Group> _groupsRepository = groupsRepository;

@@ -13,6 +13,7 @@ using GoogleSheetParser.Parser;
 using Infrastructure;
 using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,12 +41,12 @@ services.AddTransient<IValidator<UserDiff>, UserDiffValidator>();
 services.AddScoped<IUsersRepository, UsersRepository>();
 services.AddScoped<IRepository<Group>, GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
-services.AddScoped<IRepository<UserDiff>, UserDiffRepository>();
+services.AddScoped<IUsersDiffsRepository, UserDiffsRepository>();
 
 services.AddScoped<IUsersService, UsersService>();
 services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
-services.AddScoped<IUserDiffsService, UserDiffService>();
+services.AddScoped<IUserDiffsService, UserDiffsService>();
 
 services.AddSingleton<GoogleSheetManager>(_ =>
     new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!));

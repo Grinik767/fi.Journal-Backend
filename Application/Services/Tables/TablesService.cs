@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using Application.Services.UserDiffs;
 using Domain.Entities;
 using FluentValidation;
 using Infrastructure.Repositories;
@@ -13,7 +13,7 @@ public class TablesService(
     IRepository<Group> groupsRepository,
     IUsersRepository usersRepository,
     GoogleSheetManager googleSheetManager,
-    IRepository<UserDiff> userDiffRepository,
+    IUserDiffsService userDiffService,
     ExcelParser excelParser,
     IValidator<Table> validator,
     IRepository<Table> tableRepository) : BaseService<Table>(tablesRepository, validator), ITablesService
@@ -23,7 +23,7 @@ public class TablesService(
     public async Task<Table> Add(string name, string url, Guid groupId,  int headerRow, string studentColumn, CancellationToken ct, int additionalData=-1)
     {
         var group = await groupsRepository.GetById(groupId, ct);
-        return await base.Add(new Table(Guid.NewGuid(), name, url, groupId, headerRow, studentColumn, additionalData), ct);
+        return await base.Add(new Table(Guid.NewGuid(), name, url, group.Id, headerRow, studentColumn, additionalData), ct);
     }
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
@@ -31,14 +31,6 @@ public class TablesService(
         var table = await _tablesRepository.GetById(id, ct);
         table.Name = name ?? table.Name;
         return await base.Update(table, ct);
-    }
-
-    public async Task<Table> UpdateTime(Guid tableId, CancellationToken ct)
-    {
-        var currentTime = DateTime.UtcNow;
-        var table = await _tablesRepository.GetById(tableId, ct);
-        table.UpdateTime = currentTime;
-        return await _tablesRepository.Update(table, ct);
     }
     
     public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct)
@@ -50,7 +42,7 @@ public class TablesService(
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
         var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
-        if ((DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime && (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10)  && File.Exists(path))
+        if (DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime && (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10  && File.Exists(path))
             return await GetStudentsPointFromExistingTable(user, table, path);
         var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
         
@@ -58,7 +50,7 @@ public class TablesService(
 
         if (File.Exists(path))
         {
-            await UpdateUsersDiffs(table, path, tempPath, ct);
+            await userDiffService.UpdateUsersDiffs(table, path, tempPath, ct);
             File.Delete(path);
         }
 
@@ -75,17 +67,5 @@ public class TablesService(
         var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
             table.AdditionalData);
         return points;
-    }
-
-    private async Task UpdateUsersDiffs(Table table, string oldPath, string newPath, CancellationToken ct)
-    {
-        foreach (var user in table.Group.Users)
-        {
-            var points = await excelParser.FindDiff(oldPath, newPath, user.Name, table.StudentColumn, table.HeaderRow,
-                table.AdditionalData);
-            if (points.Count > 0)
-                await userDiffRepository.Add(new UserDiff(Guid.NewGuid(), table.Id, user.Id,
-                    points.ToDictionary(key => key.Key, val => val.Value.ToString(CultureInfo.InvariantCulture))), ct);
-        }
     }
 }
