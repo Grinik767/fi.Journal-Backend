@@ -26,9 +26,9 @@ public class UserDiffsService(
             var points = await excelParser.FindDiff(oldPath, newPath, user.Name, table.StudentColumn, table.HeaderRow,
                 table.AdditionalData);
 
-            if (points.Count <= 0) continue;
+            if (points.Count == 0) continue;
 
-            var usersDiffs = await userDiffRepository.GetAllByTable(table.Id, ct);
+            var usersDiffs = await userDiffRepository.GetAllByUserWithCertainTable(user.Id, table.Id, ct);
             await DeleteUsersDiffs(usersDiffs, ct);
 
             await userDiffRepository.Add(new UserDiff(Guid.NewGuid(), table.Id, user.Id,
