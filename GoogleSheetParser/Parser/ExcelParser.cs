@@ -99,7 +99,7 @@ public class ExcelParser
 
     private static bool IsMatchingStudent(string cellValue, string student)
     {
-        cellValue = cellValue.ToLower().Replace('ё', 'e');
+        cellValue = cellValue.ToLower().Replace('ё', 'е');
         student = student.ToLower().Replace('ё', 'е');
         var studentWords = student.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var cellValueWords = cellValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);

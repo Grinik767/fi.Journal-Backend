@@ -84,6 +84,26 @@ public class TablesService(
     {
         var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
             table.AdditionalData, true, table.ListToSearch);
-        return points;
+        return ChangeOrderToStartFromSum(points);
+    }
+
+    private Dictionary<string, double> ChangeOrderToStartFromSum(Dictionary<string, double> dict)
+    {
+        var result = new Dictionary<string, double>();
+        var priorityKeys = new[] { "брс", "итого", "итог", "сумма" };
+        foreach (var key in priorityKeys)
+        {
+            foreach (var keyFromDict in dict.Keys.Where(keyFromDict => key == keyFromDict.ToLower().Split(' ', ':')[0]))
+            {
+                result[keyFromDict] = dict[keyFromDict];
+                dict.Remove(keyFromDict);
+            }
+        }
+
+        foreach (var key in dict.Keys)
+            result[key] = dict[key];
+        
+
+        return result;
     }
 }
