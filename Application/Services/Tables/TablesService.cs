@@ -65,7 +65,7 @@ public class TablesService(
         string path)
     {
         var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
-            table.AdditionalData);
+            table.AdditionalData, true);
         return points;
     }
 }

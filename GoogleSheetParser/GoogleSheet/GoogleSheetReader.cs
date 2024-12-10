@@ -16,6 +16,17 @@ public class GoogleSheetReader
         return _sheetsService.Spreadsheets.Get(googleSpreadSheetIdentifier).Execute();
     }
 
+    public async Task<int> GetSheetGid(string spreadSheetId, string sheetName)
+    {
+        var request = _sheetsService.Spreadsheets.Get(spreadSheetId);
+        var sheet = await request.ExecuteAsync();
+        var lists = sheet.Sheets;
+        foreach (var list in lists)
+            if (list.Properties.Title == sheetName)
+                return list.Properties.SheetId!.Value;
+        return -1;
+    }
+
     public ValueRange GetSingleValue(string googleSpreadSheetIdentifier, string valueRange, string? sheetName = null)
     {
         CheckForNull(googleSpreadSheetIdentifier);

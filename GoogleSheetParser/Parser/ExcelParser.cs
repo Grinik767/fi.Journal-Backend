@@ -9,7 +9,8 @@ public class ExcelParser
         string studentsColumn,
         int headersRow,
         string pathToSheet,
-        int additionalDataRow = -1)
+        int additionalDataRow = -1,
+        bool needToConsiderHeaderRow=false)
     {
         var fileInfo = new FileInfo(pathToSheet);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -30,7 +31,8 @@ public class ExcelParser
                 studentRow,
                 studentColIndex,
                 headersRow,
-                additionalDataRow);
+                additionalDataRow,
+                needToConsiderHeaderRow);
         }
 
         return new Dictionary<string, double>();
@@ -44,8 +46,8 @@ public class ExcelParser
         int headersRow,
         int additionalDataRow = -1)
     {
-        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, additionalDataRow);
-        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, additionalDataRow);
+        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, additionalDataRow, false);
+        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, additionalDataRow, false);
 
         await Task.WhenAll(backupTask, currentTask);
             
@@ -68,6 +70,8 @@ public class ExcelParser
 
     private static bool IsMatchingStudent(string cellValue, string student)
     {
+        cellValue = cellValue.ToLower().Replace('ё', 'e');
+        student = student.ToLower().Replace('ё', 'е');
         var studentWords = student.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var cellValueWords = cellValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
@@ -75,7 +79,9 @@ public class ExcelParser
             return cellValue.Equals(student, StringComparison.OrdinalIgnoreCase);
 
         return studentWords[0].Equals(cellValueWords[0], StringComparison.OrdinalIgnoreCase)
-               && studentWords[1].Equals(cellValueWords[1], StringComparison.OrdinalIgnoreCase);
+               && studentWords[1].Equals(cellValueWords[1], StringComparison.OrdinalIgnoreCase) ||
+               studentWords[0].Equals(cellValueWords[1], StringComparison.OrdinalIgnoreCase) 
+               && studentWords[1].Equals(cellValueWords[0], StringComparison.OrdinalIgnoreCase);
     }
 
     private static Dictionary<string, double> ExtractStudentPoints(
@@ -83,14 +89,15 @@ public class ExcelParser
         int studentRow,
         int studentColIndex,
         int headersRow,
-        int additionalDataRow)
+        int additionalDataRow,
+        bool needToConsiderHiddenRows = false)
     {
         var headerDict = GetHeaderDictionary(worksheet, headersRow, studentColIndex);
         var additionalDataDict = additionalDataRow > 0
             ? GetAdditionalDataDictionary(worksheet, additionalDataRow, studentColIndex)
             : new Dictionary<int, string>();
 
-        return PopulatePoints(worksheet, studentRow, studentColIndex, headerDict, additionalDataDict);
+        return PopulatePoints(worksheet, studentRow, studentColIndex, headerDict, additionalDataDict, needToConsiderHiddenRows);
     }
 
     private static Dictionary<int, string> GetHeaderDictionary(ExcelWorksheet worksheet, int headersRow, int studentColIndex)
@@ -131,7 +138,7 @@ public class ExcelParser
             if (mergedCell.Start.Row != targetRow) continue;
 
             var value = mergedCell.Text;
-            for (int col = mergedCell.Start.Column; col <= mergedCell.End.Column; col++)
+            for (var col = mergedCell.Start.Column; col <= mergedCell.End.Column; col++)
                 cellDict[col] = value;
         }
     }
@@ -141,17 +148,23 @@ public class ExcelParser
         int studentRow,
         int studentColIndex,
         Dictionary<int, string> headerDict,
-        Dictionary<int, string> additionalDataDict)
+        Dictionary<int, string> additionalDataDict,
+        bool needToConsiderHeaderRows = false)
     {
         var points = new Dictionary<string, double>();
 
         for (var col = studentColIndex; col <= worksheet.Dimension.End.Column; col++)
         {
+            var isColumnHidden = worksheet.Column(col).Hidden;
+            if (isColumnHidden)
+                if (!needToConsiderHeaderRows) continue;
+                
             if (!headerDict.TryGetValue(col, out var header)) continue;
             if (additionalDataDict.TryGetValue(col, out var additionalData))
                 header += $":{additionalData}";
 
-            if (double.TryParse(worksheet.Cells[studentRow, col].Text, out var point))
+            if (!double.TryParse(worksheet.Cells[studentRow, col].Text, out var point)) continue;
+            if (point != 0.0 || point == 0.0 && !isColumnHidden)
                 points[header] = point;
         }
         return points;
