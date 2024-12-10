@@ -31,7 +31,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.Group))
             .ForMember(dest => dest.StudentColumn, opt => opt.MapFrom(src => src.StudentColumn))
             .ForMember(dest => dest.HeaderRow, opt => opt.MapFrom(src => src.HeaderRow))
-            .ForMember(dest => dest.AdditionalData, opt => opt.MapFrom(src => src.AdditionalData));
+            .ForMember(dest => dest.AdditionalData, opt => opt.MapFrom(src => src.AdditionalData))
+            .ForMember(dest => dest.ListToSearch, opt => opt.MapFrom(src => src.ListToSearch));
 
         CreateMap<UserDiff, UserDiffDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

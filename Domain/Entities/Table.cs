@@ -9,7 +9,8 @@ public class Table(
     Guid groupId,
     int headerRow,
     string studentColumn,
-    int additionalData = -1) : Entity<Guid>(id)
+    int additionalData = -1,
+    string listToSearch = "") : Entity<Guid>(id)
 {
     private readonly List<UserDiff> _userDiffs = [];
     [Required] public string Name { get; set; } = name;
@@ -23,5 +24,6 @@ public class Table(
     public int AdditionalData { get; init; } = additionalData;
     public Group? Group { get; }
     public DateTime UpdateTime { get; set; } = DateTime.UtcNow;
+    public string ListToSearch { get; init; } = listToSearch;
     public IEnumerable<UserDiff> UserDiffs => _userDiffs;
 }

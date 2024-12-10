@@ -25,6 +25,8 @@ public class TablesConfiguration : IEntityTypeConfiguration<Table>
 
         builder.Property(t => t.AdditionalData);
 
+        builder.Property(t => t.ListToSearch);
+
         builder.HasOne(t => t.Group)
             .WithMany(g => g.Tables)
             .HasForeignKey(t => t.GroupId)

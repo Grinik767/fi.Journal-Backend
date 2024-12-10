@@ -24,7 +24,7 @@ public class UserDiffsService(
         foreach (var user in table.Group.Users)
         {
             var points = await excelParser.FindDiff(oldPath, newPath, user.Name, table.StudentColumn, table.HeaderRow,
-                table.AdditionalData);
+                table.AdditionalData, table.ListToSearch);
 
             if (points.Count == 0) continue;
 

@@ -11,6 +11,8 @@ public class TableDto
     public int HeaderRow { get; init; }
     
     public int AdditionalData { get; init; }
+    
     public DateTime UpdateTime { get; init; }
+    public string ListToSearch { get; init; }
     public GroupDto Group { get; init; }
 }

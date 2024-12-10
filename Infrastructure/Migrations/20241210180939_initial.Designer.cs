@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20241130195539_initial")]
+    [Migration("20241210180939_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -64,6 +64,10 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("HeaderRow")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ListToSearch")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()

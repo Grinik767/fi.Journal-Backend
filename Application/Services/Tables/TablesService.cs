@@ -21,10 +21,10 @@ public class TablesService(
 {
     private readonly IRepository<Table> _tablesRepository = tablesRepository;
 
-    public async Task<Table> Add(string name, string url, Guid groupId,  int headerRow, string studentColumn, CancellationToken ct, int additionalData=-1)
+    public async Task<Table> Add(string name, string url, Guid groupId,  int headerRow, string studentColumn, CancellationToken ct, int additionalData=-1, string listToSearch = "")
     {
         var group = await groupsRepository.GetById(groupId, ct);
-        return await base.Add(new Table(Guid.NewGuid(), name, url, group.Id, headerRow, studentColumn, additionalData), ct);
+        return await base.Add(new Table(Guid.NewGuid(), name, url, group.Id, headerRow, studentColumn, additionalData, listToSearch), ct);
     }
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
@@ -40,7 +40,9 @@ public class TablesService(
         var table = await GetById(tableId, ct);
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
-        var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path);
+        if (!File.Exists(path))
+            await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
+        var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path, table.ListToSearch);
         var listGid = await googleSheetManager.GetSheetGid(spreadSheetId, studentRow.sheetName);
         if (listGid == -1)
             return table;
@@ -81,7 +83,7 @@ public class TablesService(
         string path)
     {
         var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
-            table.AdditionalData, true);
+            table.AdditionalData, true, table.ListToSearch);
         return points;
     }
 }

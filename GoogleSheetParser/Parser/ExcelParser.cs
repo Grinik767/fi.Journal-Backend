@@ -10,7 +10,8 @@ public class ExcelParser
         int headersRow,
         string pathToSheet,
         int additionalDataRow = -1,
-        bool needToConsiderHeaderRow=false)
+        bool needToConsiderHeaderRow=false,
+        string listForChecking = "")
     {
         var fileInfo = new FileInfo(pathToSheet);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -23,6 +24,9 @@ public class ExcelParser
 
         foreach (var worksheet in package.Workbook.Worksheets)
         {
+            if (listForChecking != "")
+                if (!string.Equals(worksheet.Name, listForChecking, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
             var studentRow = FindStudentRow(worksheet, studentColIndex, student);
             if (studentRow == -1) continue;
 
@@ -44,10 +48,11 @@ public class ExcelParser
         string student,
         string studentsColumn,
         int headersRow,
-        int additionalDataRow = -1)
+        int additionalDataRow = -1,
+        string listForChecking = "")
     {
-        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, additionalDataRow, false);
-        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, additionalDataRow, false);
+        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, additionalDataRow, false, listForChecking);
+        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, additionalDataRow, false, listForChecking);
 
         await Task.WhenAll(backupTask, currentTask);
             
@@ -57,7 +62,7 @@ public class ExcelParser
         return resultsFromCurrentSheet.Except(resultsFromBackUp).ToDictionary(x => x.Key, x => x.Value);
     }
     
-    public async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet)
+    public async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet, string listForChecking="")
     {
         var fileInfo = new FileInfo(pathToSheet);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -70,6 +75,9 @@ public class ExcelParser
 
         foreach (var worksheet in package.Workbook.Worksheets)
         {
+            if (listForChecking != "")
+                if (!string.Equals(worksheet.Name, listForChecking, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
             var studentRow = FindStudentRow(worksheet, studentColIndex, student);
             if (studentRow == -1) continue;
             return (studentRow, worksheet.Name);
