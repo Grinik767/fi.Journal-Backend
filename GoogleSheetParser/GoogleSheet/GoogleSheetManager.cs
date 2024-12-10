@@ -57,4 +57,7 @@ public class GoogleSheetManager
 
     public async Task<string> GetUpdatedTime(string spreadSheetId) => 
         await _driveClient.GetUpdatedFile(spreadSheetId);
+
+    public async Task<int> GetSheetGid(string spreadSheetId, string sheetName) =>
+        await _sheetReader.GetSheetGid(spreadSheetId, sheetName);
 }

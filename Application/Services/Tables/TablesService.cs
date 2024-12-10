@@ -5,6 +5,7 @@ using Infrastructure.Repositories;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
 using Infrastructure.Repositories.Users;
+using OfficeOpenXml.DataValidation.Exceptions;
 
 namespace Application.Services.Tables;
 
@@ -31,6 +32,21 @@ public class TablesService(
         var table = await _tablesRepository.GetById(id, ct);
         table.Name = name ?? table.Name;
         return await base.Update(table, ct);
+    }
+
+    public async Task<Table> GetTableWithCustomUrl(Guid tableId, Guid studentId, CancellationToken ct)
+    {
+        var user = await usersRepository.GetById(studentId, ct);
+        var table = await GetById(tableId, ct);
+        var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
+        var spreadSheetId = googleSheetManager.GetSpreadSheedId(table.Url);
+        var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path);
+        var listGid = await googleSheetManager.GetSheetGid(spreadSheetId, studentRow.sheetName);
+        if (listGid == -1)
+            return table;
+        var url = $"https://docs.google.com/spreadsheets/d/{spreadSheetId}/edit#gid={listGid}&range={studentRow.studentRow}:{studentRow.studentRow}";
+        return new Table(table.Id, table.Name, url, table.Group!.Id, table.HeaderRow, table.StudentColumn, table.AdditionalData);
+
     }
     
     public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct)

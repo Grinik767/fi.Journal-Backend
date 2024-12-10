@@ -48,6 +48,18 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
         return Ok(mapper.Map<TableDto>(table));
     }
     
+    [HttpGet("{id:guid}/user/{userId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> GetByIdWithCustomTable(
+        Guid id,
+        Guid userId, 
+        CancellationToken ct)
+    {
+        var table = await service.GetTableWithCustomUrl(id, userId, ct);
+        return Ok(mapper.Map<TableDto>(table));
+
+    }
+    
     [HttpGet("{id:guid}/userPoints/{userId:guid}")]
     [Authorize]
     public async Task<string> GetStudentPoints(

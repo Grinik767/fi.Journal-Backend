@@ -56,6 +56,27 @@ public class ExcelParser
             
         return resultsFromCurrentSheet.Except(resultsFromBackUp).ToDictionary(x => x.Key, x => x.Value);
     }
+    
+    public async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet)
+    {
+        var fileInfo = new FileInfo(pathToSheet);
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        var studentColIndex = ColumnLetterToColumnIndex(studentColumnIndex);
+
+        await using var fileStream = fileInfo.OpenRead();
+        using var package = new ExcelPackage();
+
+        await package.LoadAsync(fileStream);
+
+        foreach (var worksheet in package.Workbook.Worksheets)
+        {
+            var studentRow = FindStudentRow(worksheet, studentColIndex, student);
+            if (studentRow == -1) continue;
+            return (studentRow, worksheet.Name);
+        }
+
+        return (-1, "");
+    }
 
     private static int FindStudentRow(ExcelWorksheet worksheet, int studentColIndex, string student)
     {

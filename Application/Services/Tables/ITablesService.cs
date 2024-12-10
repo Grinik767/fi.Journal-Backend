@@ -10,4 +10,5 @@ public interface ITablesService
     Task<List<Table>> GetAll(CancellationToken ct);
     Task<Table> GetById(Guid id, CancellationToken ct);
     Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct);
+    Task<Table> GetTableWithCustomUrl(Guid studentId, Guid tableId, CancellationToken ct);
 }
