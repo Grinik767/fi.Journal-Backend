@@ -183,6 +183,9 @@ public class ExcelParser
             if (!headerDict.TryGetValue(col, out var header)) continue;
             if (additionalDataDict.TryGetValue(col, out var additionalData))
                 header += $":{additionalData}";
+            
+            if (bool.TryParse(worksheet.Cells[studentRow, col].Text, out var boolPoint))
+                points[header] = Convert.ToDouble(boolPoint);
 
             if (!double.TryParse(worksheet.Cells[studentRow, col].Text, out var point)) continue;
             if (point != 0.0 || point == 0.0 && !isColumnHidden)
