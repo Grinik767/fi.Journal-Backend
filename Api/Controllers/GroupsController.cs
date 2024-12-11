@@ -33,10 +33,10 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
 
     [HttpGet]
     [Authorize]
-    public async Task<List<GroupDto>> GetAll(CancellationToken ct)
+    public async Task<List<FrontendGroupDto>> GetAll(CancellationToken ct)
     {
         var groups = await service.GetAll(ct);
-        return mapper.Map<List<GroupDto>>(groups);
+        return mapper.Map<List<FrontendGroupDto>>(groups);
     }
 
     [HttpGet("{id:guid}")]
@@ -44,7 +44,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
-        return Ok(mapper.Map<GroupDto>(group));
+        return Ok(mapper.Map<FrontendGroupDto>(group));
     }
 
     [HttpGet("{id:guid}/users")]
@@ -57,10 +57,10 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     
     [HttpGet("{id:guid}/tables")]
     [Authorize]
-    public async Task<List<TableDto>> GetTables(Guid id, CancellationToken ct)
+    public async Task<List<FrontendTableDto>> GetTables(Guid id, CancellationToken ct)
     {
         var tables = await service.GetTables(id, ct);
-        return mapper.Map<List<TableDto>>(tables);
+        return mapper.Map<List<FrontendTableDto>>(tables);
     }
 
     [HttpPost("{id:guid}/users")]

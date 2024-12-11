@@ -39,5 +39,15 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Table, opt => opt.MapFrom(src => src.Table))
             .ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.UpdateTime))
             .ForMember(dest => dest.Diff, opt => opt.MapFrom(src => src.Diff.ToDictionary(key => key.Key, val => double.Parse(val.Value, CultureInfo.InvariantCulture))));
+
+        CreateMap<Table, FrontendTableDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url));
+
+        CreateMap<Group, FrontendGroupDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.TableIds, opt => opt.MapFrom(src => src.Tables.Select(t => t.Id)));
     }
 }

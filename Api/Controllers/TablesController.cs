@@ -34,10 +34,10 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
 
     [HttpGet]
     [Authorize]
-    public async Task<List<TableDto>> GetAll(CancellationToken ct)
+    public async Task<List<FrontendTableDto>> GetAll(CancellationToken ct)
     {
         var tables = await service.GetAll(ct);
-        return mapper.Map<List<TableDto>>(tables);
+        return mapper.Map<List<FrontendTableDto>>(tables);
     }
 
     [HttpGet("{id:guid}")]
@@ -45,7 +45,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var table = await service.GetById(id, ct);
-        return Ok(mapper.Map<TableDto>(table));
+        return Ok(mapper.Map<FrontendTableDto>(table));
     }
     
     [HttpGet("{id:guid}/user/{userId:guid}")]
@@ -56,7 +56,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
         CancellationToken ct)
     {
         var table = await service.GetTableWithCustomUrl(id, userId, ct);
-        return Ok(mapper.Map<TableDto>(table));
+        return Ok(mapper.Map<FrontendTableDto>(table));
 
     }
     
