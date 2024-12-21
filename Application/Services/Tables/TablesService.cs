@@ -90,7 +90,7 @@ public class TablesService(
     private Dictionary<string, double> ChangeOrderToStartFromSum(Dictionary<string, double> dict)
     {
         var result = new Dictionary<string, double>();
-        var priorityKeys = new[] { "брс", "итого", "итог", "сумма" };
+        var priorityKeys = new[] { "брс", "итого", "итог", "сумма", "общий"};
         foreach (var key in priorityKeys)
         {
             foreach (var keyFromDict in dict.Keys.Where(keyFromDict => key == keyFromDict.ToLower().Split(' ', ':')[0]))

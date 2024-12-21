@@ -65,4 +65,27 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddPersonalDataAccessPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("PersonalDataAccess", policy =>
+                policy.Requirements.Add(new PersonalDataAccessRequirement())
+            );
+
+        services.AddScoped<IAuthorizationHandler, PersonalDataAccessHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCombinedPolicies(this IServiceCollection services)
+    {
+        services.AddScoped<IAuthorizationHandler, CombinedAuthorizationHandler>();
+        
+        services.AddAuthorizationBuilder()
+            .AddPolicy("SuperAdminOrPersonalDataAccess", policy =>
+                policy.RequireCombinedPolicies("SuperAdmin", "PersonalDataAccess"));
+        
+        return services;
+    }
 }

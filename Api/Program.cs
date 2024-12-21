@@ -72,7 +72,9 @@ services.AddAutoMapper(typeof(MappingProfile));
 
 services.AddApiAuthentication(configuration)
     .AddDenyAuthenticatedPolicy()
-    .AddSuperAdminPolicy();
+    .AddSuperAdminPolicy()
+    .AddPersonalDataAccessPolicy()
+    .AddCombinedPolicies();
 
 var app = builder.Build();
 

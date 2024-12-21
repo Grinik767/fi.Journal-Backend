@@ -33,11 +33,11 @@ public class UsersController(
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
     [HttpPatch("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
     {
         var user = await service.Update(id, email, password, ct);
@@ -53,7 +53,7 @@ public class UsersController(
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize(Policy = "SuperAdmin")]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var user = await service.GetById(id, ct);
@@ -66,7 +66,7 @@ public class UsersController(
         await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
     [HttpGet("{id:guid}/recentDiffs")]
-    [Authorize]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)
     {
         var result = await userDiffsService.GetDiffsForUser(id, ct);
