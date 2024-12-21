@@ -38,10 +38,15 @@ public static class ServiceCollectionExtensions
                     };
                 }
             );
+    }
 
+    public static void AddApiAuthorization(this IServiceCollection services, IConfiguration configuration)
+    {
         services.AddAuthorizationBuilder()
             .AddPolicy("DenyAuthenticated", policy =>
                 policy.Requirements.Add(new DenyAuthenticatedRequirement()));
         services.AddSingleton<IAuthorizationHandler, DenyAuthenticatedHandler>();
+        
+        
     }
 }

@@ -10,6 +10,8 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
     public DbSet<User> Users { get; init; }
     public DbSet<Table> Tables { get; init; }
     public DbSet<UserDiff> UserDiffs { get; init; }
+    
+    public DbSet<SuperAdmin> SuperAdmins { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,6 +19,7 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
         modelBuilder.ApplyConfiguration(new TablesConfiguration());
         modelBuilder.ApplyConfiguration(new UsersConfiguration());
         modelBuilder.ApplyConfiguration(new UserDiffConfiguration());
+        modelBuilder.ApplyConfiguration(new SuperAdminConfiguration());
         
         base.OnModelCreating(modelBuilder);
     }
