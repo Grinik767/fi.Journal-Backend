@@ -97,6 +97,10 @@ public static class ServiceCollectionExtensions
         services.AddAuthorizationBuilder()
             .AddPolicy("SuperAdminOrPersonalDataAccess", policy =>
                 policy.RequireCombinedPolicies("SuperAdmin", "PersonalDataAccess"));
+        
+        services.AddAuthorizationBuilder()
+            .AddPolicy("SuperAdminOrUserIsGroupMember", policy =>
+                policy.RequireCombinedPolicies("SuperAdmin", "UserIsGroupMember"));
 
         return services;
     }

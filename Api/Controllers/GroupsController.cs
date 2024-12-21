@@ -40,7 +40,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize(Policy = "UserIsGroupMember")]
+    [Authorize(Policy = "SuperAdminOrUserIsGroupMember")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
@@ -54,7 +54,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
         var users = await service.GetUsers(id, ct);
         return mapper.Map<List<UserDto>>(users);
     }
-    
+
     [HttpGet("{id:guid}/tables")]
     [Authorize(Policy = "SuperAdmin")]
     public async Task<List<FrontendTableDto>> GetTables(Guid id, CancellationToken ct)
