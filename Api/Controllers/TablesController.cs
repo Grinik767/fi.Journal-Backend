@@ -10,20 +10,23 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "SuperAdmin")]
 public class TablesController(ITablesService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
-        var table = await service.Add(request.Name, request.Url, request.GroupId, request.HeaderRow, request.StudentColumn, ct, request.AdditionalData, request.ListToSearch);
-        return Ok(mapper.Map<TableDto>(table)); ;
+        var table = await service.Add(request.Name, request.Url, request.GroupId, request.HeaderRow,
+            request.StudentColumn, ct, request.AdditionalData, request.ListToSearch);
+        return Ok(mapper.Map<TableDto>(table));
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
     [HttpPatch("{id:guid}")]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
         var table = await service.Update(id, name, ct);
@@ -31,6 +34,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     }
 
     [HttpGet]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<List<FrontendTableDto>> GetAll(CancellationToken ct)
     {
         var tables = await service.GetAll(ct);
@@ -38,27 +42,29 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var table = await service.GetById(id, ct);
         return Ok(mapper.Map<FrontendTableDto>(table));
     }
-    
+
     [HttpGet("{id:guid}/user/{userId:guid}")]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<IActionResult> GetByIdWithCustomTable(
         Guid id,
-        Guid userId, 
+        Guid userId,
         CancellationToken ct)
     {
         var table = await service.GetTableWithCustomUrl(id, userId, ct);
         return Ok(mapper.Map<FrontendTableDto>(table));
-
     }
-    
+
     [HttpGet("{id:guid}/userPoints/{userId:guid}")]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<string> GetStudentPoints(
-        Guid id, 
-        Guid userId, 
+        Guid id,
+        Guid userId,
         CancellationToken ct)
     {
         var points = await service.GetStudentPoint(userId, id, ct);
