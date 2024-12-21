@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20241212083259_tableWithChosingList")]
-    partial class tableWithChosingList
+    [Migration("20241130195539_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,10 +64,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("HeaderRow")
                         .HasColumnType("integer");
-
-                    b.Property<string>("ListToSearch")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
