@@ -45,7 +45,7 @@ public class UsersController(
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<List<UserDto>> GetAll(CancellationToken ct)
     {
         var users = await service.GetAll(ct);
@@ -53,7 +53,7 @@ public class UsersController(
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var user = await service.GetById(id, ct);
@@ -66,7 +66,7 @@ public class UsersController(
         await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
     [HttpGet("{id:guid}/recentDiffs")]
-    [Authorize(Policy = "SuperAdmin")]
+    [Authorize]
     public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)
     {
         var result = await userDiffsService.GetDiffsForUser(id, ct);

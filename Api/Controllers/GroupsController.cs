@@ -9,10 +9,10 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "SuperAdmin")]
 public class GroupsController(IGroupsService service, IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
         var group = await service.Add(request.Name, request.AdminId, ct);
@@ -20,11 +20,9 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize]
     public async Task Delete(Guid id, CancellationToken ct) => await service.Delete(id, ct);
 
     [HttpPatch("{id:guid}")]
-    [Authorize]
     public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
     {
         var group = await service.Update(id, name, ct);
@@ -32,7 +30,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<List<FrontendGroupDto>> GetAll(CancellationToken ct)
     {
         var groups = await service.GetAll(ct);
@@ -40,7 +37,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
@@ -48,7 +44,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet("{id:guid}/users")]
-    [Authorize]
     public async Task<List<UserDto>> GetUsers(Guid id, CancellationToken ct)
     {
         var users = await service.GetUsers(id, ct);
@@ -56,7 +51,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
     
     [HttpGet("{id:guid}/tables")]
-    [Authorize]
     public async Task<List<FrontendTableDto>> GetTables(Guid id, CancellationToken ct)
     {
         var tables = await service.GetTables(id, ct);
@@ -64,7 +58,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpPost("{id:guid}/users")]
-    [Authorize]
     public async Task<IActionResult> AddUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {
@@ -73,7 +66,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpDelete("{id:guid}/users")]
-    [Authorize]
     public async Task<IActionResult> DeleteUser(Guid id, [FromBody] AddOrDeleteUserToGroupRequest request,
         CancellationToken ct)
     {
