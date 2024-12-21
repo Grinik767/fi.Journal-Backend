@@ -40,7 +40,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "UserIsGroupMember")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);

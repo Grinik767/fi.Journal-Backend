@@ -23,6 +23,12 @@ public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
             .Include(g => g.Tables)
             .FirstAsync(group => group.Id == id, ct);
 
+    public async Task<Group?> GetById(Guid id) =>
+        await dbContext.Groups
+            .AsNoTracking()
+            .Include(g => g.Users)
+            .FirstOrDefaultAsync(group => group.Id == id);
+
     public async Task<List<Group>> GetAll(CancellationToken ct) =>
         await dbContext.Groups
             .AsNoTracking()

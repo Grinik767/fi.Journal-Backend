@@ -39,6 +39,7 @@ services.AddTransient<IValidator<UserDiff>, UserDiffValidator>();
 
 services.AddScoped<IUsersRepository, UsersRepository>();
 services.AddScoped<IRepository<Group>, GroupsRepository>();
+services.AddScoped<GroupsRepository>();
 services.AddScoped<IRepository<Table>, TablesRepository>();
 services.AddScoped<IUsersDiffsRepository, UserDiffsRepository>();
 
@@ -74,6 +75,7 @@ services.AddApiAuthentication(configuration)
     .AddDenyAuthenticatedPolicy()
     .AddSuperAdminPolicy()
     .AddPersonalDataAccessPolicy()
+    .AddUserIsGroupMemberPolicy()
     .AddCombinedPolicies();
 
 var app = builder.Build();
