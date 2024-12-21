@@ -28,7 +28,6 @@ services.AddDbContext<JournalDbContext>(
     options => options.UseNpgsql(configuration.GetConnectionString(nameof(JournalDbContext)))
 );
 
-services.AddApiAuthentication(configuration);
 services.AddSingleton<IPasswordHasher, PasswordHasherBCrypt>();
 
 services.AddTransient<ExceptionMiddleware>();
@@ -70,6 +69,10 @@ services.AddCors(options =>
 });
 
 services.AddAutoMapper(typeof(MappingProfile));
+
+services.AddApiAuthentication(configuration)
+    .AddDenyAuthenticatedPolicy()
+    .AddSuperAdminPolicy();
 
 var app = builder.Build();
 

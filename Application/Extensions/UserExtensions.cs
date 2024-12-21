@@ -5,6 +5,5 @@ namespace Application.Extensions;
 
 internal static class UserExtensions
 {
-    public static Claim[] GenerateClaims(this User user) =>
-        [new("id", user.Id.ToString()), new("name", user.Name)];
+    public static Claim[] GenerateClaims(this User user) => [new("id", user.Id.ToString())];
 }

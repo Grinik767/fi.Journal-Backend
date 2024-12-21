@@ -66,7 +66,7 @@ public class UsersController(
         await GetById(HttpContext.GetUserIdFromHttpContext(), ct);
 
     [HttpGet("{id:guid}/recentDiffs")]
-    [Authorize]
+    [Authorize(Policy = "SuperAdmin")]
     public async Task<List<UserDiffDto>> GetUsersDiff(Guid id, CancellationToken ct)
     {
         var result = await userDiffsService.GetDiffsForUser(id, ct);

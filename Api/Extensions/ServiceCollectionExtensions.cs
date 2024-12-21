@@ -9,7 +9,8 @@ namespace Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddApiAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApiAuthentication(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.Configure<AuthOptions>(configuration.GetSection(nameof(AuthOptions)));
 
@@ -38,15 +39,30 @@ public static class ServiceCollectionExtensions
                     };
                 }
             );
+        return services;
     }
 
-    public static void AddApiAuthorization(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDenyAuthenticatedPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
             .AddPolicy("DenyAuthenticated", policy =>
-                policy.Requirements.Add(new DenyAuthenticatedRequirement()));
-        services.AddSingleton<IAuthorizationHandler, DenyAuthenticatedHandler>();
-        
-        
+                policy.Requirements.Add(new DenyAuthenticatedRequirement())
+            );
+
+        services.AddScoped<IAuthorizationHandler, DenyAuthenticatedHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddSuperAdminPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("SuperAdmin", policy =>
+                policy.Requirements.Add(new SuperAdminRequirement())
+            );
+
+        services.AddScoped<IAuthorizationHandler, SuperAdminHandler>();
+
+        return services;
     }
 }

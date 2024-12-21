@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Handlers;
 
@@ -7,7 +8,7 @@ public class DenyAuthenticatedHandler : AuthorizationHandler<DenyAuthenticatedRe
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
         DenyAuthenticatedRequirement requirement)
     {
-        if (context.User.Identity is { IsAuthenticated: true })
+        if (context.IsAuthenticated())
             context.Fail();
         else
             context.Succeed(requirement);
