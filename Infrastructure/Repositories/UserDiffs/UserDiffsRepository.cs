@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.UserDiffs;
 
-public class UserDiffsRepository(JournalDbContext dbContext) : IUsersDiffsRepository
+public class UserDiffsRepository(JournalDbContext dbContext) : IUserDiffsRepository
 {
     public async Task Add(UserDiff userDiff, CancellationToken ct)
     {

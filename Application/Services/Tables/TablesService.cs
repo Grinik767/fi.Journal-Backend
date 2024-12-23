@@ -4,13 +4,14 @@ using FluentValidation;
 using Infrastructure.Repositories;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
+using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Users;
 
 namespace Application.Services.Tables;
 
 public class TablesService(
     IRepository<Table> tablesRepository,
-    IRepository<Group> groupsRepository,
+    IGroupsRepository groupsRepository,
     IUsersRepository usersRepository,
     GoogleSheetManager googleSheetManager,
     IUserDiffsService userDiffService,

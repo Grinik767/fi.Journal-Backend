@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Repositories.Groups;
 
-public class GroupsRepository(JournalDbContext dbContext) : IRepository<Group>
+public class GroupsRepository(JournalDbContext dbContext) : IGroupsRepository
 {
     public async Task Add(Group group, CancellationToken ct)
     {

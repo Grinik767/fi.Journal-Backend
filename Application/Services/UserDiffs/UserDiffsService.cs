@@ -7,9 +7,8 @@ using Infrastructure.Repositories.Users;
 namespace Application.Services.UserDiffs;
 
 public class UserDiffsService(
-    IUsersDiffsRepository userDiffRepository,
-    IUsersRepository userRepository,
-    ExcelParser excelParser) : IUserDiffsService
+    IUserDiffsRepository userDiffRepository,
+    IUsersRepository userRepository) : IUserDiffsService
 {
     public async Task<List<UserDiff>> GetDiffsForUser(Guid userId, CancellationToken ct)
     {
