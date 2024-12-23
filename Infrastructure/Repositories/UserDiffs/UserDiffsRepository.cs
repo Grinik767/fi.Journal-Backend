@@ -39,12 +39,16 @@ public class UserDiffsRepository(JournalDbContext dbContext) : IUsersDiffsReposi
         await dbContext.UserDiffs.AsNoTracking()
             .Include(diff => diff.Table)
             .Where(diff => diff.UserId == userId)
-            .OrderByDescending(diff => diff.UpdateTime)
+            .GroupBy(diff => diff.TableId)
+            .Select(group => group
+                .OrderByDescending(diff => diff.UpdateTime)
+                .First())
             .ToListAsync(ct);
 
-    public async Task<List<UserDiff>> GetAllByUserWithCertainTable(Guid userId, Guid tableId, CancellationToken ct) =>
+
+    public async Task<UserDiff> GetAllByUserWithCertainTable(Guid userId, Guid tableId, CancellationToken ct) =>
         await dbContext.UserDiffs.AsNoTracking()
             .Include(diff => diff.Table)
             .Where(diff => diff.UserId == userId && diff.TableId == tableId)
-            .ToListAsync(ct);
+            .FirstAsync(ct);
 }
