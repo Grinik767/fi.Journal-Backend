@@ -17,18 +17,23 @@ public class UsersService(
 {
     private readonly AuthOptions _authOptions = authOptions.Value;
 
-    public async Task<User> Register(string name, string email, string password, CancellationToken ct) =>
-        await Add(new User(Guid.NewGuid(), name, email, passwordHasher.Generate(password)), ct);
+    public async Task<User> Register(string name, string email, string password, CancellationToken ct)
+    {
+        ValidatePassword(password);
+        return await Add(new User(Guid.NewGuid(), name, email, passwordHasher.Generate(password)), ct);
+    }
 
     public async Task<string> Login(string email, string password, CancellationToken ct)
     {
+        const string errorOutput = "Failed to login. Check credentials.";
+
         var user = await repository.GetByEmail(email, ct);
         if (user is null)
-            throw new InvalidCredentialException("Failed to login. Check credentials.");
+            throw new InvalidCredentialException(errorOutput);
 
         var result = passwordHasher.Verify(password, user.PasswordHash);
         if (!result)
-            throw new InvalidCredentialException("Failed to login. Check credentials.");
+            throw new InvalidCredentialException(errorOutput);
 
         return JwtProvider.GenerateToken(user.GenerateClaims(), _authOptions.JwtSecretKey, _authOptions.ExpireHours);
     }
@@ -38,9 +43,17 @@ public class UsersService(
         var user = await repository.GetById(id, ct);
 
         user.Email = email ?? user.Email;
-        if (password is not null)
-            user.PasswordHash = passwordHasher.Generate(password);
+        if (password is null) return await base.Update(user, ct);
+
+        ValidatePassword(password);
+        user.PasswordHash = passwordHasher.Generate(password);
 
         return await base.Update(user, ct);
+    }
+
+    private static void ValidatePassword(string password)
+    {
+        if (password.Length < 6)
+            throw new ArgumentException("Password must be longer than 6 chars");
     }
 }

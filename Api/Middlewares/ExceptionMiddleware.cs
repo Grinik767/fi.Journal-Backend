@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Security.Authentication;
 using Api.Contracts;
+using Infrastructure.Exceptions;
 
 namespace Api.Middlewares;
 
@@ -12,9 +13,9 @@ public class ExceptionMiddleware : IMiddleware
         {
             await next(context);
         }
-        catch (Exception ex) when (ex is InvalidOperationException or KeyNotFoundException)
+        catch (Exception ex) when (ex is EntityNotFoundException or KeyNotFoundException)
         {
-            await HandleExceptionAsync(context, HttpStatusCode.NotFound, "Object not found");
+            await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
         }
         catch (ArgumentException ex)
         {
