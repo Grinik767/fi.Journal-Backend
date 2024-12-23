@@ -3,12 +3,9 @@ using Google.Apis.Sheets.v4.Data;
 
 namespace GoogleSheetParser.GoogleSheet;
 
-public class GoogleSheetEditor
+public class GoogleSheetEditor(SheetsService sheetsService)
 {
-    private SheetsService SheetsService { get; }
-
-    public GoogleSheetEditor(SheetsService sheetsService) =>
-        SheetsService = sheetsService;
+    private SheetsService SheetsService { get; } = sheetsService;
 
     public void DeleteSingleValue(string googleSpreadSheetId, string cell, string? sheetName = null)
     {

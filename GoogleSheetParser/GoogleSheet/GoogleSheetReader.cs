@@ -3,22 +3,17 @@ using Google.Apis.Sheets.v4.Data;
 
 namespace GoogleSheetParser.GoogleSheet;
 
-public class GoogleSheetReader
+public class GoogleSheetReader(SheetsService sheetsService)
 {
-    private readonly SheetsService _sheetsService;
-
-    public GoogleSheetReader(SheetsService sheetsService) =>
-        _sheetsService = sheetsService;
-
     public Spreadsheet GetSpreadTable(string googleSpreadSheetIdentifier)
     {
         CheckForNull(googleSpreadSheetIdentifier);
-        return _sheetsService.Spreadsheets.Get(googleSpreadSheetIdentifier).Execute();
+        return sheetsService.Spreadsheets.Get(googleSpreadSheetIdentifier).Execute();
     }
 
     public async Task<int> GetSheetGid(string spreadSheetId, string sheetName)
     {
-        var request = _sheetsService.Spreadsheets.Get(spreadSheetId);
+        var request = sheetsService.Spreadsheets.Get(spreadSheetId);
         var sheet = await request.ExecuteAsync();
         var lists = sheet.Sheets;
         foreach (var list in lists)
@@ -42,7 +37,7 @@ public class GoogleSheetReader
         if (ranges is null || ranges.Length == 0)
             throw new ArgumentNullException("Не задан диапазон значений");
         
-        var getValueRequest = _sheetsService.Spreadsheets.Values.BatchGet(googleSpreadSheetIdentifier);
+        var getValueRequest = sheetsService.Spreadsheets.Values.BatchGet(googleSpreadSheetIdentifier);
         getValueRequest.Ranges = ranges;
         return getValueRequest.Execute();
     }
@@ -66,7 +61,7 @@ public class GoogleSheetReader
 
     private ValueRange MakeRequestsForValues(string googleSpreadSheetIdentifier, string valueRange)
     {
-        var getValuesRequest = _sheetsService.Spreadsheets.Values.Get(googleSpreadSheetIdentifier, valueRange);
+        var getValuesRequest = sheetsService.Spreadsheets.Values.Get(googleSpreadSheetIdentifier, valueRange);
         return getValuesRequest.Execute();
     }
 

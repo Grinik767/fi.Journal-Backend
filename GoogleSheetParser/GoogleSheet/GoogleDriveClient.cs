@@ -5,19 +5,14 @@ using Google.Apis.Services;
 
 namespace GoogleSheetParser.GoogleSheet;
 
-public class GDriveClient
+public class GDriveClient(string googleAuthJson)
 {
-    public DriveService DriveService { get; }
-
-    public GDriveClient(string googleAuthJson)
+    public DriveService DriveService { get; } = new(new BaseClientService.Initializer
     {
-        DriveService = new DriveService(new BaseClientService.Initializer
-        {
-            HttpClientInitializer = 
-                GoogleCredential.FromJson(googleAuthJson).CreateScoped(DriveService.Scope.Drive),
-            ApplicationName = "phi-journal"
-        });
-    }
+        HttpClientInitializer = 
+            GoogleCredential.FromJson(googleAuthJson).CreateScoped(DriveService.Scope.Drive),
+        ApplicationName = "phi-journal"
+    });
 
     public async Task DownloadSheetXlsx(string googleSheetId, string pathToDownload) 
     {

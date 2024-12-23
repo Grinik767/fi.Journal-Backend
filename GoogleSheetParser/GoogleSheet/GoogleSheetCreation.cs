@@ -5,16 +5,10 @@ using Google.Apis.Drive.v3.Data;
 
 namespace GoogleSheetParser.GoogleSheet;
 
-public class GoogleSheetCreation
+public class GoogleSheetCreation(SheetsService sheetsService, DriveService driveService)
 {
-    private SheetsService SheetsService { get; }
-    private DriveService DriveService { get; }
-
-    public GoogleSheetCreation(SheetsService sheetsService, DriveService driveService)
-    {
-        SheetsService = sheetsService;
-        DriveService = driveService;
-    }
+    private SheetsService SheetsService { get; } = sheetsService;
+    private DriveService DriveService { get; } = driveService;
 
     public Spreadsheet CreateNewTable(string dockName)
     {

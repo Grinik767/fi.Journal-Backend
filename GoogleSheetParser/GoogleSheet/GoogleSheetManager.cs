@@ -5,7 +5,6 @@ namespace GoogleSheetParser.GoogleSheet;
 public class GoogleSheetManager
 {
     private readonly GDriveClient _driveClient;
-    private readonly GSheetClient _sheetClient;
     private readonly GoogleSheetCreation _sheetCreation;
     private readonly GoogleSheetReader _sheetReader;
     private readonly GoogleSheetEditor _sheetEditor;
@@ -15,11 +14,11 @@ public class GoogleSheetManager
         var credentialsPath = Path.Combine(Environment.CurrentDirectory, serviceAccountKeyPath);
         var credentials = File.ReadAllText(credentialsPath);
         _driveClient = new GDriveClient(credentials);
-        _sheetClient = new GSheetClient(credentials);
+        var sheetClient = new GSheetClient(credentials);
         
-        _sheetCreation = new GoogleSheetCreation(_sheetClient.SheetsService, _driveClient.DriveService);
-        _sheetReader = new GoogleSheetReader(_sheetClient.SheetsService);
-        _sheetEditor = new GoogleSheetEditor(_sheetClient.SheetsService);
+        _sheetCreation = new GoogleSheetCreation(sheetClient.SheetsService, _driveClient.DriveService);
+        _sheetReader = new GoogleSheetReader(sheetClient.SheetsService);
+        _sheetEditor = new GoogleSheetEditor(sheetClient.SheetsService);
     }
     
     public Spreadsheet CreateNewSheet(string sheetTitle)
@@ -37,7 +36,7 @@ public class GoogleSheetManager
     public Spreadsheet GetSpreadsheet(string spreadsheetId) => 
         _sheetReader.GetSpreadTable(spreadsheetId);
 
-    public string GetSpreadSheedId(string url) 
+    public static string GetSpreadSheetId(string url) 
         => GSheetClient.GetSpreadsheetId(url);
 
     public object GetSingleCellValue(string spreadsheetId, string range, string? sheetName = null) => 

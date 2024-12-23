@@ -4,12 +4,12 @@ namespace GoogleSheetParser.Parser;
 
 public class ExcelParser
 {
-    public async Task<Dictionary<string, double>> GetStudentsPoints(
+    public static async Task<Dictionary<string, double>> GetStudentsPoints(
         string student,
         string studentsColumn,
         int headersRow,
         string pathToSheet,
-        int additionalDataRow = -1,
+        int subHeader = -1,
         bool needToConsiderHeaderRow=false,
         string listForChecking = "")
     {
@@ -27,32 +27,32 @@ public class ExcelParser
             if (listForChecking != "")
                 if (!string.Equals(worksheet.Name, listForChecking, StringComparison.CurrentCultureIgnoreCase))
                     continue;
-            var studentRow = FindStudentRow(worksheet, studentColIndex, student);
-            if (studentRow == -1) continue;
+            var studentsRow = FindStudentRow(worksheet, studentColIndex, student);
+            if (studentsRow == -1) continue;
 
             return ExtractStudentPoints(
                 worksheet,
-                studentRow,
+                studentsRow,
                 studentColIndex,
                 headersRow,
-                additionalDataRow,
+                subHeader,
                 needToConsiderHeaderRow);
         }
 
         return new Dictionary<string, double>();
     }
 
-    public async Task<Dictionary<string, double>> FindDiff(
+    public static async Task<Dictionary<string, double>> FindDiff(
         string pathToBackUp,
         string pathToCurrentSheet,
         string student,
         string studentsColumn,
         int headersRow,
-        int additionalDataRow = -1,
+        int subHeader = -1,
         string listForChecking = "")
     {
-        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, additionalDataRow, false, listForChecking);
-        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, additionalDataRow, false, listForChecking);
+        var backupTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToBackUp, subHeader, false, listForChecking);
+        var currentTask = GetStudentsPoints(student, studentsColumn, headersRow, pathToCurrentSheet, subHeader, false, listForChecking);
 
         await Task.WhenAll(backupTask, currentTask);
             
@@ -62,7 +62,7 @@ public class ExcelParser
         return resultsFromCurrentSheet.Except(resultsFromBackUp).ToDictionary(x => x.Key, x => x.Value);
     }
     
-    public async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet, string listForChecking="")
+    public static async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet, string listForChecking="")
     {
         var fileInfo = new FileInfo(pathToSheet);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -115,18 +115,18 @@ public class ExcelParser
 
     private static Dictionary<string, double> ExtractStudentPoints(
         ExcelWorksheet worksheet,
-        int studentRow,
+        int studentsRow,
         int studentColIndex,
         int headersRow,
-        int additionalDataRow,
+        int subHeader,
         bool needToConsiderHiddenRows = false)
     {
         var headerDict = GetHeaderDictionary(worksheet, headersRow, studentColIndex);
-        var additionalDataDict = additionalDataRow > 0
-            ? GetAdditionalDataDictionary(worksheet, additionalDataRow, studentColIndex)
+        var additionalDataDict = subHeader > 0
+            ? GetSubHeaderDictionary(worksheet, subHeader, studentColIndex)
             : new Dictionary<int, string>();
 
-        return PopulatePoints(worksheet, studentRow, studentColIndex, headerDict, additionalDataDict, needToConsiderHiddenRows);
+        return PopulatePoints(worksheet, studentsRow, studentColIndex, headerDict, additionalDataDict, needToConsiderHiddenRows);
     }
 
     private static Dictionary<int, string> GetHeaderDictionary(ExcelWorksheet worksheet, int headersRow, int studentColIndex)
@@ -144,7 +144,7 @@ public class ExcelParser
         return headerDict;
     }
 
-    private static Dictionary<int, string> GetAdditionalDataDictionary(ExcelWorksheet worksheet, int additionalDataRow, int studentColIndex)
+    private static Dictionary<int, string> GetSubHeaderDictionary(ExcelWorksheet worksheet, int additionalDataRow, int studentColIndex)
     {
         var additionalDataDict = new Dictionary<int, string>();
         PopulateMergedCells(worksheet, additionalDataRow, additionalDataDict);
