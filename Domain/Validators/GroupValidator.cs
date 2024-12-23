@@ -8,6 +8,6 @@ public class GroupValidator : AbstractValidator<Group>
     public GroupValidator()
     {
         RuleFor(g => g.Name)
-            .Length(3, 30);
+            .Length(3, 20);
     }
 }
