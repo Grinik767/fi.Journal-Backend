@@ -7,6 +7,7 @@ public class UserDiffValidator : AbstractValidator<UserDiff>
 {
     public UserDiffValidator()
     {
-        RuleFor(x => x.UpdateTime).NotEmpty();
+        RuleFor(d => d.UpdateTime)
+            .Must(dt => dt.Kind == DateTimeKind.Utc);
     }
 }
