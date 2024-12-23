@@ -12,8 +12,8 @@ using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
 using Infrastructure;
 using Infrastructure.PasswordHasher;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.Groups;
+using Infrastructure.Repositories.Tables;
 using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +40,7 @@ services.AddTransient<IValidator<UserDiff>, UserDiffValidator>();
 
 services.AddScoped<IUsersRepository, UsersRepository>();
 services.AddScoped<IGroupsRepository, GroupsRepository>();
-services.AddScoped<IRepository<Table>, TablesRepository>();
+services.AddScoped<ITablesRepository, TablesRepository>();
 services.AddScoped<IUserDiffsRepository, UserDiffsRepository>();
 
 services.AddScoped<IUsersService, UsersService>();

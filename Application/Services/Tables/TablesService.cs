@@ -1,25 +1,22 @@
 ﻿using Application.Services.UserDiffs;
 using Domain.Entities;
 using FluentValidation;
-using Infrastructure.Repositories;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
 using Infrastructure.Repositories.Groups;
+using Infrastructure.Repositories.Tables;
 using Infrastructure.Repositories.Users;
 
 namespace Application.Services.Tables;
 
 public class TablesService(
-    IRepository<Table> tablesRepository,
+    ITablesRepository tablesRepository,
     IGroupsRepository groupsRepository,
     IUsersRepository usersRepository,
     GoogleSheetManager googleSheetManager,
     IUserDiffsService userDiffService,
-    IValidator<Table> validator,
-    IRepository<Table> tableRepository) : BaseService<Table>(tablesRepository, validator), ITablesService
+    IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
-    private readonly IRepository<Table> _tablesRepository = tablesRepository;
-
     public async Task<Table> Add(string name, string url, Guid groupId, int headerRow, string studentColumn,
         CancellationToken ct, int additionalData = -1, string listToSearch = "")
     {
@@ -30,7 +27,7 @@ public class TablesService(
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
     {
-        var table = await _tablesRepository.GetById(id, ct);
+        var table = await tablesRepository.GetById(id, ct);
         table.Name = name ?? table.Name;
         return await base.Update(table, ct);
     }
@@ -77,7 +74,7 @@ public class TablesService(
 
         File.Move(tempPath, path);
         table.UpdateTime = DateTime.UtcNow;
-        await tableRepository.Update(table, ct);
+        await tablesRepository.Update(table, ct);
 
         return await GetStudentsPointFromExistingTable(user, table, path);
     }

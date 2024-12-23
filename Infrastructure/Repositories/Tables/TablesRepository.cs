@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Repositories.Tables;
 
-public class TablesRepository(JournalDbContext dbContext) : IRepository<Table>
+public class TablesRepository(JournalDbContext dbContext) : ITablesRepository
 {
     public async Task Add(Table table, CancellationToken ct)
     {
