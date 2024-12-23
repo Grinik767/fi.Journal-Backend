@@ -13,7 +13,7 @@ public class ExceptionMiddleware : IMiddleware
         {
             await next(context);
         }
-        catch (Exception ex) when (ex is EntityNotFoundException or KeyNotFoundException)
+        catch (EntityNotFoundException ex)
         {
             await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
         }

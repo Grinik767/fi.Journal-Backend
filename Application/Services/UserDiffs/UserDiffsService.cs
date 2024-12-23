@@ -14,7 +14,7 @@ public class UserDiffsService(
     public async Task<List<UserDiff>> GetDiffsForUser(Guid userId, CancellationToken ct)
     {
         var user = await userRepository.GetById(userId, ct);
-        
+
         var userDiffs = await userDiffRepository.GetAllByUser(user.Id, ct);
         return userDiffs;
     }
