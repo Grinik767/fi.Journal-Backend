@@ -49,21 +49,16 @@ services.AddScoped<ITablesService, TablesService>();
 services.AddScoped<IUserDiffsService, UserDiffsService>();
 
 services.AddSingleton<GoogleSheetManager>(_ =>
-    new GoogleSheetManager(configuration.GetConnectionString("CredentialsPath")!));
+    new GoogleSheetManager(configuration.GetConnectionString("GoogleCredentialsPath")!));
 
 services.AddSingleton<ExcelParser>();
 services.AddCors(options =>
 {
+    var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+    
     options.AddPolicy("AllowFrontend",
         corsPolicyBuilder => corsPolicyBuilder
-            .WithOrigins(
-                "http://localhost",
-                "https://localhost",
-                "http://localhost:3003",
-                "https://localhost:3003",
-                "http://fi-journal.ru",
-                "https://fi-journal.ru"
-            )
+            .WithOrigins(allowedOrigins!)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
