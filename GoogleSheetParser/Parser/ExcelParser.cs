@@ -197,7 +197,7 @@ public class ExcelParser
 
             if (!double.TryParse(worksheet.Cells[studentRow, col].Text, out var point)) continue;
             if (point != 0.0 || point == 0.0 && !isColumnHidden)
-                points[header] = point;
+                points[header] = double.Round(point, 3);
         }
         return points;
     }
