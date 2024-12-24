@@ -5,9 +5,10 @@ using Infrastructure.Repositories.Users;
 using Moq;
 using NUnit.Framework;
 
-namespace Application.Tests;
+namespace Tests.Application.Services;
 
-public class UserDiffsServiceTests
+[TestFixture]
+public class TestsUserDiffsService
 {
     private Mock<IUserDiffsRepository> _userDiffsRepositoryMock;
     private Mock<IUsersRepository> _usersRepositoryMock;

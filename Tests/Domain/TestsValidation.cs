@@ -4,9 +4,9 @@ using Domain.Validators;
 
 namespace Domain.Tests;
 
-public class TestValidation
+public class TestsValidation
 {
-    [TestFixture]
+    
     public class ValidatorTests
     {
         [Test]

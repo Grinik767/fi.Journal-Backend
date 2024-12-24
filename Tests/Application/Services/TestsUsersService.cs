@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using Application;
 using Application.Services.Users;
 using Domain.Entities;
 using FluentValidation;
@@ -8,10 +9,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 
-namespace Application.Tests;
+namespace Tests.Application.Services;
 
 [TestFixture]
-public class UsersServiceTests
+public class TestsUsersService
 {
     private Mock<IUsersRepository> _repositoryMock;
     private Mock<IValidator<User>> _validatorMock;
