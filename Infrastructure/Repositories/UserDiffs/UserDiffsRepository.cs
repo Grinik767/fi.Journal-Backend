@@ -43,6 +43,7 @@ public class UserDiffsRepository(JournalDbContext dbContext) : IUserDiffsReposit
             .Select(group => group
                 .OrderByDescending(diff => diff.UpdateTime)
                 .First())
+            .OrderByDescending(diff => diff.UpdateTime)
             .ToListAsync(ct);
 
     public async Task<List<UserDiff>> GetOldDiffsByUser(Guid userId, CancellationToken ct)
