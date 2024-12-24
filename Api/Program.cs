@@ -16,7 +16,9 @@ using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Tables;
 using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
+using Infrastructure.DeleteJob;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -63,6 +65,20 @@ services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials());
 });
+
+services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+
+    q.ScheduleJob<UserDiffsDeleter>(trigger => trigger
+        .WithIdentity("deleteDiffsTrigger")
+        .WithCronSchedule("0 0 3 * * ?", cron => cron
+                .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
+        )
+    );
+});
+
+services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 services.AddAutoMapper(typeof(MappingProfile));
 

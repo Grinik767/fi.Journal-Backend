@@ -27,14 +27,8 @@ public class UserDiffsService(
 
             if (points.Count == 0) continue;
 
-            var usersDiff = await userDiffRepository.GetAllByUserWithCertainTable(user.Id, table.Id, ct);
-            await DeleteUsersDiffs(usersDiff, ct);
-
             await userDiffRepository.Add(new UserDiff(Guid.NewGuid(), table.Id, user.Id,
                 points.ToDictionary(key => key.Key, val => val.Value.ToString(CultureInfo.InvariantCulture))), ct);
         }
     }
-
-    private async Task DeleteUsersDiffs(UserDiff userDiff, CancellationToken ct) => 
-        await userDiffRepository.Delete(userDiff.Id, ct);
 }

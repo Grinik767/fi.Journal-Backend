@@ -6,4 +6,5 @@ public interface IUserDiffsRepository : IRepository<UserDiff>
 {
     Task<List<UserDiff>> GetAllByUser(Guid userId, CancellationToken ct);
     Task<UserDiff> GetAllByUserWithCertainTable(Guid userId, Guid tableId, CancellationToken ct);
+    Task<List<UserDiff>> GetOldDiffsByUser(Guid userId, CancellationToken ct);
 }
