@@ -1,11 +1,10 @@
-using Quartz;
 using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
+using Quartz;
 
-namespace Infrastructure.DeleteJob;
+namespace Infrastructure.DeleteUserDiffsJob;
 
-public class UserDiffsDeleter(IUsersRepository usersRepository, IUserDiffsRepository userDiffsRepository)
-    : IJob
+public class UserDiffsDeleter(IUsersRepository usersRepository, IUserDiffsRepository userDiffsRepository) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {

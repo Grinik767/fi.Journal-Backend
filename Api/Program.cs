@@ -11,12 +11,12 @@ using FluentValidation;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
 using Infrastructure;
+using Infrastructure.DeleteUserDiffsJob;
 using Infrastructure.PasswordHasher;
 using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Tables;
 using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
-using Infrastructure.DeleteJob;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -57,7 +57,7 @@ services.AddSingleton<ExcelParser>();
 services.AddCors(options =>
 {
     var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
-    
+
     options.AddPolicy("AllowFrontend",
         corsPolicyBuilder => corsPolicyBuilder
             .WithOrigins(allowedOrigins!)
@@ -68,12 +68,10 @@ services.AddCors(options =>
 
 services.AddQuartz(q =>
 {
-    q.UseMicrosoftDependencyInjectionJobFactory();
-
     q.ScheduleJob<UserDiffsDeleter>(trigger => trigger
         .WithIdentity("deleteDiffsTrigger")
         .WithCronSchedule("0 0 1 * * ?", cron => cron
-                .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
+            .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
         )
     );
 });
