@@ -1,5 +1,4 @@
 ﻿using Api.Contracts.Group;
-using Api.Dtos;
 using Api.Dtos.Group;
 using Application.Services.Groups;
 using AutoMapper;
@@ -46,22 +45,6 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     {
         var group = await service.GetById(id, ct);
         return Ok(mapper.Map<MinimalGroupDto>(group));
-    }
-
-    [HttpGet("{id:guid}/users")]
-    [Authorize(Policy = "SuperAdmin")]
-    public async Task<List<UserDto>> GetUsers(Guid id, CancellationToken ct)
-    {
-        var users = await service.GetUsers(id, ct);
-        return mapper.Map<List<UserDto>>(users);
-    }
-
-    [HttpGet("{id:guid}/tables")]
-    [Authorize(Policy = "SuperAdmin")]
-    public async Task<List<TableDto>> GetTables(Guid id, CancellationToken ct)
-    {
-        var tables = await service.GetTables(id, ct);
-        return mapper.Map<List<TableDto>>(tables);
     }
 
     [HttpPost("{id:guid}/users")]

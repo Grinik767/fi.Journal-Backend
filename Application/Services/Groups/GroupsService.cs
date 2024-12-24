@@ -26,18 +26,6 @@ public class GroupsService(
         return await base.Update(group, ct);
     }
 
-    public async Task<List<User>> GetUsers(Guid id, CancellationToken ct)
-    {
-        var group = await groupsRepository.GetById(id, ct);
-        return group.Users.ToList();
-    }
-
-    public async Task<List<Table>> GetTables(Guid id, CancellationToken ct)
-    {
-        var group = await groupsRepository.GetById(id, ct);
-        return group.Tables.ToList();
-    }
-
     public async Task<Group> AddUser(Guid id, Guid userId, CancellationToken ct)
     {
         var group = await groupsRepository.GetById(id, ct);
