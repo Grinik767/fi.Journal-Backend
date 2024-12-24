@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="7.4.2" />
+      <PackageReference Include="EPPlus.Interfaces" Version="6.1.1" />
+      <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3587" />
+      <PackageReference Include="Google.Apis.Sheets.v4" Version="1.68.0.3568" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="googleCredentions.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>
