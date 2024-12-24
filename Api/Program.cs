@@ -72,7 +72,7 @@ services.AddQuartz(q =>
 
     q.ScheduleJob<UserDiffsDeleter>(trigger => trigger
         .WithIdentity("deleteDiffsTrigger")
-        .WithCronSchedule("0 0 3 * * ?", cron => cron
+        .WithCronSchedule("0 0 1 * * ?", cron => cron
                 .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
         )
     );
