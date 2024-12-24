@@ -19,18 +19,12 @@ public class TablesRepository(JournalDbContext dbContext) : ITablesRepository
     public async Task<Table> GetById(Guid id, CancellationToken ct) =>
         await dbContext.Tables
             .Include(t => t.Group)
-            .ThenInclude(g => g!.Admin)
-            .Include(t => t.Group)
-            .ThenInclude(g => g!.Users)
             .FirstAsync(table => table.Id == id, ct);
 
     public async Task<List<Table>> GetAll(CancellationToken ct) =>
         await dbContext.Tables
             .AsNoTracking()
             .Include(t => t.Group)
-            .ThenInclude(g => g!.Admin)
-            .Include(t => t.Group)
-            .ThenInclude(g => g!.Users)
             .ToListAsync(ct);
 
     public async Task<Table> Update(Table table, CancellationToken ct)

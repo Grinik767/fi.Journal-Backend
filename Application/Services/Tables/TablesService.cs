@@ -79,7 +79,7 @@ public class TablesService(
         return await GetStudentsPointFromExistingTable(user, table, path);
     }
 
-    private async Task<Dictionary<string, double>> GetStudentsPointFromExistingTable(User user, Table table,
+    private static async Task<Dictionary<string, double>> GetStudentsPointFromExistingTable(User user, Table table,
         string path)
     {
         var points = await ExcelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,

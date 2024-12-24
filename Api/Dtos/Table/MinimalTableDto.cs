@@ -1,6 +1,6 @@
-namespace Api.Dtos;
+namespace Api.Dtos.Table;
 
-public class FrontendTableDto
+public class MinimalTableDto
 {
     public Guid Id { get; init; }
     public string Name { get; init; }

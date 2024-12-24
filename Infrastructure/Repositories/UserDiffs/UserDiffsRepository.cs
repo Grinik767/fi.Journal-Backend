@@ -52,7 +52,7 @@ public class UserDiffsRepository(JournalDbContext dbContext) : IUserDiffsReposit
             .Where(diff => diff.UserId == userId)
             .ToListAsync(ct);
 
-        
+
         return userDiffs
             .GroupBy(diff => diff.TableId)
             .SelectMany(group => group
@@ -60,12 +60,4 @@ public class UserDiffsRepository(JournalDbContext dbContext) : IUserDiffsReposit
                 .Skip(1))
             .ToList();
     }
-    
-
-
-    public async Task<UserDiff> GetAllByUserWithCertainTable(Guid userId, Guid tableId, CancellationToken ct) =>
-        await dbContext.UserDiffs.AsNoTracking()
-            .Include(diff => diff.Table)
-            .Where(diff => diff.UserId == userId && diff.TableId == tableId)
-            .FirstAsync(ct);
 }

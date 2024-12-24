@@ -1,4 +1,4 @@
-﻿namespace Api.Dtos;
+﻿namespace Api.Dtos.Group;
 
 public class GroupDto
 {
@@ -6,6 +6,5 @@ public class GroupDto
     public string Name { get; init; }
     public UserDto Admin { get; init; }
     public Guid[] UserIds { get; init; }
-    
     public Guid[] TableIds { get; init; }
 }

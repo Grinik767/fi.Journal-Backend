@@ -1,4 +1,6 @@
-﻿namespace Api.Dtos;
+﻿using Api.Dtos.Group;
+
+namespace Api.Dtos;
 
 public class TableDto
 {

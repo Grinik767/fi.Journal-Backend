@@ -1,6 +1,6 @@
-namespace Api.Dtos;
+namespace Api.Dtos.Group;
 
-public class FrontendGroupDto
+public class MinimalGroupDto
 {
     public Guid Id { get; init; }
     public string Name { get; init; }

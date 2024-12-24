@@ -1,5 +1,6 @@
 ﻿using Api.Contracts.Group;
 using Api.Dtos;
+using Api.Dtos.Group;
 using Application.Services.Groups;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -33,10 +34,10 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
 
     [HttpGet]
     [Authorize(Policy = "SuperAdmin")]
-    public async Task<List<FrontendGroupDto>> GetAll(CancellationToken ct)
+    public async Task<List<GroupDto>> GetAll(CancellationToken ct)
     {
         var groups = await service.GetAll(ct);
-        return mapper.Map<List<FrontendGroupDto>>(groups);
+        return mapper.Map<List<GroupDto>>(groups);
     }
 
     [HttpGet("{id:guid}")]
@@ -44,7 +45,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var group = await service.GetById(id, ct);
-        return Ok(mapper.Map<FrontendGroupDto>(group));
+        return Ok(mapper.Map<MinimalGroupDto>(group));
     }
 
     [HttpGet("{id:guid}/users")]
@@ -57,10 +58,10 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
 
     [HttpGet("{id:guid}/tables")]
     [Authorize(Policy = "SuperAdmin")]
-    public async Task<List<FrontendTableDto>> GetTables(Guid id, CancellationToken ct)
+    public async Task<List<TableDto>> GetTables(Guid id, CancellationToken ct)
     {
         var tables = await service.GetTables(id, ct);
-        return mapper.Map<List<FrontendTableDto>>(tables);
+        return mapper.Map<List<TableDto>>(tables);
     }
 
     [HttpPost("{id:guid}/users")]
