@@ -28,7 +28,7 @@ public class UsersController(
     [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken ct)
     {
-        var token = await service.Login(request.Email, request.Password, ct);
+        var token = await service.Login(request.Email, request.Password, request.Remember, ct);
         return Ok(token);
     }
 

@@ -46,7 +46,7 @@ public class UsersServiceTests
         const string name = "TestUser";
         const string email = "test@example.com";
         const string password = "123";
-            
+
         Assert.ThrowsAsync<ArgumentException>(async () =>
             await _usersService.Register(name, email, password, CancellationToken.None));
     }
@@ -58,9 +58,9 @@ public class UsersServiceTests
         const string password = "password123";
 
         _repositoryMock.Setup(r => r.GetByEmail(email, CancellationToken.None)).ReturnsAsync((User)null);
-            
+
         Assert.ThrowsAsync<InvalidCredentialException>(async () =>
-            await _usersService.Login(email, password, CancellationToken.None));
+            await _usersService.Login(email, password, false, CancellationToken.None));
     }
 
     [Test]
@@ -73,8 +73,8 @@ public class UsersServiceTests
 
         _repositoryMock.Setup(r => r.GetByEmail(email, CancellationToken.None)).ReturnsAsync(user);
         _passwordHasherMock.Setup(p => p.Verify(password, hashedPassword)).Returns(false);
-            
+
         Assert.ThrowsAsync<InvalidCredentialException>(async () =>
-            await _usersService.Login(email, password, CancellationToken.None));
+            await _usersService.Login(email, password, false, CancellationToken.None));
     }
 }

@@ -23,7 +23,7 @@ public class UsersService(
         return await Add(new User(Guid.NewGuid(), name, email, passwordHasher.Generate(password)), ct);
     }
 
-    public async Task<string> Login(string email, string password, CancellationToken ct)
+    public async Task<string> Login(string email, string password, bool remember, CancellationToken ct)
     {
         const string errorOutput = "Failed to login. Check credentials.";
 
@@ -35,7 +35,8 @@ public class UsersService(
         if (!result)
             throw new InvalidCredentialException(errorOutput);
 
-        return JwtProvider.GenerateToken(user.GenerateClaims(), _authOptions.JwtSecretKey, _authOptions.ExpireHours);
+        return JwtProvider.GenerateToken(user.GenerateClaims(), _authOptions.JwtSecretKey,
+            remember ? _authOptions.ExpireHoursRemember : _authOptions.ExpireHours);
     }
 
     public async Task<User> Update(Guid id, string? email, string? password, CancellationToken ct)
