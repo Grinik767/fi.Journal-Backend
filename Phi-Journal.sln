@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSheetParser", "GoogleSheetParser\GoogleSheetParser.csproj", "{A297FF4E-0171-48E9-9322-19F84B26154C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DD83E5ED-AD5D-490F-9AB1-EB302D80DEDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,5 +43,9 @@ Global
 		{A297FF4E-0171-48E9-9322-19F84B26154C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A297FF4E-0171-48E9-9322-19F84B26154C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A297FF4E-0171-48E9-9322-19F84B26154C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD83E5ED-AD5D-490F-9AB1-EB302D80DEDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD83E5ED-AD5D-490F-9AB1-EB302D80DEDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD83E5ED-AD5D-490F-9AB1-EB302D80DEDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD83E5ED-AD5D-490F-9AB1-EB302D80DEDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
