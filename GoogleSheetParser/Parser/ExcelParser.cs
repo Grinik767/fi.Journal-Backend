@@ -2,9 +2,9 @@ using OfficeOpenXml;
 
 namespace GoogleSheetParser.Parser;
 
-public class ExcelParser
+public class ExcelParser : IExcelParser
 {
-    public static async Task<Dictionary<string, double>> GetStudentsPoints(
+    public async Task<Dictionary<string, double>> GetStudentsPoints(
         string student,
         string studentsColumn,
         int headersRow,
@@ -42,7 +42,7 @@ public class ExcelParser
         return new Dictionary<string, double>();
     }
 
-    public static async Task<Dictionary<string, double>> FindDiff(
+    public async Task<Dictionary<string, double>> FindDiff(
         string pathToBackUp,
         string pathToCurrentSheet,
         string student,
@@ -62,7 +62,7 @@ public class ExcelParser
         return resultsFromCurrentSheet.Except(resultsFromBackUp).ToDictionary(x => x.Key, x => x.Value);
     }
     
-    public static async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet, string listForChecking="")
+    public async Task<(int studentRow, string sheetName)> GetStudentRow(string studentColumnIndex, string student, string pathToSheet, string listForChecking="")
     {
         var fileInfo = new FileInfo(pathToSheet);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

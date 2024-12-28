@@ -2,7 +2,7 @@ using Google.Apis.Sheets.v4.Data;
 
 namespace GoogleSheetParser.GoogleSheet;
 
-public class GoogleSheetManager
+public class GoogleSheetManager : IGoogleSheetManager
 {
     private readonly GDriveClient _driveClient;
     private readonly GoogleSheetCreation _sheetCreation;

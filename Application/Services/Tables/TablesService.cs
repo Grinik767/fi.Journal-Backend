@@ -13,8 +13,9 @@ public class TablesService(
     ITablesRepository tablesRepository,
     IGroupsRepository groupsRepository,
     IUsersRepository usersRepository,
-    GoogleSheetManager googleSheetManager,
+    IGoogleSheetManager googleSheetManager,
     IUserDiffsService userDiffService,
+    IExcelParser excelParser,
     IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
     public async Task<Table> Add(string name, string url, Guid groupId, int headerRow, string studentColumn,
@@ -37,10 +38,10 @@ public class TablesService(
         var user = await usersRepository.GetById(studentId, ct);
         var table = await GetById(tableId, ct);
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
-        var spreadSheetId = GoogleSheetManager.GetSpreadSheetId(table.Url);
+        var spreadSheetId = IGoogleSheetManager.GetSpreadSheetId(table.Url);
         if (!File.Exists(path))
             await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
-        var studentRow = await ExcelParser.GetStudentRow(table.StudentColumn, user.Name, path, table.ListToSearch);
+        var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path, table.ListToSearch);
         var listGid = await googleSheetManager.GetSheetGid(spreadSheetId, studentRow.sheetName);
         if (listGid == -1)
             return table;
@@ -57,7 +58,7 @@ public class TablesService(
         if (!table.Group.Users.Select(x => x.Id).ToList().Contains(user.Id))
             return new Dictionary<string, double>();
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
-        var spreadSheetId = GoogleSheetManager.GetSpreadSheetId(table.Url);
+        var spreadSheetId = IGoogleSheetManager.GetSpreadSheetId(table.Url);
         var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
         if (DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime &&
             (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10 && File.Exists(path))
@@ -79,10 +80,10 @@ public class TablesService(
         return await GetStudentsPointFromExistingTable(user, table, path);
     }
 
-    private static async Task<Dictionary<string, double>> GetStudentsPointFromExistingTable(User user, Table table,
+    private async Task<Dictionary<string, double>> GetStudentsPointFromExistingTable(User user, Table table,
         string path)
     {
-        var points = await ExcelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
+        var points = await excelParser.GetStudentsPoints(user.Name, table.StudentColumn, table.HeaderRow, path,
             table.AdditionalData, true, table.ListToSearch);
         return ChangeOrderToStartFromSum(points);
     }

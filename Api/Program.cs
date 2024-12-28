@@ -50,10 +50,10 @@ services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
 services.AddScoped<IUserDiffsService, UserDiffsService>();
 
-services.AddSingleton<GoogleSheetManager>(_ =>
+services.AddSingleton<IGoogleSheetManager, GoogleSheetManager>(_ =>
     new GoogleSheetManager(configuration.GetConnectionString("GoogleCredentialsPath")!));
 
-services.AddSingleton<ExcelParser>();
+services.AddSingleton<IExcelParser, ExcelParser>();
 services.AddCors(options =>
 {
     var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();

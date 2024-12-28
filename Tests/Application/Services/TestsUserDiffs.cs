@@ -19,10 +19,7 @@ public class TestsUserDiffsService
     {
         _userDiffsRepositoryMock = new Mock<IUserDiffsRepository>();
         _usersRepositoryMock = new Mock<IUsersRepository>();
-        _userDiffsService = new UserDiffsService(
-            _userDiffsRepositoryMock.Object,
-            _usersRepositoryMock.Object
-        );
+        
     }
 
     [Test]
