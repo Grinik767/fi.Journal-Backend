@@ -77,12 +77,12 @@ public class UsersController(
     [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<IActionResult> SendEmailConfirmationLink(Guid id, CancellationToken ct)
     {
-        return Ok();
+        throw new NotImplementedException();
     }
 
-    [HttpGet("confirm/{emailConfirmationId:guid}")]
+    [HttpGet("confirmEmail/{emailConfirmationId:guid}")]
     public async Task<IActionResult> ConfirmEmail(Guid emailConfirmationId, CancellationToken ct)
     {
-        return Ok();
+        throw new NotImplementedException();
     }
 }
