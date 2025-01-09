@@ -7,4 +7,6 @@ public interface IUsersRepository : IRepository<User>
     Task<User?> GetByEmail(string email, CancellationToken ct);
 
     Task<bool> IsSuperAdmin(Guid id);
+
+    Task<bool> IsEmailConfirmed(Guid id, CancellationToken ct);
 }

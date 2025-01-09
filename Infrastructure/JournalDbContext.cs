@@ -12,6 +12,7 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
     public DbSet<UserDiff> UserDiffs { get; init; }
     
     public DbSet<SuperAdmin> SuperAdmins { get; init; }
+    public DbSet<EmailConfirmation> EmailConfirmations { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,6 +21,7 @@ public class JournalDbContext(DbContextOptions<JournalDbContext> options) : DbCo
         modelBuilder.ApplyConfiguration(new UsersConfiguration());
         modelBuilder.ApplyConfiguration(new UserDiffConfiguration());
         modelBuilder.ApplyConfiguration(new SuperAdminConfiguration());
+        modelBuilder.ApplyConfiguration(new EmailConfirmationsConfiguration());
         
         base.OnModelCreating(modelBuilder);
     }

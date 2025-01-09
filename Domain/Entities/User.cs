@@ -11,6 +11,8 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;
+    public bool IsEmailConfirmed { get; set; } = false;
+    
     public IEnumerable<Group> Groups => _groups;
     public IEnumerable<Group> GroupsAsAdmin => _groupsAsAdmin;
     public IEnumerable<UserDiff> UserDiffs => _userDiffs;

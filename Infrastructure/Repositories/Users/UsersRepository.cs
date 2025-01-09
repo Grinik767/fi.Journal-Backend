@@ -43,4 +43,12 @@ public class UsersRepository(JournalDbContext dbContext) : IUsersRepository
     public async Task<bool> IsSuperAdmin(Guid id) =>
         await dbContext.SuperAdmins.AsNoTracking()
             .AnyAsync(s => s.UserId == id);
+
+    public async Task<bool> IsEmailConfirmed(Guid id, CancellationToken ct)
+    {
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstAsync(user => user.Id == id, ct);
+        return user.IsEmailConfirmed;
+    }
 }
