@@ -72,4 +72,17 @@ public class UsersController(
         var result = await userDiffsService.GetDiffsForUser(id, ct);
         return mapper.Map<List<UserDiffDto>>(result);
     }
+
+    [HttpPost("{id:guid}/confirmEmail")]
+    [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
+    public async Task<IActionResult> SendEmailConfirmationLink(Guid id, CancellationToken ct)
+    {
+        return Ok();
+    }
+
+    [HttpGet("confirm/{emailConfirmationId:guid}")]
+    public async Task<IActionResult> ConfirmEmail(Guid emailConfirmationId, CancellationToken ct)
+    {
+        return Ok();
+    }
 }

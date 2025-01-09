@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20250109120743_emailConfirmation")]
+    [Migration("20250109154501_emailConfirmation")]
     partial class emailConfirmation
     {
         /// <inheritdoc />
@@ -32,9 +32,6 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<int>("Code")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
