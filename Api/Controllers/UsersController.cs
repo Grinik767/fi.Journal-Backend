@@ -80,13 +80,15 @@ public class UsersController(
     public async Task<IActionResult> SendEmailConfirmationLink(Guid id, CancellationToken ct)
     {
         var emailConfirmation = await emailConfirmationsService.CreateEmailConfirmationLink(id, ct);
-        //await emailConfirmationsService.SendEmailConfirmationLink(emailConfirmation.Id, ct);
+        await emailConfirmationsService.SendEmailConfirmationLink(emailConfirmation.Id, ct);
         return Ok();
     }
 
     [HttpGet("confirmEmail/{emailConfirmationId:guid}")]
     public async Task<IActionResult> ConfirmEmail(Guid emailConfirmationId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await emailConfirmationsService.ConfirmEmail(emailConfirmationId, ct);
+
+        return Redirect("https://fi-journal.ru");
     }
 }

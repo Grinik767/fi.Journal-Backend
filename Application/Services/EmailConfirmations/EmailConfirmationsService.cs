@@ -40,12 +40,10 @@ public class EmailConfirmationsService(
             message.Body = new TextPart("html")
             {
                 Text =
-                    $"<p>Здравствуйте, {emailConfirmation.User.Name}!</p><p>Для подтверждения вашего email, " +
-                    $"перейдите по следующей ссылке:</p><p><a href=\"{confirmationLink}\">Подтвердить Email</a></p>"
+                    $"<p>Здравствуйте, {emailConfirmation.User.Name}!</p><p>Для подтверждения Вашего email, " +
+                    $"перейдите по следующей ссылке:</p><p>{confirmationLink}</p>"
             };
             await emailService.Send(message);
-
-            await emailConfirmationsRepository.Delete(emailConfirmation.Id, ct);
         }
         catch (InvalidOperationException e)
         {
@@ -53,8 +51,20 @@ public class EmailConfirmationsService(
         }
     }
 
-    public Task ConfirmEmail(Guid id, CancellationToken ct)
+    public async Task ConfirmEmail(Guid id, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var emailConfirmation = await emailConfirmationsRepository.GetById(id, ct);
+
+            emailConfirmation.User.IsEmailConfirmed = true;
+            await usersRepository.Update(emailConfirmation.User, ct);
+            
+            await emailConfirmationsRepository.Delete(emailConfirmation.Id, ct);
+        }
+        catch (InvalidOperationException e)
+        {
+            throw new EntityNotFoundException("Object not found", e);
+        }
     }
 }
