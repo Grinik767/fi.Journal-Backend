@@ -19,9 +19,17 @@ public class EmailConfirmationsService(
             throw new ArgumentException("Email is already confirmed");
 
         var prevEmailConfirmation = await emailConfirmationsRepository.GetEmailConfirmationByUserAsync(userId, ct);
+        var timeDelta = TimeSpan.FromSeconds(100);
+
+        if (prevEmailConfirmation is not null)
+            timeDelta = DateTime.UtcNow - prevEmailConfirmation.CreatedAt;
+
+        if (timeDelta < TimeSpan.FromSeconds(60))
+            throw new ArgumentException("Wait 60 seconds and try again");
+        
         if (prevEmailConfirmation is not null)
             await emailConfirmationsRepository.Delete(prevEmailConfirmation.Id, ct);
-
+        
         var emailConfirmation = new EmailConfirmation(Guid.NewGuid(), userId);
         await emailConfirmationsRepository.Add(emailConfirmation, ct);
         return emailConfirmation;
