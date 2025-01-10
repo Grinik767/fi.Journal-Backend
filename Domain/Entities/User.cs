@@ -7,6 +7,7 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     private readonly List<Group> _groups = [];
     private readonly List<Group> _groupsAsAdmin = [];
     private readonly List<UserDiff> _userDiffs = [];
+    private readonly List<UserNotification> _userNotifications = [];
     
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
@@ -16,4 +17,5 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     public IEnumerable<Group> Groups => _groups;
     public IEnumerable<Group> GroupsAsAdmin => _groupsAsAdmin;
     public IEnumerable<UserDiff> UserDiffs => _userDiffs;
+    public IEnumerable<UserNotification> UserNotifications => _userNotifications;
 }

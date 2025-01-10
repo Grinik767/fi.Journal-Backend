@@ -13,4 +13,5 @@ public class UserDiff(Guid id, Guid tableId, Guid userId, Dictionary<string, str
 
     public Table? Table { get; }
     public User? User { get; }
+    public UserNotification? UserNotification { get; }
 }

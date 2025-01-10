@@ -181,6 +181,25 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserDiff", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserDiffId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserNotification");
+                });
+
             modelBuilder.Entity("GroupUser", b =>
                 {
                     b.Property<Guid>("GroupsId")
@@ -259,6 +278,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserNotification", b =>
+                {
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany("UserNotifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GroupUser", b =>
                 {
                     b.HasOne("Domain.Entities.Group", null)
@@ -289,6 +317,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("GroupsAsAdmin");
 
                     b.Navigation("UserDiffs");
+
+                    b.Navigation("UserNotifications");
                 });
 #pragma warning restore 612, 618
         }
