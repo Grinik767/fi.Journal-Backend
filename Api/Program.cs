@@ -1,6 +1,7 @@
 using Api;
 using Api.Extensions;
 using Api.Middlewares;
+using Application.Services.EmailConfirmations;
 using Application.Services.Groups;
 using Application.Services.Tables;
 using Application.Services.UserDiffs;
@@ -13,10 +14,12 @@ using GoogleSheetParser.Parser;
 using Infrastructure;
 using Infrastructure.DeleteUserDiffsJob;
 using Infrastructure.PasswordHasher;
+using Infrastructure.Repositories.EmailConfirmations;
 using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Tables;
 using Infrastructure.Repositories.UserDiffs;
 using Infrastructure.Repositories.Users;
+using Mailer;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -44,11 +47,13 @@ services.AddScoped<IUsersRepository, UsersRepository>();
 services.AddScoped<IGroupsRepository, GroupsRepository>();
 services.AddScoped<ITablesRepository, TablesRepository>();
 services.AddScoped<IUserDiffsRepository, UserDiffsRepository>();
+services.AddScoped<IEmailConfirmationsRepository, EmailConfirmationsRepository>();
 
 services.AddScoped<IUsersService, UsersService>();
 services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
 services.AddScoped<IUserDiffsService, UserDiffsService>();
+services.AddScoped<IEmailConfirmationsService, EmailConfirmationsService>();
 
 services.AddSingleton<IGoogleSheetManager, GoogleSheetManager>(_ =>
     new GoogleSheetManager(configuration.GetConnectionString("GoogleCredentialsPath")!));
@@ -77,6 +82,9 @@ services.AddQuartz(q =>
 });
 
 services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+services.Configure<MailerOptions>(configuration.GetSection(nameof(MailerOptions)));
+services.AddSingleton<EmailService>();
 
 services.AddAutoMapper(typeof(MappingProfile));
 

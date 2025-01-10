@@ -1,34 +1,34 @@
-﻿using System.Net;
-using System.Net.Mail;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 using Microsoft.Extensions.Options;
 
 namespace Mailer;
 
-public class EmailService
+public class EmailService(IOptions<MailerOptions> mailerOptions)
 {
-    private readonly SmtpClient _smtpClient;
+    private readonly MailerOptions _options = mailerOptions.Value;
 
-    public EmailService(IOptions<MailerOptions> mailerOptions)
+    public async Task Send(MimeMessage message)
     {
-        var options = mailerOptions.Value;
+        using var smtpClient = new SmtpClient();
 
-        using var smtpClient = new SmtpClient(options.Host, options.Port);
-        smtpClient.Credentials = new NetworkCredential(options.Email, options.Password);
-        smtpClient.EnableSsl = true;
-
-        _smtpClient = smtpClient;
-    }
-
-    public async Task Send(MailMessage mailMessage)
-    {
         try
         {
-            await _smtpClient.SendMailAsync(mailMessage);
+            await smtpClient.ConnectAsync(_options.Host, _options.Port, SecureSocketOptions.SslOnConnect);
+            await smtpClient.AuthenticateAsync(_options.Email, _options.Password);
+            
+            message.From.Add(new MailboxAddress("fi-journal.ru", _options.Email));
+            await smtpClient.SendAsync(message);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error while sending email: {ex.Message}");
             throw;
+        }
+        finally
+        {
+            await smtpClient.DisconnectAsync(true);
         }
     }
 }

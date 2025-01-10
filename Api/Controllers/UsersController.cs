@@ -1,6 +1,7 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
 using Api.Extensions;
+using Application.Services.EmailConfirmations;
 using Application.Services.UserDiffs;
 using AutoMapper;
 using Application.Services.Users;
@@ -14,6 +15,7 @@ namespace Api.Controllers;
 public class UsersController(
     IUsersService service,
     IUserDiffsService userDiffsService,
+    IEmailConfirmationsService emailConfirmationsService,
     IMapper mapper) : ControllerBase
 {
     [HttpPost("register")]
@@ -77,7 +79,9 @@ public class UsersController(
     [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
     public async Task<IActionResult> SendEmailConfirmationLink(Guid id, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var emailConfirmation = await emailConfirmationsService.CreateEmailConfirmationLink(id, ct);
+        await emailConfirmationsService.SendEmailConfirmationLink(emailConfirmation.Id, ct);
+        return Ok();
     }
 
     [HttpGet("confirmEmail/{emailConfirmationId:guid}")]
