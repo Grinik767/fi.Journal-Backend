@@ -12,6 +12,6 @@ public class EmailConfirmationsConfiguration : IEntityTypeConfiguration<EmailCon
         builder.HasKey(e => e.Id);
 
         builder.HasOne(e => e.User)
-            .WithOne();
+            .WithMany();
     }
 }

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    [Migration("20250109154501_emailConfirmation")]
+    [Migration("20250110110443_emailConfirmation")]
     partial class emailConfirmation
     {
         /// <inheritdoc />
@@ -38,8 +38,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("EmailConfirmations", (string)null);
                 });
@@ -200,8 +199,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.EmailConfirmation", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.EmailConfirmation", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -35,8 +35,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("EmailConfirmations", (string)null);
                 });
@@ -197,8 +196,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.EmailConfirmation", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.EmailConfirmation", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

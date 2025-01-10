@@ -19,7 +19,7 @@ public class EmailConfirmationsRepository(JournalDbContext dbContext) : IEmailCo
 
     public async Task Delete(Guid id, CancellationToken ct) =>
         await dbContext.EmailConfirmations
-            .Where(u => u.Id == id)
+            .Where(e => e.Id == id)
             .ExecuteDeleteAsync(ct);
 
     public async Task<EmailConfirmation> GetById(Guid id, CancellationToken ct) =>

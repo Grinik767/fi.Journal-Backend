@@ -80,7 +80,7 @@ public class UsersController(
     public async Task<IActionResult> SendEmailConfirmationLink(Guid id, CancellationToken ct)
     {
         var emailConfirmation = await emailConfirmationsService.CreateEmailConfirmationLink(id, ct);
-        await emailConfirmationsService.SendEmailConfirmationLink(emailConfirmation.Id, ct);
+        //await emailConfirmationsService.SendEmailConfirmationLink(emailConfirmation.Id, ct);
         return Ok();
     }
 
