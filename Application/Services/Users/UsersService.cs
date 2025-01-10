@@ -20,7 +20,7 @@ public class UsersService(
     public async Task<User> Register(string name, string email, string password, CancellationToken ct)
     {
         ValidatePassword(password);
-        return await Add(new User(Guid.NewGuid(), name, email, passwordHasher.Generate(password)), ct);
+        return await Add(new User(Guid.NewGuid(), name.Trim(), email.Trim(), passwordHasher.Generate(password)), ct);
     }
 
     public async Task<string> Login(string email, string password, bool remember, CancellationToken ct)
@@ -43,8 +43,14 @@ public class UsersService(
     {
         var user = await repository.GetById(id, ct);
 
-        user.Email = email ?? user.Email;
-        if (password is null) return await base.Update(user, ct);
+        if (email is not null && email.Trim() != user.Email)
+        {
+            user.Email = email.Trim();
+            user.IsEmailConfirmed = false;
+        }
+
+        if (password is null)
+            return await base.Update(user, ct);
 
         ValidatePassword(password);
         user.PasswordHash = passwordHasher.Generate(password);
