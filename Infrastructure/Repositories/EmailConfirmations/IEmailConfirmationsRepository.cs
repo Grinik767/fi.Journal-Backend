@@ -2,4 +2,7 @@
 
 namespace Infrastructure.Repositories.EmailConfirmations;
 
-public interface IEmailConfirmationsRepository : IRepository<EmailConfirmation>;
+public interface IEmailConfirmationsRepository : IRepository<EmailConfirmation>
+{
+    Task<EmailConfirmation?> GetEmailConfirmationByUserAsync(Guid userId, CancellationToken ct);
+}

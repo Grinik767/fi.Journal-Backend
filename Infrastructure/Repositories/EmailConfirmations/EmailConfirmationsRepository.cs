@@ -30,4 +30,8 @@ public class EmailConfirmationsRepository(JournalDbContext dbContext) : IEmailCo
     public async Task<List<EmailConfirmation>> GetAll(CancellationToken ct) =>
         await dbContext.EmailConfirmations.AsNoTracking()
             .ToListAsync(ct);
+
+    public async Task<EmailConfirmation?> GetEmailConfirmationByUserAsync(Guid userId, CancellationToken ct) =>
+        await dbContext.EmailConfirmations
+            .FirstOrDefaultAsync(e => e.UserId == userId, ct);
 }
