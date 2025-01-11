@@ -21,5 +21,7 @@ public class UsersConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.PasswordHash)
             .IsRequired();
+
+        builder.Property(u => u.TelegramId);
     }
 }

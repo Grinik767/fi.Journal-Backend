@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(JournalDbContext))]
-    partial class JournalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250110172650_userNotifications")]
+    partial class userNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,9 +149,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TelegramId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -187,6 +187,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.UserNotification", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("UserDiffId")
@@ -197,12 +198,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDiffId")
-                        .IsUnique();
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications", (string)null);
+                    b.ToTable("UserNotification");
                 });
 
             modelBuilder.Entity("GroupUser", b =>
@@ -285,21 +283,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.UserNotification", b =>
                 {
-                    b.HasOne("Domain.Entities.UserDiff", "UserDiff")
-                        .WithOne("UserNotification")
-                        .HasForeignKey("Domain.Entities.UserNotification", "UserDiffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.User", null)
                         .WithMany("UserNotifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("UserDiff");
                 });
 
             modelBuilder.Entity("GroupUser", b =>
@@ -334,11 +322,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("UserDiffs");
 
                     b.Navigation("UserNotifications");
-                });
-
-            modelBuilder.Entity("Domain.Entities.UserDiff", b =>
-                {
-                    b.Navigation("UserNotification");
                 });
 #pragma warning restore 612, 618
         }

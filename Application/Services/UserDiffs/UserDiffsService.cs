@@ -2,6 +2,7 @@ using System.Globalization;
 using Domain.Entities;
 using GoogleSheetParser.Parser;
 using Infrastructure.Repositories.UserDiffs;
+using Infrastructure.Repositories.UserNotifications;
 using Infrastructure.Repositories.Users;
 
 namespace Application.Services.UserDiffs;
@@ -9,7 +10,8 @@ namespace Application.Services.UserDiffs;
 public class UserDiffsService(
     IUserDiffsRepository userDiffRepository,
     IExcelParser excelParser,
-    IUsersRepository userRepository) : IUserDiffsService
+    IUsersRepository userRepository,
+    IUserNotificationRepository userNotificationRepository) : IUserDiffsService
 {
     public async Task<List<UserDiff>> GetDiffsForUser(Guid userId, CancellationToken ct)
     {
@@ -28,8 +30,12 @@ public class UserDiffsService(
 
             if (points.Count == 0) continue;
 
-            await userDiffRepository.Add(new UserDiff(Guid.NewGuid(), table.Id, user.Id,
+            var userDiffGuid = Guid.NewGuid();
+
+            await userDiffRepository.Add(new UserDiff(userDiffGuid, table.Id, user.Id,
                 points.ToDictionary(key => key.Key, val => val.Value.ToString(CultureInfo.InvariantCulture))), ct);
+
+            await userNotificationRepository.Add(new UserNotification(Guid.NewGuid(), user.Id, userDiffGuid), ct);
         }
     }
 }
