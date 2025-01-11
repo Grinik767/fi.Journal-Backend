@@ -1,12 +1,14 @@
 ﻿using Api.Contracts.User;
 using Api.Dtos;
 using Api.Extensions;
+using Application;
 using Application.Services.EmailConfirmations;
 using Application.Services.UserDiffs;
 using AutoMapper;
 using Application.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Api.Controllers;
 
@@ -16,8 +18,11 @@ public class UsersController(
     IUsersService service,
     IUserDiffsService userDiffsService,
     IEmailConfirmationsService emailConfirmationsService,
-    IMapper mapper) : ControllerBase
+    IMapper mapper,
+    IOptions<AuthOptions> authOptions) : ControllerBase
 {
+    private readonly AuthOptions _authOptions = authOptions.Value;
+
     [HttpPost("register")]
     [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
@@ -90,5 +95,28 @@ public class UsersController(
         await emailConfirmationsService.ConfirmEmail(emailConfirmationId, ct);
 
         return Redirect("https://fi-journal.ru");
+    }
+
+    [HttpPost("changePassword/{email}")]
+    [Authorize]
+    public async Task<IActionResult> GetChangePasswordLink(string email, CancellationToken ct)
+    {
+        var emailConfirmation = await emailConfirmationsService.CreateChangePasswordLink(email, ct);
+        if (emailConfirmation is not null)
+            await emailConfirmationsService.SendChangePasswordLink(emailConfirmation.Id, ct);
+        return Ok();
+    }
+
+    [HttpGet("changePassword/{emailConfirmationId:guid}")]
+    public async Task<IActionResult> ChangePassword(Guid emailConfirmationId, CancellationToken ct)
+    {
+        var token = await emailConfirmationsService.ChangePassword(emailConfirmationId, ct);
+
+        HttpContext.Response.Cookies.Append(_authOptions.CookieName, token, new CookieOptions
+        {
+            Expires = DateTime.UtcNow.AddHours(_authOptions.ExpireHours)
+        });
+
+        return Redirect("https://fi-journal.ru/changePassword");
     }
 }

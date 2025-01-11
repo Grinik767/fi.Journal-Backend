@@ -18,13 +18,8 @@ public class EmailService(IOptions<MailerOptions> mailerOptions)
             await smtpClient.ConnectAsync(_options.Host, _options.Port, SecureSocketOptions.SslOnConnect);
             await smtpClient.AuthenticateAsync(_options.Email, _options.Password);
             
-            message.From.Add(new MailboxAddress("fi-journal.ru", _options.Email));
+            message.From.Add(new MailboxAddress("ф.Журнал", _options.Email));
             await smtpClient.SendAsync(message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error while sending email: {ex.Message}");
-            throw;
         }
         finally
         {
