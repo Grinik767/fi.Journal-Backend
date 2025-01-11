@@ -13,6 +13,7 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;
     public bool IsEmailConfirmed { get; set; }
+    public int TelegramId { get; set; }
     
     public IEnumerable<Group> Groups => _groups;
     public IEnumerable<Group> GroupsAsAdmin => _groupsAsAdmin;
