@@ -98,7 +98,6 @@ public class UsersController(
     }
 
     [HttpPost("changePassword/{email}")]
-    [Authorize]
     public async Task<IActionResult> GetChangePasswordLink(string email, CancellationToken ct)
     {
         var emailConfirmation = await emailConfirmationsService.CreateChangePasswordLink(email, ct);
