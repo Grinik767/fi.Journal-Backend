@@ -50,7 +50,7 @@ public class TablesService(
         var url =
             $"https://docs.google.com/spreadsheets/d/{spreadSheetId}/edit#gid={listGid}&range={studentRow.studentRow}:{studentRow.studentRow}";
         return new Table(table.Id, table.Name, url, table.Group!.Id, table.HeaderRow, table.StudentColumn,
-            table.AdditionalData);
+            table.AdditionalData, table.ListToSearch, table.RegulationsUrl);
     }
 
     public async Task<Dictionary<string, double>> GetStudentPoint(Guid studentId, Guid tableId, CancellationToken ct)
