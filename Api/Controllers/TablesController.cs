@@ -28,9 +28,9 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
 
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "SuperAdmin")]
-    public async Task<IActionResult> Update(Guid id, string? name, CancellationToken ct)
+    public async Task<IActionResult> Update(Guid id, string? name, string? regulationsUrl, CancellationToken ct)
     {
-        var table = await service.Update(id, name, ct);
+        var table = await service.Update(id, name, regulationsUrl, ct);
         return Ok(mapper.Map<TableDto>(table));
     }
 

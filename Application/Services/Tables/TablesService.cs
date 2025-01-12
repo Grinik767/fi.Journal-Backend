@@ -27,10 +27,11 @@ public class TablesService(
                 regulationsUrl), ct);
     }
 
-    public async Task<Table> Update(Guid id, string? name, CancellationToken ct)
+    public async Task<Table> Update(Guid id, string? name, string? regulationsUrl, CancellationToken ct)
     {
         var table = await tablesRepository.GetById(id, ct);
         table.Name = name ?? table.Name;
+        table.RegulationsUrl = regulationsUrl ?? table.RegulationsUrl;
         return await base.Update(table, ct);
     }
 
