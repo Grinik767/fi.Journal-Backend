@@ -15,6 +15,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.TelegramId, opt => opt.MapFrom(src => src.TelegramId))
             .ForMember(dest => dest.IsEmailConfirmed, opt => opt.MapFrom(src => src.IsEmailConfirmed))
             .ForMember(dest => dest.GroupIds, opt => opt.MapFrom(src => src.Groups.Select(g => g.Id)))
             .ForMember(dest => dest.GroupAsAdminIds, opt => opt.MapFrom(src => src.GroupsAsAdmin.Select(g => g.Id)));
@@ -31,6 +32,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url))
             .ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.UpdateTime))
+            .ForMember(dest => dest.RegulationsUrl, opt => opt.MapFrom(src => src.RegulationsUrl))
             .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.Group))
             .ForMember(dest => dest.StudentColumn, opt => opt.MapFrom(src => src.StudentColumn))
             .ForMember(dest => dest.HeaderRow, opt => opt.MapFrom(src => src.HeaderRow))
@@ -49,6 +51,7 @@ public class MappingProfile : Profile
         CreateMap<Table, MinimalTableDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.RegulationsUrl, opt => opt.MapFrom(src => src.RegulationsUrl))
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Url));
 
         CreateMap<Group, MinimalGroupDto>()

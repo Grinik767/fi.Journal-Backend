@@ -16,5 +16,7 @@ public class TableDto
     
     public DateTime UpdateTime { get; init; }
     public string ListToSearch { get; init; }
+    
+    public string RegulationsUrl { get; init; }
     public GroupDto Group { get; init; }
 }

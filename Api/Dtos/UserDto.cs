@@ -7,6 +7,8 @@ public class UserDto
     public required string Email { get; init; }
     public bool IsEmailConfirmed { get; init; }
     
+    public long TelegramId { get; init; }
+    
     public Guid[] GroupIds { get; init; }
     public Guid[] GroupAsAdminIds{ get; init; }
 }
