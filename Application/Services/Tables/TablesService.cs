@@ -19,11 +19,12 @@ public class TablesService(
     IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
     public async Task<Table> Add(string name, string url, Guid groupId, int headerRow, string studentColumn,
-        CancellationToken ct, int additionalData = -1, string listToSearch = "")
+        CancellationToken ct, int additionalData = -1, string listToSearch = "", string regulationsUrl = "")
     {
         var group = await groupsRepository.GetById(groupId, ct);
         return await base.Add(
-            new Table(Guid.NewGuid(), name, url, group.Id, headerRow, studentColumn, additionalData, listToSearch), ct);
+            new Table(Guid.NewGuid(), name, url, group.Id, headerRow, studentColumn, additionalData, listToSearch,
+                regulationsUrl), ct);
     }
 
     public async Task<Table> Update(Guid id, string? name, CancellationToken ct)

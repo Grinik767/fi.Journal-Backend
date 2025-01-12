@@ -18,7 +18,7 @@ public class TablesController(ITablesService service, IMapper mapper) : Controll
     public async Task<IActionResult> Add([FromBody] CreateTableRequest request, CancellationToken ct)
     {
         var table = await service.Add(request.Name, request.Url, request.GroupId, request.HeaderRow,
-            request.StudentColumn, ct, request.AdditionalData, request.ListToSearch);
+            request.StudentColumn, ct, request.AdditionalData, request.ListToSearch, request.RegulationsUrl);
         return Ok(mapper.Map<TableDto>(table));
     }
 
