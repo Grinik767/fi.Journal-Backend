@@ -26,6 +26,7 @@ public class TablesRepository(JournalDbContext dbContext) : ITablesRepository
         await dbContext.Tables
             .AsNoTracking()
             .Include(t => t.Group)
+            .ThenInclude(g => g.Users)
             .ToListAsync(ct);
 
     public async Task<Table> Update(Table table, CancellationToken ct)
