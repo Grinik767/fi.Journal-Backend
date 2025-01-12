@@ -10,7 +10,8 @@ public class Table(
     int headerRow,
     string studentColumn,
     int additionalData = -1,
-    string listToSearch = "") : Entity<Guid>(id)
+    string listToSearch = "",
+    string regulationsUrl = "") : Entity<Guid>(id)
 {
     private readonly List<UserDiff> _userDiffs = [];
     [Required] public string Name { get; set; } = name;
@@ -22,8 +23,11 @@ public class Table(
     [Required] public string StudentColumn { get; init; } = studentColumn;
 
     public int AdditionalData { get; init; } = additionalData;
+    
     public Group? Group { get; }
     public DateTime UpdateTime { get; set; } = DateTime.UtcNow;
     public string ListToSearch { get; init; } = listToSearch;
+
+    public string RegulationsUrl { get; set; } = regulationsUrl;
     public IEnumerable<UserDiff> UserDiffs => _userDiffs;
 }
