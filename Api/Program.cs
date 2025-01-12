@@ -1,6 +1,7 @@
 using Api;
 using Api.Extensions;
 using Api.Middlewares;
+using Application.Jobs;
 using Application.Services.EmailConfirmations;
 using Application.Services.Groups;
 using Application.Services.Tables;
@@ -14,7 +15,6 @@ using GoogleSheetParser.Parser;
 using Infrastructure;
 using Infrastructure.DeleteUserDiffsJob;
 using Infrastructure.PasswordHasher;
-using Infrastructure.Repositories;
 using Infrastructure.Repositories.EmailConfirmations;
 using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Tables;
@@ -79,6 +79,16 @@ services.AddQuartz(q =>
     q.ScheduleJob<UserDiffsDeleter>(trigger => trigger
         .WithIdentity("deleteDiffsTrigger")
         .WithCronSchedule("0 0 1 * * ?", cron => cron
+            .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
+        )
+    );
+});
+
+services.AddQuartz(q =>
+{
+    q.ScheduleJob<UpdateTablesJob>(trigger => trigger
+        .WithIdentity("UpdateTablesTrigger")
+        .WithCronSchedule("0 */10 * * * ?", cron => cron
             .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
         )
     );
