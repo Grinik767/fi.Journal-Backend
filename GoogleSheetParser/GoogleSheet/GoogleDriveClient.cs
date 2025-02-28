@@ -1,4 +1,3 @@
-using System.CodeDom;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
@@ -9,35 +8,30 @@ public class GDriveClient(string googleAuthJson)
 {
     public DriveService DriveService { get; } = new(new BaseClientService.Initializer
     {
-        HttpClientInitializer = 
+        HttpClientInitializer =
             GoogleCredential.FromJson(googleAuthJson).CreateScoped(DriveService.Scope.Drive),
         ApplicationName = "phi-journal"
     });
 
-    public async Task DownloadSheetXlsx(string googleSheetId, string pathToDownload) 
+    public async Task DownloadSheetXlsx(string googleSheetId, string pathToDownload)
     {
         try
         {
             var metaData = await DriveService.Files.Get(googleSheetId).ExecuteAsync();
+
+            dynamic request;
             if (metaData.MimeType == "application/vnd.google-apps.spreadsheet")
-            {
-                var request = DriveService.Files.Export(googleSheetId,
+                request = DriveService.Files.Export(googleSheetId,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                await using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
-                await request.DownloadAsync(fileStream);
-                await fileStream.FlushAsync();
-                await Task.Delay(50);
-            }
             else
-            {
-                var request = DriveService.Files.Get(googleSheetId);
-                await using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
-                await request.DownloadAsync(fileStream);
-                await fileStream.FlushAsync(); 
-                await Task.Delay(50);
-            }
+                request = DriveService.Files.Get(googleSheetId);
+
+            await using var fileStream = new FileStream(pathToDownload, FileMode.Create, FileAccess.Write);
+            await request.DownloadAsync(fileStream);
+            await fileStream.FlushAsync();
+            await Task.Delay(50);
         }
-        
+
         catch (Exception exception)
         {
             Console.WriteLine($"При скачивании файла произошла ошибка: {exception.Message}");

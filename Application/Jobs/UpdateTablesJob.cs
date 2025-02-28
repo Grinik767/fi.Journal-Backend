@@ -23,7 +23,7 @@ public class UpdateTablesJob(ITablesService tablesService,
     private async Task UpdateTable(Table table, CancellationToken  ct)
     {
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
-        var spreadSheetId = IGoogleSheetManager.GetSpreadSheetId(table.Url);
+        var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
         var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
 
         await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);

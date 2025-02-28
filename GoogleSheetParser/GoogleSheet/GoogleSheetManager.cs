@@ -33,11 +33,10 @@ public class GoogleSheetManager : IGoogleSheetManager
     public async Task DownloadSheetAsXlsx(string spreadsheetId, string destinationFilePath) => 
         await _driveClient.DownloadSheetXlsx(spreadsheetId, destinationFilePath);
 
-    public Spreadsheet GetSpreadsheet(string spreadsheetId) => 
+    public Spreadsheet GetSpreadSheet(string spreadsheetId) => 
         _sheetReader.GetSpreadTable(spreadsheetId);
 
-    public static string GetSpreadSheetId(string url) 
-        => GSheetClient.GetSpreadsheetId(url);
+    public string GetSpreadSheetId(string url) => GSheetClient.GetSpreadsheetId(url);
 
     public object GetSingleCellValue(string spreadsheetId, string range, string? sheetName = null) => 
         _sheetReader.GetSingleValue(spreadsheetId, range, sheetName).Values.First().First();

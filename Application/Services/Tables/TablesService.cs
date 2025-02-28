@@ -40,7 +40,7 @@ public class TablesService(
         var user = await usersRepository.GetById(studentId, ct);
         var table = await GetById(tableId, ct);
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
-        var spreadSheetId = IGoogleSheetManager.GetSpreadSheetId(table.Url);
+        var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
         if (!File.Exists(path))
             await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
         var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path, table.ListToSearch);
@@ -60,7 +60,7 @@ public class TablesService(
         if (!table.Group.Users.Select(x => x.Id).ToList().Contains(user.Id))
             return new Dictionary<string, double>();
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
-        var spreadSheetId = IGoogleSheetManager.GetSpreadSheetId(table.Url);
+        var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
         var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
         if (DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime &&
             (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10 && File.Exists(path))
