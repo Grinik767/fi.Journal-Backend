@@ -88,7 +88,7 @@ services.AddQuartz(q =>
 {
     q.ScheduleJob<UpdateTablesJob>(trigger => trigger
         .WithIdentity("UpdateTablesTrigger")
-        .WithCronSchedule("0 */10 * * * ?", cron => cron
+        .WithCronSchedule("0 */4 * * * ?", cron => cron
             .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Yekaterinburg"))
         )
     );

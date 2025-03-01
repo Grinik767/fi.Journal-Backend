@@ -41,8 +41,10 @@ public class TablesService(
         var table = await GetById(tableId, ct);
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
+        
         if (!File.Exists(path))
             await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
+        
         var studentRow = await excelParser.GetStudentRow(table.StudentColumn, user.Name, path, table.ListToSearch);
         var listGid = await googleSheetManager.GetSheetGid(spreadSheetId, studentRow.sheetName);
         if (listGid == -1)
@@ -61,21 +63,11 @@ public class TablesService(
             return new Dictionary<string, double>();
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
-        var lastUpdate = await googleSheetManager.GetUpdatedTime(spreadSheetId);
-        if (DateTime.Parse(lastUpdate).ToUniversalTime() <= table.UpdateTime &&
-            (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10 && File.Exists(path))
-            return await GetStudentsPointFromExistingTable(user, table, path);
-        var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
-
-        await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
-
         if (File.Exists(path))
-        {
-            await userDiffService.UpdateUsersDiffs(table, path, tempPath, ct);
-            File.Delete(path);
-        }
-
-        File.Move(tempPath, path);
+            return await GetStudentsPointFromExistingTable(user, table, path);
+        
+        await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, path);
+        
         table.UpdateTime = DateTime.UtcNow;
         await tablesRepository.Update(table, ct);
 
