@@ -13,6 +13,8 @@ public class UpdateTablesJob(
     IGoogleSheetManager googleSheetManager,
     ITablesRepository tablesRepository) : IJob
 {
+    private static readonly SemaphoreSlim FileLock = new(1, 1);
+
     public async Task Execute(IJobExecutionContext context)
     {
         var ct = new CancellationToken();
@@ -26,20 +28,39 @@ public class UpdateTablesJob(
         var path = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}.xlsx");
         var spreadSheetId = googleSheetManager.GetSpreadSheetId(table.Url);
         if (File.Exists(path) &&
-            DateTime.Parse(await googleSheetManager.GetUpdatedTime(spreadSheetId)).ToUniversalTime() <=
-            table.UpdateTime && (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 15)
+            DateTime.Parse(await googleSheetManager.GetUpdatedTime(spreadSheetId)).ToUniversalTime() <= table.UpdateTime
+            && (DateTime.UtcNow - table.UpdateTime).TotalMinutes < 10)
             return;
-        
+
         var tempPath = Path.Combine(Environment.CurrentDirectory, "ExcelTables", $"{table.Id}_temp.xlsx");
         await googleSheetManager.DownloadSheetAsXlsx(spreadSheetId, tempPath);
-        
+
         if (File.Exists(path))
         {
             await userDiffsService.UpdateUsersDiffs(table, path, tempPath, ct);
-            File.Delete(path);
+
+            await FileLock.WaitAsync(ct);
+            try
+            {
+                File.Delete(path);
+            }
+            finally
+            {
+                FileLock.Release();
+            }
         }
 
-        File.Move(tempPath, path);
+        await FileLock.WaitAsync(ct);
+        try
+        {
+            File.Move(tempPath, path);
+        }
+        finally
+        {
+            FileLock.Release();
+        }
+
+
         table.UpdateTime = DateTime.UtcNow;
         await tablesRepository.Update(table, ct);
     }

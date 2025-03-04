@@ -6,6 +6,8 @@ namespace GoogleSheetParser.GoogleSheet;
 
 public class GDriveClient(string googleAuthJson)
 {
+    private static readonly SemaphoreSlim FileLock = new(1, 1);
+
     public DriveService DriveService { get; } = new(new BaseClientService.Initializer
     {
         HttpClientInitializer =
@@ -15,6 +17,7 @@ public class GDriveClient(string googleAuthJson)
 
     public async Task DownloadSheetXlsx(string googleSheetId, string pathToDownload)
     {
+        await FileLock.WaitAsync();
         try
         {
             var metaData = await DriveService.Files.Get(googleSheetId).ExecuteAsync();
@@ -35,6 +38,10 @@ public class GDriveClient(string googleAuthJson)
         catch (Exception exception)
         {
             Console.WriteLine($"При скачивании файла произошла ошибка: {exception.Message}");
+        }
+        finally
+        {
+            FileLock.Release();
         }
     }
 

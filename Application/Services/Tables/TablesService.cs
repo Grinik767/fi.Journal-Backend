@@ -1,5 +1,4 @@
-﻿using Application.Services.UserDiffs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using FluentValidation;
 using GoogleSheetParser.GoogleSheet;
 using GoogleSheetParser.Parser;
@@ -14,7 +13,6 @@ public class TablesService(
     IGroupsRepository groupsRepository,
     IUsersRepository usersRepository,
     IGoogleSheetManager googleSheetManager,
-    IUserDiffsService userDiffService,
     IExcelParser excelParser,
     IValidator<Table> validator) : BaseService<Table>(tablesRepository, validator), ITablesService
 {
