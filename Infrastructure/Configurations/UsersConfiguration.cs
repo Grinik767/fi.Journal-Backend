@@ -23,5 +23,6 @@ public class UsersConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         builder.Property(u => u.TelegramId);
+        builder.Property(u => u.StudyGroup).IsRequired();
     }
 }

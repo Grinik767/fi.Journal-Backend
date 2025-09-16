@@ -47,9 +47,10 @@ public class TestsUsersService
         const string name = "TestUser";
         const string email = "test@example.com";
         const string password = "123";
+        const string studyGroup = "ФТ-102-2";
 
         Assert.ThrowsAsync<ArgumentException>(async () =>
-            await _usersService.Register(name, email, password, CancellationToken.None));
+            await _usersService.Register(name, email, password, studyGroup, CancellationToken.None));
     }
 
     [Test]
@@ -70,7 +71,9 @@ public class TestsUsersService
         const string email = "test@example.com";
         const string password = "password123";
         const string hashedPassword = "hashedPassword";
-        var user = new User(Guid.NewGuid(), "TestUser", email, hashedPassword);
+        const string studyGroup = "ФТ-102-2";
+        
+        var user = new User(Guid.NewGuid(), "TestUser", email, hashedPassword, studyGroup);
 
         _repositoryMock.Setup(r => r.GetByEmail(email, CancellationToken.None)).ReturnsAsync(user);
         _passwordHasherMock.Setup(p => p.Verify(password, hashedPassword)).Returns(false);

@@ -15,5 +15,8 @@ public class UserValidator : AbstractValidator<User>
 
         RuleFor(u => u.PasswordHash)
             .NotEmpty();
+
+        RuleFor(u => u.StudyGroup)
+            .Matches(@"^ФТ-[1-4]0[1-4]-[1-2]$");
     }
 }

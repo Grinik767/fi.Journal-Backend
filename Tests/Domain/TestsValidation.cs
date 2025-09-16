@@ -91,7 +91,7 @@ public class TestsValidation
         [Test]
         public void UserValidator_ValidUser_PassesValidation()
         {
-            var user = new User(Guid.NewGuid(), "ValidUser", "valid@example.com", "hash123");
+            var user = new User(Guid.NewGuid(), "ValidUser", "valid@example.com", "hash123", "ФТ-102-2");
             var validator = new UserValidator();
 
             var result = validator.Validate(user);
@@ -102,7 +102,7 @@ public class TestsValidation
         [Test]
         public void UserValidator_InvalidEmail_FailsValidation()
         {
-            var user = new User(Guid.NewGuid(), "ValidUser", "invalid-email", "hash123");
+            var user = new User(Guid.NewGuid(), "ValidUser", "invalid-email", "hash123", "ФТ-102-2");
             var validator = new UserValidator();
 
             var result = validator.Validate(user);
@@ -113,7 +113,7 @@ public class TestsValidation
         [Test]
         public void UserValidator_EmptyPasswordHash_FailsValidation()
         {
-            var user = new User(Guid.NewGuid(), "ValidUser", "valid@example.com", "");
+            var user = new User(Guid.NewGuid(), "ValidUser", "valid@example.com", "", "ФТ-102-2");
             var validator = new UserValidator();
 
             var result = validator.Validate(user);

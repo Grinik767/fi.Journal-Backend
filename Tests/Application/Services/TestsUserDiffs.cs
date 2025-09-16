@@ -33,7 +33,7 @@ public class TestsUserDiffsService
 
         _usersRepositoryMock
             .Setup(repo => repo.GetById(userId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new User(userId, "Test User", "123@gamil.com", "hash"));
+            .ReturnsAsync(new User(userId, "Test User", "123@gamil.com", "hash", "ФТ-102-2"));
 
         _userDiffsRepositoryMock
             .Setup(repo => repo.GetAllByUser(userId, It.IsAny<CancellationToken>()))

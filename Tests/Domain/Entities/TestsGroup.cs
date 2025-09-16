@@ -25,7 +25,7 @@ public class TestsGroup
     public void Group_AddUser_AddsUserToGroup()
     {
         var group = new Group(Guid.NewGuid(), "Test Group", Guid.NewGuid());
-        var user = new User(Guid.NewGuid(), "Test User", "test@example.com", "passwordHash");
+        var user = new User(Guid.NewGuid(), "Test User", "test@example.com", "passwordHash", "ФТ-102-2");
 
         group.AddUser(user);
 
@@ -36,7 +36,7 @@ public class TestsGroup
     public void Group_RemoveUser_RemovesUserFromGroup()
     {
         var group = new Group(Guid.NewGuid(), "Test Group", Guid.NewGuid());
-        var user = new User(Guid.NewGuid(), "Test User", "test@example.com", "passwordHash");
+        var user = new User(Guid.NewGuid(), "Test User", "test@example.com", "passwordHash", "ФТ-102-2");
 
         group.AddUser(user);
         group.RemoveUser(user);

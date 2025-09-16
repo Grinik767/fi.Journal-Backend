@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class User(Guid id, string name, string email, string passwordHash) : Entity<Guid>(id)
+public class User(Guid id, string name, string email, string passwordHash, string studyGroup) : Entity<Guid>(id)
 {
     private readonly List<Group> _groups = [];
     private readonly List<Group> _groupsAsAdmin = [];
@@ -12,6 +12,7 @@ public class User(Guid id, string name, string email, string passwordHash) : Ent
     [Required] public string Name { get; init; } = name;
     [Required] public string Email { get; set; } = email;
     [Required] public string PasswordHash { get; set; } = passwordHash;
+    [Required] public string StudyGroup { get; set; } = studyGroup;
     public bool IsEmailConfirmed { get; set; }
     public long TelegramId { get; set; }
     

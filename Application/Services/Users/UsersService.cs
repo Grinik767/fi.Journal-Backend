@@ -17,10 +17,10 @@ public class UsersService(
 {
     private readonly AuthOptions _authOptions = authOptions.Value;
 
-    public async Task<User> Register(string name, string email, string password, CancellationToken ct)
+    public async Task<User> Register(string name, string email, string password, string studyGroup, CancellationToken ct)
     {
         ValidatePassword(password);
-        return await Add(new User(Guid.NewGuid(), name.Trim(), email.Trim(), passwordHasher.Generate(password)), ct);
+        return await Add(new User(Guid.NewGuid(), name.Trim(), email.Trim(), passwordHasher.Generate(password), studyGroup), ct);
     }
 
     public async Task<string> Login(string email, string password, bool remember, CancellationToken ct)
@@ -39,7 +39,7 @@ public class UsersService(
             remember ? _authOptions.ExpireHoursRemember : _authOptions.ExpireHours);
     }
 
-    public async Task<User> Update(Guid id, string? email, string? password, CancellationToken ct)
+    public async Task<User> Update(Guid id, string? email, string? password, string? studyGroup, CancellationToken ct)
     {
         var user = await repository.GetById(id, ct);
 
@@ -48,6 +48,9 @@ public class UsersService(
             user.Email = email.Trim();
             user.IsEmailConfirmed = false;
         }
+
+        if (studyGroup is not null)
+            user.StudyGroup = studyGroup;
 
         if (password is null)
             return await base.Update(user, ct);

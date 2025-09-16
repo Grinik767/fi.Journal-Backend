@@ -50,7 +50,7 @@ public class TestsGroupsService
     {
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var user = new User(userId, "Test User", "123@gmail.com", "hash");
+        var user = new User(userId, "Test User", "123@gmail.com", "hash", "ФТ-102-2");
         var group = new Group(groupId, "Test Group", Guid.NewGuid());
 
         _groupsRepositoryMock.Setup(x => x.GetById(groupId, It.IsAny<CancellationToken>())).ReturnsAsync(group);
@@ -63,7 +63,7 @@ public class TestsGroupsService
     public async Task Add_ShouldCreateNewGroup()
     {
         var adminId = Guid.NewGuid();
-        var admin = new User(adminId, "Test Admin", "123@gmail.com", "hash");
+        var admin = new User(adminId, "Test Admin", "123@gmail.com", "hash", "ФТ-102-2");
         const string groupName = "Test Group";
 
         _usersRepositoryMock.Setup(x => x.GetById(adminId, It.IsAny<CancellationToken>())).ReturnsAsync(admin);
@@ -86,7 +86,7 @@ public class TestsGroupsService
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
-        var user = new User(adminId, "Test User", "123@gmail.com", "hash");
+        var user = new User(adminId, "Test User", "123@gmail.com", "hash", "ФТ-102-2");
         var group = new Group(groupId, "Test Group", adminId);
 
         _groupsRepositoryMock.Setup(x => x.GetById(groupId, It.IsAny<CancellationToken>())).ReturnsAsync(group);

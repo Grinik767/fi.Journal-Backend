@@ -27,7 +27,7 @@ public class UsersController(
     [Authorize(Policy = "DenyAuthenticated")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest request, CancellationToken ct)
     {
-        var user = await service.Register(request.Name, request.Email, request.Password, ct);
+        var user = await service.Register(request.Name, request.Email, request.Password, request.StudyGroup, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
 
@@ -45,9 +45,9 @@ public class UsersController(
 
     [HttpPatch("{id:guid}")]
     [Authorize(Policy = "SuperAdminOrPersonalDataAccess")]
-    public async Task<IActionResult> Update(Guid id, string? email, string? password, CancellationToken ct)
+    public async Task<IActionResult> Update(Guid id, string? email, string? password, string? studyGroup, CancellationToken ct)
     {
-        var user = await service.Update(id, email, password, ct);
+        var user = await service.Update(id, email, password, studyGroup, ct);
         return Ok(mapper.Map<UserDto>(user));
     }
 

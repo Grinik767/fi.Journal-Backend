@@ -10,7 +10,7 @@ public class TestsUser
     public void User_Creation_WorksCorrectly()
     {
         var userId = Guid.NewGuid();
-        var user = new User(userId, "Test User", "test@example.com", "passwordHash");
+        var user = new User(userId, "Test User", "test@example.com", "passwordHash", "ФТ-102-2");
 
         Assert.That(userId, Is.EqualTo(user.Id));
         Assert.That("Test User", Is.EqualTo(user.Name));
