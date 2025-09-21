@@ -26,6 +26,9 @@ public class GroupsRepository(JournalDbContext dbContext) : IGroupsRepository
     public async Task<Group?> GetByName(string groupName) =>
         await dbContext.Groups.FirstOrDefaultAsync(g => g.Name == groupName);
 
+    public async Task<List<Group>> GetByNames(List<string> names) =>
+        await dbContext.Groups.Where(g => names.Contains(g.Name)).ToListAsync();
+
     public async Task<Group?> GetById(Guid id) =>
         await dbContext.Groups
             .AsNoTracking()

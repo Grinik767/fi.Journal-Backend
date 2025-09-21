@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using Domain.Entities;
 using Infrastructure.Repositories.Groups;
 using Infrastructure.Repositories.Users;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Group = Domain.Entities.Group;
 
 namespace Application.Services.Groups;
@@ -16,17 +15,20 @@ public partial class GroupDistributionService(IGroupsRepository groupsRepository
     {
         var studyGroupData = GetStudyGroupData(user.StudyGroup);
         var groupsForUser = GetGroupsForUser(studyGroupData);
-        foreach (var groupName in groupsForUser)
+        var existingGroups = await groupsRepository.GetByNames(groupsForUser);
+        var existingGroupsName = existingGroups.Select(g => g.Name).ToHashSet();
+        foreach (var group in from groupName in groupsForUser where !existingGroupsName.Contains(groupName) select new Group(new Guid(), groupName, user.Id))
         {
-            var group = await groupsRepository.GetByName(groupName);
-            if (group is null)
-            {
-                await groupsRepository.Add(new Group(new Guid(), groupName, user.Id), ct);
-                group = await groupsRepository.GetByName(groupName);
-            }
-            group!.AddUser(user);
+            group.AddUser(user);
+            await groupsRepository.Add(group, ct);
         }
 
+        foreach (var group in existingGroups)
+        {
+            group.AddUser(user);
+            await groupsRepository.Update(group, new CancellationToken());
+        }
+        
         return user;
     }
 
