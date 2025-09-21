@@ -57,21 +57,26 @@ services.AddScoped<IGroupsService, GroupsService>();
 services.AddScoped<ITablesService, TablesService>();
 services.AddScoped<IUserDiffsService, UserDiffsService>();
 services.AddScoped<IEmailConfirmationsService, EmailConfirmationsService>();
+services.AddScoped<IGroupDistributionService, GroupDistributionService>();
 
 services.AddSingleton<IGoogleSheetManager, GoogleSheetManager>(_ =>
     new GoogleSheetManager(configuration.GetConnectionString("GoogleCredentialsPath")!));
 
 services.AddSingleton<IExcelParser, ExcelParser>();
+
+services.Configure<MailerOptions>(configuration.GetSection(nameof(MailerOptions)));
+services.AddSingleton<EmailService>();
+
 services.AddCors(options =>
 {
-    var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+    var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>(); // разрешённые домены
 
     options.AddPolicy("AllowFrontend",
         corsPolicyBuilder => corsPolicyBuilder
-            .WithOrigins(allowedOrigins!)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
+            .WithOrigins(allowedOrigins!) // с разрешённых доменов
+            .AllowAnyHeader() //любые заголовки
+            .AllowAnyMethod() //любые методы
+            .AllowCredentials()); // разрешение на перс. данные (куки)
 });
 
 services.AddQuartz(q =>
@@ -96,8 +101,7 @@ services.AddQuartz(q =>
 
 services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-services.Configure<MailerOptions>(configuration.GetSection(nameof(MailerOptions)));
-services.AddSingleton<EmailService>();
+
 
 services.AddAutoMapper(typeof(MappingProfile));
 

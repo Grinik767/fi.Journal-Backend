@@ -5,4 +5,5 @@ namespace Infrastructure.Repositories.Groups;
 public interface IGroupsRepository : IRepository<Group>
 {
     Task<Group?> GetById(Guid id);
+    Task<Group?> GetByName(string groupName);
 }

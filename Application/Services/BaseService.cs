@@ -25,7 +25,7 @@ public class BaseService<T>(IRepository<T> repository, IValidator<T> validator)
         }
     }
     
-    protected async Task<T> Add(T entity, CancellationToken ct)
+    protected virtual async Task<T> Add(T entity, CancellationToken ct)
     {
         await entity.ValidateAsync(validator, ct);
         await repository.Add(entity, ct);

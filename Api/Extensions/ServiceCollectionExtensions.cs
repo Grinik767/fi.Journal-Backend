@@ -22,14 +22,14 @@ public static class ServiceCollectionExtensions
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions!.JwtSecretKey))
+                        ValidateIssuer = false, //издатель токена
+                        ValidateAudience = false, // аудитория токена
+                        ValidateLifetime = true, // время жизни токена
+                        ValidateIssuerSigningKey = true, //подделка токена
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions!.JwtSecretKey)) // как проверять подлинность
                     };
 
-                    options.Events = new JwtBearerEvents
+                    options.Events = new JwtBearerEvents //ищем куку по её имени, если всё норм - присваиваем 
                     {
                         OnMessageReceived = context =>
                         {
@@ -41,7 +41,10 @@ public static class ServiceCollectionExtensions
             );
         return services;
     }
-
+    
+    /// <summary>
+    /// Политика, запрещающая доступ для зарегистрированных пользователей (для страницы входа)
+    /// </summary>
     public static IServiceCollection AddDenyAuthenticatedPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
@@ -53,7 +56,10 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
+    
+    /// <summary>
+    /// Политики для админов
+    /// </summary>
     public static IServiceCollection AddSuperAdminPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
@@ -65,7 +71,10 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
+    
+    /// <summary>
+    /// Политика для персональных данных 
+    /// </summary>
     public static IServiceCollection AddPersonalDataAccessPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
@@ -77,7 +86,12 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
+    
+    /// <summary>
+    /// Политика для юзеров, находящихся в группе
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static IServiceCollection AddUserIsGroupMemberPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
@@ -89,7 +103,10 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
+    
+    /// <summary>
+    /// Комбинированные политики
+    /// </summary>
     public static IServiceCollection AddCombinedPolicies(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationHandler, CombinedAuthorizationHandler>();

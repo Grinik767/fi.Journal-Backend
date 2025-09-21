@@ -1,5 +1,6 @@
 using System.Security.Authentication;
 using Application;
+using Application.Services.Groups;
 using Application.Services.Users;
 using Domain.Entities;
 using FluentValidation;
@@ -18,6 +19,7 @@ public class TestsUsersService
     private Mock<IValidator<User>> _validatorMock;
     private Mock<IPasswordHasher> _passwordHasherMock;
     private Mock<IOptions<AuthOptions>> _authOptionsMock;
+    private Mock<IGroupDistributionService> _groupDistr;
     private UsersService _usersService;
 
     [SetUp]
@@ -27,6 +29,7 @@ public class TestsUsersService
         _validatorMock = new Mock<IValidator<User>>();
         _passwordHasherMock = new Mock<IPasswordHasher>();
         _authOptionsMock = new Mock<IOptions<AuthOptions>>();
+        _groupDistr = new Mock<IGroupDistributionService>();
 
         _authOptionsMock.Setup(o => o.Value).Returns(new AuthOptions
         {
@@ -38,6 +41,7 @@ public class TestsUsersService
             _repositoryMock.Object,
             _validatorMock.Object,
             _passwordHasherMock.Object,
+            _groupDistr.Object,
             _authOptionsMock.Object);
     }
 

@@ -1,5 +1,6 @@
 using System.Security.Authentication;
 using Application.Extensions;
+using Application.Services.Groups;
 using Domain.Entities;
 using FluentValidation;
 using Infrastructure;
@@ -13,6 +14,7 @@ public class UsersService(
     IUsersRepository repository,
     IValidator<User> validator,
     IPasswordHasher passwordHasher,
+    IGroupDistributionService groupDistributionService,
     IOptions<AuthOptions> authOptions) : BaseService<User>(repository, validator), IUsersService
 {
     private readonly AuthOptions _authOptions = authOptions.Value;
@@ -21,6 +23,14 @@ public class UsersService(
     {
         ValidatePassword(password);
         return await Add(new User(Guid.NewGuid(), name.Trim(), email.Trim(), passwordHasher.Generate(password), studyGroup), ct);
+    }
+
+    protected override async Task<User> Add(User user, CancellationToken ct)
+    {
+        await user.ValidateAsync(validator, ct);
+        await repository.Add(user, ct);
+        await groupDistributionService.DistributeUserIntoGroups(user, ct);
+        return user;
     }
 
     public async Task<string> Login(string email, string password, bool remember, CancellationToken ct)

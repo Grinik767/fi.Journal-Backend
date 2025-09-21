@@ -22,6 +22,9 @@ public class GroupsRepository(JournalDbContext dbContext) : IGroupsRepository
             .Include(g => g.Users)
             .Include(g => g.Tables)
             .FirstAsync(group => group.Id == id, ct);
+    
+    public async Task<Group?> GetByName(string groupName) =>
+        await dbContext.Groups.FirstOrDefaultAsync(g => g.Name == groupName);
 
     public async Task<Group?> GetById(Guid id) =>
         await dbContext.Groups
