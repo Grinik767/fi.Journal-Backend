@@ -5,7 +5,6 @@ namespace Domain.Entities;
 public class User(Guid id, string name, string email, string passwordHash, string studyGroup) : Entity<Guid>(id)
 {
     private readonly List<Group> _groups = [];
-    private readonly List<Group> _groupsAsAdmin = [];
     private readonly List<UserDiff> _userDiffs = [];
     private readonly List<UserNotification> _userNotifications = [];
     
@@ -17,7 +16,6 @@ public class User(Guid id, string name, string email, string passwordHash, strin
     public long TelegramId { get; set; }
     
     public IEnumerable<Group> Groups => _groups;
-    public IEnumerable<Group> GroupsAsAdmin => _groupsAsAdmin;
     public IEnumerable<UserDiff> UserDiffs => _userDiffs;
     public IEnumerable<UserNotification> UserNotifications => _userNotifications;
 }

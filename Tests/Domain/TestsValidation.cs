@@ -12,7 +12,7 @@ public class TestsValidation
         [Test]
         public void GroupValidator_ValidName_PassesValidation()
         {
-            var group = new Group(Guid.NewGuid(), "ValidName", Guid.NewGuid());
+            var group = new Group(Guid.NewGuid(), "ValidName");
             var validator = new GroupValidator();
 
             var result = validator.Validate(group);
@@ -23,7 +23,7 @@ public class TestsValidation
         [Test]
         public void GroupValidator_InvalidName_FailsValidation()
         {
-            var group = new Group(Guid.NewGuid(), "No", Guid.NewGuid());
+            var group = new Group(Guid.NewGuid(), "No");
             var validator = new GroupValidator();
 
             var result = validator.Validate(group);

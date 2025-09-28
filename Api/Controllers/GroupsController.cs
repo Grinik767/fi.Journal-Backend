@@ -15,7 +15,7 @@ public class GroupsController(IGroupsService service, IMapper mapper) : Controll
     [Authorize(Policy = "SuperAdmin")]
     public async Task<IActionResult> Add([FromBody] CreateGroupRequest request, CancellationToken ct)
     {
-        var group = await service.Add(request.Name, request.AdminId, ct);
+        var group = await service.Add(request.Name, ct);
         return Ok(mapper.Map<GroupDto>(group));
     }
 

@@ -17,7 +17,6 @@ public class TestsUser
         Assert.That("test@example.com", Is.EqualTo(user.Email));
         Assert.That("passwordHash", Is.EqualTo(user.PasswordHash));
         Assert.That(user.Groups, Is.Empty);
-        Assert.That(user.GroupsAsAdmin, Is.Empty);
         Assert.That(user.UserDiffs, Is.Empty);
     }
 }

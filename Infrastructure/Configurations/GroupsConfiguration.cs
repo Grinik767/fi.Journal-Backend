@@ -14,11 +14,6 @@ public class GroupsConfiguration : IEntityTypeConfiguration<Group>
         builder.HasIndex(g => g.Name).IsUnique();
         builder.Property(g => g.Name)
             .IsRequired();
-        
-        builder.HasOne(g => g.Admin)
-            .WithMany(u => u.GroupsAsAdmin)
-            .HasForeignKey(g => g.AdminId)
-            .IsRequired();
 
         builder.HasMany(g => g.Users)
             .WithMany(u => u.Groups);

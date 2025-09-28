@@ -12,10 +12,9 @@ public class GroupsService(
     IUserDiffsRepository userDiffRepository,
     IValidator<Group> validator) : BaseService<Group>(groupsRepository, validator), IGroupsService
 {
-    public async Task<Group> Add(string name, Guid adminId, CancellationToken ct)
+    public async Task<Group> Add(string name, CancellationToken ct)
     {
-        var admin = await usersRepository.GetById(adminId, ct);
-        return await base.Add(new Group(Guid.NewGuid(), name, admin.Id), ct);
+        return await base.Add(new Group(Guid.NewGuid(), name), ct);
     }
 
     public async Task<Group> Update(Guid id, string? name, CancellationToken ct)
@@ -29,8 +28,6 @@ public class GroupsService(
     public async Task<Group> AddUser(Guid id, Guid userId, CancellationToken ct)
     {
         var group = await groupsRepository.GetById(id, ct);
-        if (group.AdminId == userId)
-            throw new ArgumentException("User is an admin");
 
         var user = await usersRepository.GetById(userId, ct);
         if (user.Groups.Contains(group))

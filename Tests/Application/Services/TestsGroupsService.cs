@@ -38,7 +38,7 @@ public class TestsGroupsService
     {
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var group = new Group(groupId, "Test Group", userId);
+        var group = new Group(groupId, "Test Group");
 
         _groupsRepositoryMock.Setup(x => x.GetById(groupId, It.IsAny<CancellationToken>())).ReturnsAsync(group);
 
@@ -51,7 +51,7 @@ public class TestsGroupsService
         var groupId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var user = new User(userId, "Test User", "123@gmail.com", "hash", "ФТ-102-2");
-        var group = new Group(groupId, "Test Group", Guid.NewGuid());
+        var group = new Group(groupId, "Test Group");
 
         _groupsRepositoryMock.Setup(x => x.GetById(groupId, It.IsAny<CancellationToken>())).ReturnsAsync(group);
         _usersRepositoryMock.Setup(x => x.GetById(userId, It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -70,11 +70,11 @@ public class TestsGroupsService
         _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<Group>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-        await _groupsService.Add(groupName, adminId, CancellationToken.None);
+        await _groupsService.Add(groupName, CancellationToken.None);
 
         _usersRepositoryMock.Verify(x => x.GetById(adminId, It.IsAny<CancellationToken>()), Times.Once);
         _groupsRepositoryMock.Verify(
-            x => x.Add(It.Is<Group>(g => g.Name == groupName && g.AdminId == adminId), It.IsAny<CancellationToken>()),
+            x => x.Add(It.Is<Group>(g => g.Name == groupName), It.IsAny<CancellationToken>()),
             Times.Once);
         _validatorMock.Verify(v => v.ValidateAsync(It.IsAny<Group>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -87,7 +87,7 @@ public class TestsGroupsService
         var userId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
         var user = new User(adminId, "Test User", "123@gmail.com", "hash", "ФТ-102-2");
-        var group = new Group(groupId, "Test Group", adminId);
+        var group = new Group(groupId, "Test Group");
 
         _groupsRepositoryMock.Setup(x => x.GetById(groupId, It.IsAny<CancellationToken>())).ReturnsAsync(group);
         _usersRepositoryMock.Setup(x => x.GetById(userId, It.IsAny<CancellationToken>())).ReturnsAsync(user);

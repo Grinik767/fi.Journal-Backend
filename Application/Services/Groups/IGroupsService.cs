@@ -4,7 +4,7 @@ namespace Application.Services.Groups;
 
 public interface IGroupsService
 {
-    Task<Group> Add(string name, Guid adminId, CancellationToken ct);
+    Task<Group> Add(string name, CancellationToken ct);
     Task<Group> Update(Guid id, string? name, CancellationToken ct);
     Task Delete(Guid id, CancellationToken ct);
     Task<List<Group>> GetAll(CancellationToken ct);

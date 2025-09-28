@@ -17,7 +17,7 @@ public partial class GroupDistributionService(IGroupsRepository groupsRepository
         var groupsForUser = GetGroupsForUser(studyGroupData);
         var existingGroups = await groupsRepository.GetByNames(groupsForUser);
         var existingGroupsName = existingGroups.Select(g => g.Name).ToHashSet();
-        foreach (var group in from groupName in groupsForUser where !existingGroupsName.Contains(groupName) select new Group(new Guid(), groupName, user.Id))
+        foreach (var group in from groupName in groupsForUser where !existingGroupsName.Contains(groupName) select new Group(new Guid(), groupName))
         {
             group.AddUser(user);
             await groupsRepository.Add(group, ct);

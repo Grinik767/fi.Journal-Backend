@@ -10,5 +10,4 @@ public class UserDto
     public long TelegramId { get; init; }
     
     public Guid[] GroupIds { get; init; }
-    public Guid[] GroupAsAdminIds{ get; init; }
 }

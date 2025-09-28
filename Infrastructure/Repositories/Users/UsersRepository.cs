@@ -26,13 +26,11 @@ public class UsersRepository(JournalDbContext dbContext) : IUsersRepository
         await dbContext.Users
             .AsNoTracking()
             .Include(u => u.Groups)
-            .Include(u => u.GroupsAsAdmin)
             .ToListAsync(ct);
 
     public async Task<User> GetById(Guid id, CancellationToken ct) =>
         await dbContext.Users
             .Include(u => u.Groups)
-            .Include(u => u.GroupsAsAdmin)
             .FirstAsync(user => user.Id == id, ct);
 
     public async Task<User?> GetByEmail(string email, CancellationToken ct) =>

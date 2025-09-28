@@ -49,16 +49,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AdminId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -239,17 +234,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Group", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "Admin")
-                        .WithMany("GroupsAsAdmin")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Admin");
-                });
-
             modelBuilder.Entity("Domain.Entities.SuperAdmin", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
@@ -337,8 +321,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("GroupsAsAdmin");
-
                     b.Navigation("UserDiffs");
 
                     b.Navigation("UserNotifications");
